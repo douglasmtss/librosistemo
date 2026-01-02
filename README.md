@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+#Librosistemo
+> 🇺🇸 Documentation in English
 
-## Getting Started
+> 📚 Librosistemo is a simple application for registering and managing books, users and book loans.
 
-First, run the development server:
+🇧🇷 [Documentation in Portuguese](./docs/README_PT_BR.md)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+🇧🇷 [Manual in Portuguese](./docs/MANUAL_PT_BR.md)
+
+
+## Overview
+
+This application uses Google sheets as a database.
+
+📡 APIs used to search the books
+- Google API: https://www.googleapis.com
+- Brazil API: https://brasilapi.com.br
+
+## ✨ Features
+- 📚 Register books manually by filling out a form, the cover can be photographed using the feature available in one of the form fields.
+
+- 📚 Registration of books by searching by ISBN code, after the search returns an expected result, you can register the found book.
+
+- 📚 Book registration by scanning the ISBN code, after the search returns an expected result, you can register the found book.
+
+- 🙅 User registration
+
+- 🎁 Loan registration
+
+
+## Requirements
+
+<a href="./docs/sheets_template.xlsx" download>
+    Sheet template
+</a>
+
+1. Create a spreadsheet with the same structure as
+2. Share the spreadsheet with a public link
+3. Create an account Google Console
+4. Create a Project and add Google Spreadshet API
+5. Create all credentials (private key, email account)
+6. Fill the env variable
+```.env
+NEXT_PUBLIC_GOOGLE_SERVICE_ACCOUNT_EMAIL='your account email here'
+NEXT_PUBLIC_GOOGLE_PRIVATE_KEY='your private key here'
+NEXT_PUBLIC_GOOGLE_SHEET_ID='your sheet id here'
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Running development mode
+```bash
+yarn dev
+```
+🚀 The application will be running at http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 👷 Build
+```bash
+yarn build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 👌 Running lint
+```bash
+yarn lint
+```
 
-## Learn More
+> Below are some screenshots on a mobile device.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<table>
+    <thead></thead>
+    <tbody>
+        <tr>
+            <td>
+                <img src="./docs/images/books-list.png" />
+            </td>
+            <td>
+                <img src="./docs/images/admin.png" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="./docs/images/admin-books.png" />
+            </td>
+            <td>
+                <img src="./docs/images/admin-users.png" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="./docs/images/admin-lends.png" />
+            </td>
+            <td>
+                <img src="./docs/images/books-registration.png" />
+            </td>
+            </tr>
+        </td>
+        <td>
+             <td>
+                <img src="./docs/images/scanner.gif" />
+            </td>
+        </tr>
+    </tbody>
+</table>
