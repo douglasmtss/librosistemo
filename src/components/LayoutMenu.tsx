@@ -21,6 +21,7 @@ export default function LayoutMenu(): React.ReactNode {
                         width={60}
                         height={60}
                         alt={configInfo.appName + ' logo'}
+                        loading="eager"
                         className="rounded-[100%] border-white border-2"
                     />
                 </Link>
