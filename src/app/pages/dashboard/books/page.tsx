@@ -76,7 +76,7 @@ export default function Books(): JSX.Element {
     }
 
     return (
-        <div className="w-full max-w-[740px] mx-auto">
+        <div className="w-full max-w-185 mx-auto">
             <div className="w-full flex justify-between items-center mb-8 p-4">
                 <BackButton />
                 <Link
