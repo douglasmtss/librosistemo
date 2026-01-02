@@ -6,7 +6,7 @@ export default function BookRegistration(): JSX.Element {
     return (
         <div className="w-full h-full flex flex-col justify-center items-center">
             <BackButton />
-            <div className="flex flex-col justify-center items-center w-[max-content]">
+            <div className="flex flex-col justify-center items-center w-max">
                 <Link
                     href={'/pages/dashboard/book-registration/manual'}
                     className="py-2 px-4 bg-primary text-white rounded-md text-center w-full mt-8"

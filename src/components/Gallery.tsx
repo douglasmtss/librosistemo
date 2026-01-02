@@ -33,7 +33,7 @@ export const Gallery = ({ onCancel, onSave }: GalleryProps): JSX.Element => {
         <div className="flex flex-col justify-center items-center w-full h-full fixed bottom-0 top-0 right-0 left-0 bg-[#0008]">
             <div className="flex flex-col justify-center items-center w-full h-full">
                 {img && (
-                    <div className="border flex justify-center items-center w-[max-content]">
+                    <div className="border flex justify-center items-center w-max">
                         <Img src={img.compressed} width={250} alt="pré visualização da imagem" />
                     </div>
                 )}

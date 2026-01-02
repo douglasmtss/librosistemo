@@ -14,7 +14,7 @@ export default function HamburgerAndCloser({ className, show, setShow }: Hamburg
     }
 
     return (
-        <button className={cn('text-2xl focus:outline-none', className || '')} onClick={hanldeClick}>
+        <button className={cn('text-2xl focus:outline-hidden', className || '')} onClick={hanldeClick}>
             {show ? <FaTimes className="relative z-20" /> : <FaBars />}
         </button>
     )
