@@ -1,18 +1,36 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import { defineConfig, globalIgnores } from 'eslint/config'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import prettier from 'eslint-config-prettier/flat'
+import prettierConfig from 'eslint-plugin-prettier/recommended'
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
+    ...nextVitals,
+    prettier,
+    prettierConfig,
+    // Override default ignores of eslint-config-next.
+    {
+        rules: {
+            'object-curly-spacing': ['warn', 'always'],
+            'no-return-assign': 'off',
+            'next-line space-infix-ops': 'off',
+            'eqeqeq': ['warn', 'smart'],
+            'curly': ['warn', 'multi-line', 'consistent'],
+            'react/react-in-jsx-scope': 'off',
+            'react-hooks/rules-of-hooks': 'error',
+            'react-hooks/exhaustive-deps': 'warn',
+            'newline-before-return': 'warn',
+            '@typescript-eslint/no-use-before-define': 'off',
+            '@typescript-eslint/explicit-module-boundary-types': 'off',
+            '@typescript-eslint/explicit-function-return-type': 'error',
+        }
+    },
+    globalIgnores([
+        // Default ignores of eslint-config-next:
+        '.next/**',
+        'out/**',
+        'build/**',
+        'next-env.d.ts'
+    ])
+])
 
-export default eslintConfig;
+export default eslintConfig
