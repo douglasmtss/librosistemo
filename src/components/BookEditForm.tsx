@@ -12,18 +12,9 @@ type BookEditFormProps = {
 } & Book
 
 export default function BookEditForm(props: BookEditFormProps): React.ReactNode {
-    const { id, isbn, title, subtitle, author, description, image, amount, category, place } = props
-    const [value, setValue] = useState({
-        isbn,
-        title,
-        subtitle,
-        author,
-        description,
-        image,
-        amount,
-        category,
-        place
-    })
+    const { id } = props
+
+    const [value, setValue] = useState({ ...props })
     const [getPhoto, setGetPhoto] = useState<boolean>(false)
 
     const router = useRouter()
@@ -59,8 +50,11 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
     }
 
     useEffect(() => {
-        setValue({ isbn, title, subtitle, author, description, image, amount, category, place })
-    }, [amount, author, category, description, image, isbn, place, props, subtitle, title])
+        async function handleInitValue(): Promise<void> {
+            setValue({ ...props })
+        }
+        handleInitValue()
+    }, [props])
 
     return (
         <div className="p-8">
@@ -74,7 +68,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="isbn"
                         id="isbn"
                         placeholder="ISBN"
-                        value={value.isbn}
+                        value={value.isbn ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,
@@ -91,7 +85,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="title"
                         id="title"
                         placeholder="Título"
-                        value={value.title}
+                        value={value.title ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,
@@ -108,7 +102,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="subtitle"
                         id="subtitle"
                         placeholder="Subtítulo"
-                        value={value.subtitle}
+                        value={value.subtitle ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,
@@ -125,7 +119,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="author"
                         id="author"
                         placeholder="Autor"
-                        value={value.author}
+                        value={value.author ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,
@@ -142,7 +136,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="description"
                         id="description"
                         placeholder="Descrição"
-                        value={value.description}
+                        value={value.description ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,
@@ -159,7 +153,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="category"
                         id="category"
                         placeholder="Categoria"
-                        value={value.category}
+                        value={value.category ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,
@@ -177,7 +171,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                             name="image"
                             id="image"
                             placeholder="Url da Imagem"
-                            value={value.image}
+                            value={value.image ?? ''}
                             onChange={e =>
                                 setValue({
                                     ...value,
@@ -204,7 +198,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="amount"
                         id="amount"
                         placeholder="Quantidade"
-                        value={value.amount}
+                        value={value.amount ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,
@@ -221,7 +215,7 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                         name="place"
                         id="place"
                         placeholder="Local/ estante/ prateleira"
-                        value={value.place}
+                        value={value.place ?? ''}
                         onChange={e =>
                             setValue({
                                 ...value,

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 import { memo, useState } from 'react'
 import { BookModal } from './BookModal'

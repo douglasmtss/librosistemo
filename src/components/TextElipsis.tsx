@@ -40,7 +40,7 @@ export const TextElipsis = ({ text, width, height, color }: TextElipsisProps): R
             })
         }
 
-        return () => {
+        return (): void => {
             if (textRefCurrent) {
                 textRefCurrent.removeEventListener('mouseover', () => {
                     textRefCurrent.style.webkitLineClamp = String(numberOfLines)
@@ -64,8 +64,8 @@ const TextElipsisContainer = styled.div<{
     width?: string | number
     height?: string | number
 }>`
-    width: ${({ width }) => (typeof width === 'string' ? `${width}` : `${width}px`)};
-    height: ${({ height }) => (typeof height === 'string' ? `${height}` : `${height}px`)};
+    width: ${({ width }): string => (typeof width === 'string' ? `${width}` : `${width}px`)};
+    height: ${({ height }): string => (typeof height === 'string' ? `${height}` : `${height}px`)};
     overflow: hidden;
     position: relative;
 `
@@ -74,15 +74,15 @@ const Text = styled.div<{
     lines: number
     color?: string
 }>`
-    color: ${({ color }) => color};
+    color: ${({ color }): string => color ?? 'black'};
     white-space: pre-line;
     position: absolute;
     top: 0;
     left: 0;
     line-height: 16px;
     text-overflow: ellipsis;
-    display: ${({ display }) => display};
+    display: ${({ display }): string => display};
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: ${({ lines }) => lines};
+    -webkit-line-clamp: ${({ lines }): number => lines};
     white-space: pre-wrap;
 `
