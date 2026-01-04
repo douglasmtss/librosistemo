@@ -1,10 +1,9 @@
 # Librosistemo
 
-
-<img src="./badges/badge-branches.svg" />
-<img src="./badges/badge-functions.svg" />
-<img src="./badges/badge-lines.svg" />
-<img src="./badges/badge-statements.svg" />
+![Badge branchs >](./badges/badge-branches.svg)
+![Badge functions >](./badges/badge-functions.svg)
+![Badge lines >](./badges/badge-lines.svg)
+![Badge statements >](./badges/badge-statements.svg)
 
 ## Overview
 
