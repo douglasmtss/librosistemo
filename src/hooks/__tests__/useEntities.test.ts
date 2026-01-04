@@ -53,7 +53,7 @@ describe('useEntities', () => {
             user_id: 'user1',
             first_name: 'John',
             last_name: 'Doe',
-            book_id: 1,
+            book_id: '1',
             book_title: 'Clean Code',
             created: '2024-01-01'
         },
@@ -62,7 +62,7 @@ describe('useEntities', () => {
             user_id: 'user2',
             first_name: 'Jane',
             last_name: 'Smith',
-            book_id: 2,
+            book_id: '2',
             book_title: 'JavaScript: The Good Parts',
             created: '2024-01-02'
         }
@@ -193,7 +193,7 @@ describe('useEntities', () => {
         const newBook: Book = {
             id: '3',
             isbn: 9781491927281,
-            title: 'You Don\'t Know JS Yet',
+            title: "You Don't Know JS Yet",
             subtitle: 'Getting Started',
             author: 'Kyle Simpson',
             description: 'A JavaScript book',
