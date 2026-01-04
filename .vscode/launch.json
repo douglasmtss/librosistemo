@@ -1,0 +1,47 @@
+{
+	"version": "0.2.0",
+	"compounds": [
+		{
+			"name": "Full Stack (Server + Client)",
+			"configurations": [
+				"Next.js: server",
+				"Next.js: client"
+			],
+			"stopAll": true
+		}
+	],
+	"configurations": [
+		{
+			"name": "Next.js: server",
+			"type": "node",
+			"request": "launch",
+			"runtimeVersion": "24",
+			"program": "${workspaceFolder}/node_modules/.bin/next",
+			"args": [
+				"dev"
+			],
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			}
+		},
+		{
+			"name": "Next.js: client",
+			"type": "chrome",
+			"request": "attach",
+			"port": 3000,
+			"pathMapping": {
+				"/": "${workspaceFolder}/",
+				"/_next": "${workspaceFolder}/.next"
+			},
+			"sourceMaps": true,
+			"sourceMapPathOverrides": {
+				"webpack://_N_E/*": "${workspaceFolder}/.next/static/chunks/*"
+			}
+		}
+	]
+}
