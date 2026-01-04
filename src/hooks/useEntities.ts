@@ -60,6 +60,9 @@ export const useEntities = (dataType: DataTypeOrAll[]): UseAvailableBooksState =
                 setUsers(data)
                 setFilteredUsers(data)
             })
+            .catch(error => {
+                console.error('Error fetching users:', error)
+            })
             .finally(() => {
                 setLoadingUsers(false)
             })
@@ -78,6 +81,9 @@ export const useEntities = (dataType: DataTypeOrAll[]): UseAvailableBooksState =
                 setLends(data)
                 setFilteredLends(data)
             })
+            .catch(error => {
+                console.error('Error fetching lends:', error)
+            })
             .finally(() => {
                 setLoadingLends(false)
             })
@@ -95,6 +101,9 @@ export const useEntities = (dataType: DataTypeOrAll[]): UseAvailableBooksState =
                 setOptionsBooks(opts)
                 setBooks(data)
                 setFilteredBooks(data)
+            })
+            .catch(error => {
+                console.error('Error fetching books:', error)
             })
             .finally(() => {
                 setLoadingBooks(false)
