@@ -11,7 +11,20 @@ const eslintConfig = defineConfig([
     prettierConfig,
     // Override default ignores of eslint-config-next.
     {
+        files: ['**/*.{js,jsx,ts,tsx}'],
         rules: {
+            'max-len': [
+                'warn',
+                {
+                    code: 120,
+                    ignoreUrls: true,
+                    ignoreStrings: true,
+                    ignoreComments: true,
+                    ignoreTrailingComments: true,
+                    ignoreTemplateLiterals: true,
+                    ignoreRegExpLiterals: true
+                }
+            ],
             'object-curly-spacing': ['warn', 'always'],
             'no-return-assign': 'off',
             'next-line space-infix-ops': 'off',
