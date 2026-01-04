@@ -11,7 +11,7 @@ if (!email || !private_key || !sheetId) {
 
 const formattedPrivateKey = private_key.replace(/\\n/g, '\n')
 
-const scopes = ['https://www.googleapis.com/auth/spreadsheets']
+export const scopes = ['https://www.googleapis.com/auth/spreadsheets']
 
 const serviceAccountAuth = new JWT({
     email,
