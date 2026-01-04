@@ -1,6 +1,15 @@
 # Librosistemo
-> 🇺🇸 Documentation in English
 
+
+<img src="./coverage//badge-branches.svg" />
+<img src="./coverage//badge-functions.svg" />
+<img src="./coverage//badge-lines.svg" />
+<img src="./coverage//badge-statements.svg" />
+
+## Overview
+
+> 🇺🇸 Documentation in English
+>
 > 📚 Librosistemo is a simple application for registering and managing books, users and book loans.
 
 🇧🇷 [Documentation in Portuguese](./docs/README_PT_BR.md)
@@ -8,7 +17,6 @@
 🇧🇷 [Manual in Portuguese](./docs/MANUAL_PT_BR.md)
 
 
-## Overview
 
 This application uses Google sheets as a database.
 
