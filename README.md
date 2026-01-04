@@ -1,10 +1,10 @@
 # Librosistemo
 
 
-<img src="./coverage//badge-branches.svg" />
-<img src="./coverage//badge-functions.svg" />
-<img src="./coverage//badge-lines.svg" />
-<img src="./coverage//badge-statements.svg" />
+<img src="./badges/badge-branches.svg" />
+<img src="./badges/badge-functions.svg" />
+<img src="./badges/badge-lines.svg" />
+<img src="./badges/badge-statements.svg" />
 
 ## Overview
 
