@@ -13,6 +13,7 @@
     "test": "jest",
     "testw": "jest --watch",
     "testc": "jest --coverage",
+    "test:build": "yarn testcb && next build",
     "testcb": "jest --coverage && jest-coverage-badges --output \"./badges\""
   },
   "dependencies": {
