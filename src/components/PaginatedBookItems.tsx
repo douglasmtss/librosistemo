@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Link from 'next/link'
-import { FaArrowLeft, FaArrowRight, FaPencilAlt, FaTrash } from 'react-icons/fa'
+import { FaPencilAlt, FaTrash } from 'react-icons/fa'
 import { useToastify } from '@/hooks/useToastify'
 import { Img } from './Img'
 import { PaginatedContainer } from './styles'
 import { BookStatus } from './BookStatus'
 import { TextElipsis } from './TextElipsis'
 import { DeleteModal } from './DeleteModal'
+import paginateNavigationButtons from '@/lib/paginateNagivationButtons'
 
 export const PaginatedBookItems = ({
     itemsPerPage,
@@ -83,20 +84,12 @@ export const PaginatedBookItems = ({
             <ReactPaginate
                 activeLinkClassName="bg-primary text-white rounded-full px-2"
                 breakLabel="..."
-                nextLabel={
-                    <div className="absolute right-0 top-8 bg-primary text-white rounded-full px-4 py-2">
-                        <FaArrowRight />
-                    </div>
-                }
+                nextLabel={paginateNavigationButtons(books, 'right', itemsPerPage)}
                 nextClassName="relative"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
-                previousLabel={
-                    <div className="absolute left-0 top-8 bg-primary text-white rounded-full px-4 py-2">
-                        <FaArrowLeft />
-                    </div>
-                }
+                previousLabel={paginateNavigationButtons(books, 'left', itemsPerPage)}
                 previousClassName="relative "
                 renderOnZeroPageCount={null}
             />

@@ -7,7 +7,7 @@ import { Empty } from './Empty'
 import { PaginatedContainer } from './styles'
 import { Loading } from './Loading'
 import { useEntities } from '@/hooks/useEntities'
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
+import paginateNavigationButtons from '@/lib/paginateNagivationButtons'
 
 export const PaginatedBooks = ({ itemsPerPage }: { itemsPerPage: number }): React.ReactNode => {
     const [itemOffset, setItemOffset] = useState(0)
@@ -35,20 +35,12 @@ export const PaginatedBooks = ({ itemsPerPage }: { itemsPerPage: number }): Reac
                 className="relative"
                 activeLinkClassName="bg-primary text-white rounded-full px-2"
                 breakLabel="..."
-                nextLabel={
-                    <div className="absolute right-0 top-8 bg-primary text-white rounded-full px-4 py-2">
-                        <FaArrowRight />
-                    </div>
-                }
+                nextLabel={paginateNavigationButtons(books, 'right')}
                 nextClassName="relative"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={1}
                 pageCount={pageCount}
-                previousLabel={
-                    <div className="absolute left-0 top-8 bg-primary text-white rounded-full px-4 py-2">
-                        <FaArrowLeft />
-                    </div>
-                }
+                previousLabel={paginateNavigationButtons(books, 'left')}
                 previousClassName="relative "
                 renderOnZeroPageCount={null}
             />

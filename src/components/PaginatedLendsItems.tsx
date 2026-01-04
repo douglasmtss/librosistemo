@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Link from 'next/link'
-import { FaArrowLeft, FaArrowRight, FaTrash } from 'react-icons/fa'
+import { FaTrash } from 'react-icons/fa'
 import { useToastify } from '@/hooks/useToastify'
 import { TextElipsis } from './TextElipsis'
 import { VscOpenPreview } from 'react-icons/vsc'
 import { PaginatedContainer } from './styles'
 import { DeleteModal } from './DeleteModal'
+import paginateNavigationButtons from '@/lib/paginateNagivationButtons'
 
 export const PaginatedLendsItems = ({
     itemsPerPage,
@@ -77,20 +78,12 @@ export const PaginatedLendsItems = ({
             <ReactPaginate
                 activeLinkClassName="bg-primary text-white rounded-full px-2"
                 breakLabel="..."
-                nextLabel={
-                    <div className="absolute right-0 top-8 bg-primary text-white rounded-full px-4 py-2">
-                        <FaArrowRight />
-                    </div>
-                }
+                nextLabel={paginateNavigationButtons(lends, 'right')}
                 nextClassName="relative"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
-                previousLabel={
-                    <div className="absolute left-0 top-8 bg-primary text-white rounded-full px-4 py-2">
-                        <FaArrowLeft />
-                    </div>
-                }
+                previousLabel={paginateNavigationButtons(lends, 'left')}
                 previousClassName="relative "
                 renderOnZeroPageCount={null}
             />
