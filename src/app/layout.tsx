@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <body suppressHydrationWarning={true}>
                 <StyledComponentsRegistry>
                     <ToastContainer />
-                    <header className="w-full mb-10">
+                    <header className="w-full mb-10 h-16">
                         <LayoutMenu />
                     </header>
 

@@ -13,8 +13,8 @@ export default function LayoutMenu(): React.ReactNode {
     const [show, setShow] = useState<boolean>(false)
 
     return (
-        <ul className="flex items-center bg-primary w-full px-8 py-4">
-            <li className="flex-1 flex text-white items-center">
+        <ul className="flex items-center bg-primary w-full px-8 py-4 h-full">
+            <li className="flex text-white items-center">
                 <Link href={'/'}>
                     <Image
                         src={configInfo.appLogo}
@@ -27,17 +27,17 @@ export default function LayoutMenu(): React.ReactNode {
                 </Link>
             </li>
 
-            <li className="relative text-white">
+            <li className="relative text-white flex flex-1 justify-end">
                 <HamburgerAndCloser className="md:opacity-0" show={show} setShow={setShow} />
                 <div
                     id="menu-slider"
                     className={
                         !show
-                            ? 'fixed top-0 right-0 z-10 w-64 md:w-[80%] h-full md:h-max bg-primary transform translate-x-full md:translate-x-0 transition-transform duration-300'
+                            ? 'fixed top-0 right-0 pr-4 z-10 w-64 md:w-[80%] h-full md:h-max bg-primary transform translate-x-full md:translate-x-0 transition-transform duration-300'
                             : 'fixed top-0 right-0 z-10 w-64 h-full bg-primary transform translate-x-0 transition-transform duration-300'
                     }
                 >
-                    <ul className="flex flex-col md:flex-row items-start md:gap-4 md:justify-end md:items-end md:w-full p-4 space-y-4 mt-16 md:mt-0">
+                    <ul className="flex flex-col md:flex-row items-start md:gap-4 md:justify-end md:items-end h-16 md:w-full p-4 mt-16 md:mt-0 space-y-4 md:space-y-0">
                         <li>
                             <Link onClick={() => setShow(false)} href={'/'} className="text-white hover:underline">
                                 INÍCIO
@@ -70,8 +70,9 @@ export default function LayoutMenu(): React.ReactNode {
                                 EMPRÉSTIMOS
                             </Link>
                         </li>
-                        <li className="text-white uppercase hover:underline">
+                        <li>
                             <AdminLink
+                                className="text-white uppercase hover:underline"
                                 onClick={() => setShow(false)}
                                 beforeNavigate={{
                                     label: 'Administração',
