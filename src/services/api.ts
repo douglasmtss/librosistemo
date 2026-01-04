@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Sheet } from '@/enums/sheets'
 import { SpreadsheetResponse } from '@/types/spreadsheet'
 import axios, { AxiosResponse } from 'axios'

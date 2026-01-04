@@ -59,7 +59,8 @@ export default function Books(): React.ReactNode {
 
         if (showFilter) {
             document.addEventListener('mousedown', handleClickOutside)
-            return () => {
+
+            return (): void => {
                 document.removeEventListener('mousedown', handleClickOutside)
             }
         }
@@ -88,7 +89,10 @@ export default function Books(): React.ReactNode {
             </div>
             <div className="px-4">
                 <div className="flex flex-col md:flex-row-reverse  mb-8 md:px-8">
-                    <div ref={filterRef} className="relative w-full md:w-32 md:ml-4 h-10 mb-2 flex justify-center items-center border cursor-pointer">
+                    <div
+                        ref={filterRef}
+                        className="relative w-full md:w-32 md:ml-4 h-10 mb-2 flex justify-center items-center border cursor-pointer"
+                    >
                         <div
                             onClick={() => setShowFilter(!showFilter)}
                             className="w-full flex justify-center items-center"

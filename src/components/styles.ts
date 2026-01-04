@@ -23,7 +23,7 @@ export const PaginatedContainer = styled.div<{
             color: #fff;
             width: 100px;
             border-radius: 4px;
-            opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
+            opacity: ${({ disabled }): string => (disabled ? '0.5' : '1')};
         }
     }
 `

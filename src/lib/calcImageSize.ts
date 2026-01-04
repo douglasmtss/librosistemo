@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 export function calcImageSize(image: string): number {
     let y = 1
     if (image.endsWith('==')) {

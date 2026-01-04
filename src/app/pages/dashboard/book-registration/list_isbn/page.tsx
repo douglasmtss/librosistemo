@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 'use client'
 import { api, services } from '@/services/api'
 import { Empty } from '@/components/Empty'
@@ -100,7 +99,6 @@ function SearchPageImpl(): React.ReactNode {
             setBooksInformations(localBooksInformations)
             setCodesWithErrors(localCodesWithErrors)
             setLoading(false)
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [books, list_isbn]
@@ -211,7 +209,7 @@ function SearchPageImpl(): React.ReactNode {
                 setRemainingTime(prev => prev - 1)
             }, 1000)
 
-            return () => clearInterval(interval)
+            return (): void => clearInterval(interval)
         }
     }, [remainingTime])
 
@@ -337,7 +335,7 @@ function SearchPageImpl(): React.ReactNode {
                     <BackToTopButton />
                     {booksInformations?.map((book, index) => {
                         return (
-                            <div key={book?.title + index} className="w-full h-full p-8 max-w-[640px] mx-auto border">
+                            <div key={book?.title + index} className="w-full h-full p-8 max-w-160 mx-auto border">
                                 <div className="flex flex-col">
                                     <div className="p-8">
                                         <Img
@@ -369,7 +367,7 @@ function SearchPageImpl(): React.ReactNode {
     }
 
     return (
-        <div className="w-full h-full p-8 max-w-[740px] mx-auto">
+        <div className="w-full h-full p-8 max-w-185 mx-auto">
             <div className="flex flex-col justify-center items-center">
                 <button
                     className={`

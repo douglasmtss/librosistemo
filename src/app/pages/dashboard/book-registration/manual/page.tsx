@@ -60,7 +60,7 @@ export default function ManualRegister(): React.ReactNode {
     }
 
     return (
-        <div className="p-8 w-full max-w-[740px] mx-auto">
+        <div className="p-8 w-full max-w-185 mx-auto">
             <BackButton classNameContainer="mb-8" />
             <h2 className="text-2xl">Cadastro manual</h2>
             {getPhoto && <SelectPhoto onCancel={() => setGetPhoto(false)} onSave={handleSave} />}

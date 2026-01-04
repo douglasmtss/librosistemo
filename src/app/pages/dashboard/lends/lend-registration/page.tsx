@@ -76,7 +76,7 @@ export default function LendRegistration(): React.ReactNode {
     }, [bookSelected?.label, bookSelected?.value, userSelected?.first_name, userSelected?.id, userSelected?.last_name])
 
     return (
-        <div className="w-full max-w-[740px] mx-auto">
+        <div className="w-full max-w-185 mx-auto">
             <BackButton classNameContainer="ml-4 mb-8" />
             {loadingUsers ? (
                 <Loading />

@@ -24,15 +24,6 @@ export default function SearchPage({ params }: SearchPageProps): React.ReactNode
 
     const { toast } = useToastify()
 
-    useEffect(() => {
-        setApiSelected({
-            google: false,
-            brasilapi: true
-        })
-        setLoading(true)
-        searchFromBrasilApi(params.isbn)
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
     const searchFromBrasilApi = async (code: string): Promise<void> => {
         await services
             .brasilapi(code)
@@ -56,6 +47,18 @@ export default function SearchPage({ params }: SearchPageProps): React.ReactNode
             })
     }
 
+    useEffect(() => {
+        async function setInitialValues(): Promise<void> {
+            setApiSelected({
+                google: false,
+                brasilapi: true
+            })
+            setLoading(true)
+        }
+        setInitialValues()
+        searchFromBrasilApi(params.isbn)
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
     if (!bookInfo?.title && !loading) {
         return (
             <>
@@ -67,7 +70,7 @@ export default function SearchPage({ params }: SearchPageProps): React.ReactNode
 
     if (bookInfo?.title) {
         return (
-            <div className="w-full h-full p-8 max-w-[740px] mx-auto">
+            <div className="w-full h-full p-8 max-w-185 mx-auto">
                 <BackButton classNameContainer="mb-8" />
                 <h2>Resultado da pesquisa</h2>
                 <span>Verifique se está correto antes de cadastrar</span>
@@ -97,7 +100,7 @@ export default function SearchPage({ params }: SearchPageProps): React.ReactNode
     }
 
     return (
-        <div className="w-full h-full p-8 max-w-[740px] mx-auto">
+        <div className="w-full h-full p-8 max-w-185 mx-auto">
             <div className="flex flex-col justify-center items-center">
                 <button
                     className={`

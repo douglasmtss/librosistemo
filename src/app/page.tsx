@@ -2,7 +2,7 @@
 
 import { PaginatedBooks } from '@/components/PaginatedBooks'
 
-export default function Home(): React.ReactNode {
+export default function Home(): React.JSX.Element {
     return (
         <main className="flex flex-col">
             <PaginatedBooks itemsPerPage={10} />

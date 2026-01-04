@@ -7,7 +7,7 @@ export const BookModal = (props: { book: Book | Record<string, never>; onClose: 
 
     return (
         <div className="z-10 fixed w-screen h-screen top-0 bottom-0 left-0 right-0 bg-[#0009] flex justify-center items-center">
-            <div className="relative bg-white w-[90%] max-w-[500px] h-[90%] flex flex-col overflow-y-auto">
+            <div className="relative bg-white w-[90%] max-w-125 h-[90%] flex flex-col overflow-y-auto">
                 <button className="absolute top-4 right-4 text-2xl" onClick={onClose}>
                     <IoMdClose />
                 </button>

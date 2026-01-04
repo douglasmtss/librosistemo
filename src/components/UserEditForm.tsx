@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 'use client'
 import { api } from '@/services/api'
 import Link from 'next/link'
@@ -39,7 +38,11 @@ export default function UserEditForm(props: UserEditFormProps): React.ReactNode 
     }
 
     useEffect(() => {
-        setValue({ first_name, last_name, phone })
+        async function setInitialValues(): Promise<void> {
+            setValue({ first_name, last_name, phone })
+        }
+
+        setInitialValues()
     }, [first_name, last_name, phone])
 
     return (

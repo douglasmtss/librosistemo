@@ -21,7 +21,7 @@ export default function List(): React.ReactNode {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center p-8 w-full max-w-[740px] mx-auto">
+        <div className="flex flex-col justify-center items-center p-8 w-full max-w-185 mx-auto">
             <BackButton classNameContainer="mb-8" />
             <h2>Digite ou cole uma lista de códigos ISBN</h2>
             <h3>Deve haver apenas um código por linha</h3>

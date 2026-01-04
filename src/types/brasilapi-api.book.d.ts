@@ -1,17 +1,17 @@
 declare type BrasilapiBook = {
     isbn: string
     title: string
-    subtitle: any
+    subtitle: string
     authors: string[]
     publisher: string
-    synopsis: any
-    dimensions: any
-    year: any
+    synopsis: string
+    dimensions: string
+    year: string
     format: string
-    page_count: any
+    page_count: string
     subjects: string[]
-    location: any
-    retail_price: any
-    cover_url: any
+    location: string
+    retail_price: string
+    cover_url: string
     provider: string
 }

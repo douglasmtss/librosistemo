@@ -3,6 +3,13 @@ import Webcam from 'react-webcam'
 import { Img } from './Img'
 import { reduceImageFileSize } from '@/lib/reduceImageFileSize'
 
+interface ScreenshotDimensions {
+    width: number
+    height: number
+}
+interface ChildrenProps {
+    getScreenshot: (screenshotDimensions?: ScreenshotDimensions) => string | null
+}
 interface CameraProps {
     onCancel: () => void
     onSave: (image: string) => void
@@ -14,7 +21,7 @@ export const Camera = ({ onCancel, onSave }: CameraProps): React.ReactNode => {
     })
     const [deviceId, setDeviceId] = useState('')
     const [devices, setDevices] = useState<Device[]>([])
-    const webcamRef = useRef(null)
+    const webcamRef = useRef<ChildrenProps>(null)
 
     const handleDevices = useCallback(
         (mediaDevices: Device[]) => {
@@ -36,8 +43,7 @@ export const Camera = ({ onCancel, onSave }: CameraProps): React.ReactNode => {
 
     const capture = useCallback(() => {
         if (webcamRef.current) {
-            // @ts-ignore
-            const base64 = webcamRef.current.getScreenshot()
+            const base64 = String(webcamRef.current.getScreenshot())
             reduceImageFileSize(base64, 50, 100).then(compressed => {
                 setImage({
                     origial: base64,
@@ -57,7 +63,11 @@ export const Camera = ({ onCancel, onSave }: CameraProps): React.ReactNode => {
                 ) : (
                     <>
                         {deviceId ? (
-                            <Webcam ref={webcamRef} audio={false} videoConstraints={{ deviceId }} />
+                            <Webcam
+                                ref={webcamRef as React.Ref<Webcam> | undefined}
+                                audio={false}
+                                videoConstraints={{ deviceId }}
+                            />
                         ) : (
                             <div className="bg-white w-full flex flex-col p-4">
                                 {devices?.map((device, key) => {

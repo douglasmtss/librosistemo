@@ -7,7 +7,7 @@ export default function Typing(): React.ReactNode {
     const [inputValue, setInputValue] = useState('')
 
     return (
-        <div className="flex flex-col justify-center items-center p-8 w-full max-w-[740px] mx-auto">
+        <div className="flex flex-col justify-center items-center p-8 w-full max-w-185 mx-auto">
             <BackButton classNameContainer="mb-8" />
             <h2>Digite o código ISBN</h2>
             <input

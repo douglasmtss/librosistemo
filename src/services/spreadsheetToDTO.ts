@@ -3,7 +3,8 @@ import { Sheet } from '@/enums/sheets'
 import { Row, SpreadsheetResponse } from '@/types/spreadsheet'
 import { getGoogleSpreadsheet } from './google-spreadsheet'
 
-type RawRowData = any
+type RowCellData = string | number | boolean | Date
+type RawRowData = RowCellData[] | Record<string, RowCellData>
 
 export const getRowIndexById = async (
     spreadsheet: GoogleSpreadsheetWorksheet,
@@ -135,19 +136,19 @@ export const fetchGoogleSheets = async (): Promise<SpreadsheetResponse> => {
             lends: async () => ({})
         },
         add: {
-            books: async () => {},
-            users: async () => {},
-            lends: async () => {}
+            books: async (): Promise<void> => {},
+            users: async (): Promise<void> => {},
+            lends: async (): Promise<void> => {}
         },
         delete: {
-            books: async () => {},
-            users: async () => {},
-            lends: async () => {}
+            books: async (): Promise<void> => {},
+            users: async (): Promise<void> => {},
+            lends: async (): Promise<void> => {}
         },
         update: {
-            books: async () => {},
-            users: async () => {},
-            lends: async () => {}
+            books: async (): Promise<void> => {},
+            users: async (): Promise<void> => {},
+            lends: async (): Promise<void> => {}
         }
     }
 }

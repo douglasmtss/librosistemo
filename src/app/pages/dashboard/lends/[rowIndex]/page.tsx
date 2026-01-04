@@ -39,7 +39,7 @@ export default function LendView(props: LendViewProps): React.ReactNode {
     }, [])
 
     return (
-        <div className="w-full max-w-[740px] mx-auto">
+        <div className="w-full max-w-185 mx-auto">
             <div className="flex flex-col px-4">
                 <BackButton classNameContainer="mb-8" />
                 <h1 className="text-2xl">Emprestimo</h1>

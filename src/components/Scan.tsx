@@ -35,10 +35,10 @@ export const Scan = (): React.ReactNode => {
 
         scanner.render(success, error)
 
-        return () => {
+        return (): void => {
             scanner.clear()
         }
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [])
 
     if (scanResult) {
         return (

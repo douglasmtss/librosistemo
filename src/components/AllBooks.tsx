@@ -14,7 +14,7 @@ function AllBooks({ books, lends }: AllBooksProps): React.ReactNode {
     const [openModal, setOpenModal] = useState<Book | Record<string, never>>({})
 
     return (
-        <div className="w-full flex flex-wrap gap-4  justify-center p-2 max-w-[1280px] mx-auto">
+        <div className="w-full flex flex-wrap gap-4  justify-center p-2 max-w-7xl mx-auto">
             {openModal?.title && <BookModal onClose={() => setOpenModal({})} book={openModal} />}
 
             <BackToTopButton />

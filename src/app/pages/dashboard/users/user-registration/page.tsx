@@ -41,7 +41,7 @@ export default function UserRegister(): React.ReactNode {
     }
 
     return (
-        <div className="p-8 w-full max-w-[740px] mx-auto">
+        <div className="p-8 w-full max-w-185 mx-auto">
             <BackButton classNameContainer="mb-8" />
             <h2 className="text-2xl">Cadastro de usuário</h2>
             <form className="mt-4">

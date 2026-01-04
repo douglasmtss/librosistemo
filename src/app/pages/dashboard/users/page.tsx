@@ -40,10 +40,10 @@ export default function Users(): React.ReactNode {
             .finally(() => {
                 setLoading(false)
             })
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
-        <div className="w-full max-w-[740px] mx-auto">
+        <div className="w-full max-w-185 mx-auto">
             <BackButton classNameContainer="ml-4 mb-8" />
             <div className="w-full flex justify-center items-center mb-8">
                 <Link

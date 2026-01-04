@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 // Credit: https://github.com/Gimyk/resize_base64_image/blob/main/main.js
 
 /**
@@ -11,7 +10,7 @@ export async function reduceImageFileSize(base64Str: string, MAX_WIDTH = 450, MA
     const resized_base64 = await new Promise(resolve => {
         const img = new Image()
         img.src = base64Str
-        img.onload = () => {
+        img.onload = (): void => {
             const canvas = document.createElement('canvas')
             let width = img.width
             let height = img.height

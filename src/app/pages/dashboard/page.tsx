@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Dashboard(): React.ReactNode {
     return (
-        <div className="w-full max-w-[740px] mx-auto">
+        <div className="w-full max-w-185 mx-auto">
             <div className="w-full flex flex-col justify-center items-center mb-8">
                 <Link
                     href={'/pages/dashboard/books'}
