@@ -328,16 +328,14 @@ describe('spreadsheetToDTO', (): void => {
             const usersSheet = { getRows: jest.fn().mockResolvedValue([userRow]) }
             const lendsSheet = { getRows: jest.fn().mockResolvedValue([lendRow]) }
 
-            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
-                {
-                    sheetsByTitle: {
-                        [Sheet.books]: booksSheet,
-                        [Sheet.users]: usersSheet,
-                        [Sheet.lends]: lendsSheet,
-                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
-                    }
-                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
-            )
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce({
+                sheetsByTitle: {
+                    [Sheet.books]: booksSheet,
+                    [Sheet.users]: usersSheet,
+                    [Sheet.lends]: lendsSheet,
+                    auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                }
+            } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>)
 
             const result = await fetchGoogleSheets()
 
@@ -370,22 +368,20 @@ describe('spreadsheetToDTO', (): void => {
                 .mockResolvedValueOnce([transientRow])
                 .mockResolvedValueOnce([])
 
-            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
-                {
-                    sheetsByTitle: {
-                        [Sheet.books]: booksSheet,
-                        [Sheet.users]: { getRows: jest.fn().mockResolvedValue([]) },
-                        [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([]) },
-                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
-                    }
-                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
-            )
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce({
+                sheetsByTitle: {
+                    [Sheet.books]: booksSheet,
+                    [Sheet.users]: { getRows: jest.fn().mockResolvedValue([]) },
+                    [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([]) },
+                    auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                }
+            } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>)
 
             const result = await fetchGoogleSheets()
 
             await result.delete.books('transient-id')
 
-            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(3)
+            expect(booksSheet.getRows as jest.Mock).toHaveBeenCalledTimes(3)
             expect(transientRow.delete).not.toHaveBeenCalled()
         })
 
@@ -396,23 +392,21 @@ describe('spreadsheetToDTO', (): void => {
 
             const booksSheet = { getRows: jest.fn().mockResolvedValue(mockRows) }
 
-            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
-                {
-                    sheetsByTitle: {
-                        [Sheet.books]: booksSheet,
-                        [Sheet.users]: { getRows: jest.fn().mockResolvedValue([mockRows[0]]) },
-                        [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([mockRows[1]]) },
-                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
-                    }
-                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
-            )
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce({
+                sheetsByTitle: {
+                    [Sheet.books]: booksSheet,
+                    [Sheet.users]: { getRows: jest.fn().mockResolvedValue([mockRows[0]]) },
+                    [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([mockRows[1]]) },
+                    auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                }
+            } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>)
 
             const result = await fetchGoogleSheets()
 
             const initialCallCount = (booksSheet.getRows as jest.Mock).mock.calls.length
             await result.delete.books('unknown-id')
 
-            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(initialCallCount + 1)
+            expect(booksSheet.getRows as jest.Mock).toHaveBeenCalledTimes(initialCallCount + 1)
             expect(mockRows[0].delete).not.toHaveBeenCalled()
             expect(mockRows[1].delete).not.toHaveBeenCalled()
         })
@@ -479,16 +473,14 @@ describe('spreadsheetToDTO', (): void => {
             const usersSheet = { getRows: jest.fn().mockResolvedValue([userRow]) }
             const lendsSheet = { getRows: jest.fn().mockResolvedValue([lendRow]) }
 
-            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
-                {
-                    sheetsByTitle: {
-                        [Sheet.books]: booksSheet,
-                        [Sheet.users]: usersSheet,
-                        [Sheet.lends]: lendsSheet,
-                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
-                    }
-                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
-            )
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce({
+                sheetsByTitle: {
+                    [Sheet.books]: booksSheet,
+                    [Sheet.users]: usersSheet,
+                    [Sheet.lends]: lendsSheet,
+                    auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                }
+            } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>)
 
             const result = await fetchGoogleSheets()
 
@@ -528,22 +520,20 @@ describe('spreadsheetToDTO', (): void => {
                 .mockResolvedValueOnce([staleRow])
                 .mockResolvedValueOnce([])
 
-            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
-                {
-                    sheetsByTitle: {
-                        [Sheet.books]: booksSheet,
-                        [Sheet.users]: { getRows: jest.fn().mockResolvedValue([]) },
-                        [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([]) },
-                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
-                    }
-                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
-            )
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce({
+                sheetsByTitle: {
+                    [Sheet.books]: booksSheet,
+                    [Sheet.users]: { getRows: jest.fn().mockResolvedValue([]) },
+                    [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([]) },
+                    auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                }
+            } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>)
 
             const result = await fetchGoogleSheets()
 
             await result.update.books('stale-id', { id: 'stale-id', name: 'Any' })
 
-            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(3)
+            expect(booksSheet.getRows as jest.Mock).toHaveBeenCalledTimes(3)
             expect(staleRow.assign).not.toHaveBeenCalled()
             expect(staleRow.save).not.toHaveBeenCalled()
         })
@@ -555,16 +545,14 @@ describe('spreadsheetToDTO', (): void => {
 
             const booksSheet = { getRows: jest.fn().mockResolvedValue(mockRows) }
 
-            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
-                {
-                    sheetsByTitle: {
-                        [Sheet.books]: booksSheet,
-                        [Sheet.users]: { getRows: jest.fn().mockResolvedValue([mockRows[0]]) },
-                        [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([mockRows[1]]) },
-                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
-                    }
-                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
-            )
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce({
+                sheetsByTitle: {
+                    [Sheet.books]: booksSheet,
+                    [Sheet.users]: { getRows: jest.fn().mockResolvedValue([mockRows[0]]) },
+                    [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([mockRows[1]]) },
+                    auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                }
+            } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>)
 
             const result = await fetchGoogleSheets()
 
@@ -572,7 +560,7 @@ describe('spreadsheetToDTO', (): void => {
             const missingRow: Row = { id: 'unknown-id', name: 'Missing Book' }
             await result.update.books('unknown-id', missingRow)
 
-            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(initialCallCount + 1)
+            expect(booksSheet.getRows as jest.Mock).toHaveBeenCalledTimes(initialCallCount + 1)
             expect(mockRows[0].assign).not.toHaveBeenCalled()
             expect(mockRows[0].save).not.toHaveBeenCalled()
         })
