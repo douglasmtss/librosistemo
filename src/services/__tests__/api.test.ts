@@ -260,7 +260,7 @@ describe('services/api', (): void => {
 
     describe('api.sheet.users', (): void => {
         test('should fetch users from spreadsheet endpoint', async (): Promise<void> => {
-            const users = [{ id: '1', name: 'User' } as User]
+            const users = [{ id: '1', name: 'User' } as unknown as User]
             const response = createAxiosResponse(users)
             axiosInstance.get.mockResolvedValueOnce(response)
 
@@ -281,7 +281,7 @@ describe('services/api', (): void => {
         })
 
         test('should create spreadsheet user entry', async (): Promise<void> => {
-            const user = { id: '2', name: 'New User' } as User
+            const user = { id: '2', name: 'New User' } as unknown as User
             const response = createAxiosResponse({})
             axiosInstance.post.mockResolvedValueOnce(response)
 
@@ -296,7 +296,7 @@ describe('services/api', (): void => {
         })
 
         test('should log error when creating user fails', async (): Promise<void> => {
-            const user = { id: '2', name: 'Broken User' } as User
+            const user = { id: '2', name: 'Broken User' } as unknown as User
             const error = new Error('user create failed')
             axiosInstance.post.mockRejectedValueOnce(error)
 
@@ -326,7 +326,7 @@ describe('services/api', (): void => {
         })
 
         test('should update user entry with payload', async (): Promise<void> => {
-            const user = { id: '3', name: 'Updated User' } as User
+            const user = { id: '3', name: 'Updated User' } as unknown as User
             const response = createAxiosResponse({})
             axiosInstance.put.mockResolvedValueOnce(response)
 
@@ -341,7 +341,7 @@ describe('services/api', (): void => {
         })
 
         test('should log error when updating user fails', async (): Promise<void> => {
-            const user = { id: '4', name: 'Failing User' } as User
+            const user = { id: '4', name: 'Failing User' } as unknown as User
             const error = new Error('user update failed')
             axiosInstance.put.mockRejectedValueOnce(error)
 
@@ -354,7 +354,7 @@ describe('services/api', (): void => {
 
     describe('api.sheet.lends', (): void => {
         test('should fetch lends from spreadsheet', async (): Promise<void> => {
-            const lends = [{ id: '1', bookId: 'b1', userId: 'u1' } as Lend]
+            const lends = [{ id: '1', bookId: 'b1', userId: 'u1' } as unknown as Lend]
             const response = createAxiosResponse(lends)
             axiosInstance.get.mockResolvedValueOnce(response)
 
@@ -375,7 +375,7 @@ describe('services/api', (): void => {
         })
 
         test('should create lend entry', async (): Promise<void> => {
-            const lend = { id: '2', bookId: 'b2', userId: 'u2' } as Lend
+            const lend = { id: '2', bookId: 'b2', userId: 'u2' } as unknown as Lend
             const response = createAxiosResponse({})
             axiosInstance.post.mockResolvedValueOnce(response)
 
@@ -390,7 +390,7 @@ describe('services/api', (): void => {
         })
 
         test('should log error when creating lend fails', async (): Promise<void> => {
-            const lend = { id: '3', bookId: 'b3', userId: 'u3' } as Lend
+            const lend = { id: '3', bookId: 'b3', userId: 'u3' } as unknown as Lend
             const error = new Error('lend create failed')
             axiosInstance.post.mockRejectedValueOnce(error)
 
@@ -420,7 +420,7 @@ describe('services/api', (): void => {
         })
 
         test('should update lend entry', async (): Promise<void> => {
-            const lend = { id: '4', bookId: 'b4', userId: 'u4' } as Lend
+            const lend = { id: '4', bookId: 'b4', userId: 'u4' } as unknown as Lend
             const response = createAxiosResponse({})
             axiosInstance.put.mockResolvedValueOnce(response)
 
@@ -435,7 +435,7 @@ describe('services/api', (): void => {
         })
 
         test('should log error when updating lend fails', async (): Promise<void> => {
-            const lend = { id: '5', bookId: 'b5', userId: 'u5' } as Lend
+            const lend = { id: '5', bookId: 'b5', userId: 'u5' } as unknown as Lend
             const error = new Error('lend update failed')
             axiosInstance.put.mockRejectedValueOnce(error)
 
