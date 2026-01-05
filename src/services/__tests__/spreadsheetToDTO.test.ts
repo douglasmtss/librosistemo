@@ -231,16 +231,18 @@ describe('spreadsheetToDTO', (): void => {
         })
 
         test('should add rows with insertion options', async (): Promise<void> => {
-            const addRowSpy = jest.fn().mockResolvedValue(undefined)
+            const addRowBooks = jest.fn().mockResolvedValue(undefined)
+            const addRowUsers = jest.fn().mockResolvedValue(undefined)
+            const addRowLends = jest.fn().mockResolvedValue(undefined)
             const mockAuthRow = {
                 toObject: jest.fn(() => ({ username: 'admin', password: 'secret' }))
             }
 
             const mockDoc = {
                 sheetsByTitle: {
-                    [Sheet.books]: { getRows: jest.fn().mockResolvedValue(mockRows), addRow: addRowSpy },
-                    [Sheet.users]: { getRows: jest.fn().mockResolvedValue([mockRows[0]]), addRow: jest.fn() },
-                    [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([mockRows[1]]), addRow: jest.fn() },
+                    [Sheet.books]: { getRows: jest.fn().mockResolvedValue(mockRows), addRow: addRowBooks },
+                    [Sheet.users]: { getRows: jest.fn().mockResolvedValue([mockRows[0]]), addRow: addRowUsers },
+                    [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([mockRows[1]]), addRow: addRowLends },
                     auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
                 }
             }
@@ -251,10 +253,17 @@ describe('spreadsheetToDTO', (): void => {
 
             const result = await fetchGoogleSheets()
 
-            const newRow: Row = { id: 'test-id-3', name: 'Book 3' }
-            await result.add.books(newRow)
+            const newBook: Row = { id: 'test-id-3', name: 'Book 3' }
+            const newUser: Row = { id: 'test-user-id', name: 'User 1' }
+            const newLend: Row = { id: 'test-lend-id', name: 'Lend 1' }
 
-            expect(addRowSpy).toHaveBeenCalledWith(newRow, { insert: true, raw: true })
+            await result.add.books(newBook)
+            await result.add.users(newUser)
+            await result.add.lends(newLend)
+
+            expect(addRowBooks).toHaveBeenCalledWith(newBook, { insert: true, raw: true })
+            expect(addRowUsers).toHaveBeenCalledWith(newUser, { insert: true, raw: true })
+            expect(addRowLends).toHaveBeenCalledWith(newLend, { insert: true, raw: true })
         })
 
         test('should have delete methods for all sheets', async (): Promise<void> => {
@@ -288,9 +297,36 @@ describe('spreadsheetToDTO', (): void => {
                 toObject: jest.fn(() => ({ username: 'admin', password: 'secret' }))
             }
 
-            const booksSheet = { getRows: jest.fn().mockResolvedValue(mockRows) }
-            const usersSheet = { getRows: jest.fn().mockResolvedValue([mockRows[0]]) }
-            const lendsSheet = { getRows: jest.fn().mockResolvedValue([mockRows[1]]) }
+            const bookRow: MockRow = {
+                rowNumber: 4,
+                get: jest.fn((key: string) => (key === 'id' ? 'book-id-1' : undefined)),
+                toObject: jest.fn(() => ({ id: 'book-id-1', name: 'Book Entry' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const userRow: MockRow = {
+                rowNumber: 7,
+                get: jest.fn((key: string) => (key === 'id' ? 'user-id-1' : undefined)),
+                toObject: jest.fn(() => ({ id: 'user-id-1', name: 'User Entry' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const lendRow: MockRow = {
+                rowNumber: 9,
+                get: jest.fn((key: string) => (key === 'id' ? 'lend-id-1' : undefined)),
+                toObject: jest.fn(() => ({ id: 'lend-id-1', name: 'Lend Entry' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const booksSheet = { getRows: jest.fn().mockResolvedValue([bookRow]) }
+            const usersSheet = { getRows: jest.fn().mockResolvedValue([userRow]) }
+            const lendsSheet = { getRows: jest.fn().mockResolvedValue([lendRow]) }
 
             mockGetGoogleSpreadsheet.mockResolvedValueOnce(
                 {
@@ -305,11 +341,52 @@ describe('spreadsheetToDTO', (): void => {
 
             const result = await fetchGoogleSheets()
 
-            const initialCallCount = (booksSheet.getRows as jest.Mock).mock.calls.length
-            await result.delete.books('test-id-1')
+            await result.delete.books('book-id-1')
+            await result.delete.users('user-id-1')
+            await result.delete.lends('lend-id-1')
 
-            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(initialCallCount + 2)
-            expect(mockRows[0].delete).toHaveBeenCalledTimes(1)
+            expect(bookRow.delete).toHaveBeenCalledTimes(1)
+            expect(userRow.delete).toHaveBeenCalledTimes(1)
+            expect(lendRow.delete).toHaveBeenCalledTimes(1)
+        })
+
+        test('should skip deletion when row is missing after index lookup', async (): Promise<void> => {
+            const mockAuthRow = {
+                toObject: jest.fn(() => ({ username: 'admin', password: 'secret' }))
+            }
+
+            const transientRow: MockRow = {
+                rowNumber: 5,
+                get: jest.fn((key: string) => (key === 'id' ? 'transient-id' : undefined)),
+                toObject: jest.fn(() => ({ id: 'transient-id', name: 'Transient Book' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const booksSheet = { getRows: jest.fn() }
+            ;(booksSheet.getRows as jest.Mock)
+                .mockResolvedValueOnce([transientRow])
+                .mockResolvedValueOnce([transientRow])
+                .mockResolvedValueOnce([])
+
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
+                {
+                    sheetsByTitle: {
+                        [Sheet.books]: booksSheet,
+                        [Sheet.users]: { getRows: jest.fn().mockResolvedValue([]) },
+                        [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([]) },
+                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                    }
+                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
+            )
+
+            const result = await fetchGoogleSheets()
+
+            await result.delete.books('transient-id')
+
+            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(3)
+            expect(transientRow.delete).not.toHaveBeenCalled()
         })
 
         test('should not delete rows when id is missing', async (): Promise<void> => {
@@ -371,14 +448,43 @@ describe('spreadsheetToDTO', (): void => {
                 toObject: jest.fn(() => ({ username: 'admin', password: 'secret' }))
             }
 
-            const booksSheet = { getRows: jest.fn().mockResolvedValue(mockRows) }
+            const bookRow: MockRow = {
+                rowNumber: 4,
+                get: jest.fn((key: string) => (key === 'id' ? 'book-id-1' : undefined)),
+                toObject: jest.fn(() => ({ id: 'book-id-1', name: 'Book Entry' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const userRow: MockRow = {
+                rowNumber: 5,
+                get: jest.fn((key: string) => (key === 'id' ? 'user-id-1' : undefined)),
+                toObject: jest.fn(() => ({ id: 'user-id-1', name: 'User Entry' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const lendRow: MockRow = {
+                rowNumber: 6,
+                get: jest.fn((key: string) => (key === 'id' ? 'lend-id-1' : undefined)),
+                toObject: jest.fn(() => ({ id: 'lend-id-1', name: 'Lend Entry' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const booksSheet = { getRows: jest.fn().mockResolvedValue([bookRow]) }
+            const usersSheet = { getRows: jest.fn().mockResolvedValue([userRow]) }
+            const lendsSheet = { getRows: jest.fn().mockResolvedValue([lendRow]) }
 
             mockGetGoogleSpreadsheet.mockResolvedValueOnce(
                 {
                     sheetsByTitle: {
                         [Sheet.books]: booksSheet,
-                        [Sheet.users]: { getRows: jest.fn().mockResolvedValue([mockRows[0]]) },
-                        [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([mockRows[1]]) },
+                        [Sheet.users]: usersSheet,
+                        [Sheet.lends]: lendsSheet,
                         auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
                     }
                 } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
@@ -386,13 +492,60 @@ describe('spreadsheetToDTO', (): void => {
 
             const result = await fetchGoogleSheets()
 
-            const updatedRow: Row = { id: 'test-id-1', name: 'Updated Book' }
-            const initialCallCount = (booksSheet.getRows as jest.Mock).mock.calls.length
-            await result.update.books('test-id-1', updatedRow)
+            const updatedBook: Row = { id: 'book-id-1', name: 'Updated Book' }
+            const updatedUser: Row = { id: 'user-id-1', name: 'Updated User' }
+            const updatedLend: Row = { id: 'lend-id-1', name: 'Updated Lend' }
 
-            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(initialCallCount + 2)
-            expect(mockRows[0].assign).toHaveBeenCalledWith(updatedRow)
-            expect(mockRows[0].save).toHaveBeenCalledTimes(1)
+            await result.update.books('book-id-1', updatedBook)
+            await result.update.users('user-id-1', updatedUser)
+            await result.update.lends('lend-id-1', updatedLend)
+
+            expect(bookRow.assign).toHaveBeenCalledWith(updatedBook)
+            expect(bookRow.save).toHaveBeenCalledTimes(1)
+            expect(userRow.assign).toHaveBeenCalledWith(updatedUser)
+            expect(userRow.save).toHaveBeenCalledTimes(1)
+            expect(lendRow.assign).toHaveBeenCalledWith(updatedLend)
+            expect(lendRow.save).toHaveBeenCalledTimes(1)
+        })
+
+        test('should skip update when row is missing after index lookup', async (): Promise<void> => {
+            const mockAuthRow = {
+                toObject: jest.fn(() => ({ username: 'admin', password: 'secret' }))
+            }
+
+            const staleRow: MockRow = {
+                rowNumber: 3,
+                get: jest.fn((key: string) => (key === 'id' ? 'stale-id' : undefined)),
+                toObject: jest.fn(() => ({ id: 'stale-id', name: 'Stale Book' })),
+                assign: jest.fn(),
+                save: jest.fn().mockResolvedValue(undefined),
+                delete: jest.fn().mockResolvedValue(undefined)
+            } as MockRow
+
+            const booksSheet = { getRows: jest.fn() }
+            ;(booksSheet.getRows as jest.Mock)
+                .mockResolvedValueOnce([staleRow])
+                .mockResolvedValueOnce([staleRow])
+                .mockResolvedValueOnce([])
+
+            mockGetGoogleSpreadsheet.mockResolvedValueOnce(
+                {
+                    sheetsByTitle: {
+                        [Sheet.books]: booksSheet,
+                        [Sheet.users]: { getRows: jest.fn().mockResolvedValue([]) },
+                        [Sheet.lends]: { getRows: jest.fn().mockResolvedValue([]) },
+                        auth: { getRows: jest.fn().mockResolvedValue([mockAuthRow]) }
+                    }
+                } as unknown as ReturnType<typeof googleSpreadsheetModule.getGoogleSpreadsheet>
+            )
+
+            const result = await fetchGoogleSheets()
+
+            await result.update.books('stale-id', { id: 'stale-id', name: 'Any' })
+
+            expect((booksSheet.getRows as jest.Mock)).toHaveBeenCalledTimes(3)
+            expect(staleRow.assign).not.toHaveBeenCalled()
+            expect(staleRow.save).not.toHaveBeenCalled()
         })
 
         test('should not update rows when id is missing', async (): Promise<void> => {
@@ -435,10 +588,18 @@ describe('spreadsheetToDTO', (): void => {
             expect(result.get.auth).toEqual({ username: '', password: '' })
             expect(consoleErrorSpy).toHaveBeenCalledWith('Error fetching Google Sheets data:', expect.any(Error))
             await expect(result.getRowById.books('any')).resolves.toEqual({})
+            await expect(result.getRowById.users('any')).resolves.toEqual({})
+            await expect(result.getRowById.lends('any')).resolves.toEqual({})
             const fallbackRow: Row = { id: 'fallback-id' }
             await expect(result.add.books(fallbackRow)).resolves.toBeUndefined()
+            await expect(result.add.users(fallbackRow)).resolves.toBeUndefined()
+            await expect(result.add.lends(fallbackRow)).resolves.toBeUndefined()
             await expect(result.delete.books('any')).resolves.toBeUndefined()
+            await expect(result.delete.users('any')).resolves.toBeUndefined()
+            await expect(result.delete.lends('any')).resolves.toBeUndefined()
             await expect(result.update.books('any', fallbackRow)).resolves.toBeUndefined()
+            await expect(result.update.users('any', fallbackRow)).resolves.toBeUndefined()
+            await expect(result.update.lends('any', fallbackRow)).resolves.toBeUndefined()
         })
 
         test('should log error when getGoogleSpreadsheet fails', async (): Promise<void> => {
