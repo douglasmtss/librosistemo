@@ -1,5 +1,4 @@
 import type { JwtServiceAccountAuth } from '@/types/jwtServiceAccountAuth'
-import { JWT } from 'google-auth-library'
 
 jest.mock('google-auth-library', () => ({
     JWT: jest.fn().mockImplementation(({ email, key, scopes }: { email: string; key: string; scopes: string[] }) => ({
