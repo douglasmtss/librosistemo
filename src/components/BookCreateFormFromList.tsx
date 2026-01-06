@@ -8,7 +8,7 @@ import { ImCamera } from 'react-icons/im'
 
 import { v4 as uuidv4 } from 'uuid'
 
-type BookCreateFormProps = {
+export type BookCreateFormProps = {
     setBooksInformations: React.Dispatch<React.SetStateAction<BrasilapiBook[]>>
 } & Book
 
