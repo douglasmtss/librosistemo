@@ -7,7 +7,7 @@ import { ImCamera } from 'react-icons/im'
 import { SelectPhoto } from './SelectPhoto'
 import { useToastify } from '@/hooks/useToastify'
 
-type BookEditFormProps = {
+export type BookEditFormProps = {
     rowIndex: string
 } & Book
 
