@@ -97,145 +97,145 @@ describe('BookEditForm', () => {
         status: 'available' as const
     }
 
-    it('should render BookEditForm component', () => {
+    test('should render BookEditForm component', () => {
         const { container } = render(<BookEditForm {...defaultProps} />)
         expect(container).toBeTruthy()
     })
 
-    it('should display form title', () => {
+    test('should display form title', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByText('Formulário de Edição')).toBeTruthy()
     })
 
-    it('should render ISBN input with initial value', () => {
+    test('should render ISBN input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         const isbnInput = screen.getByDisplayValue('123456789')
         expect(isbnInput).toBeTruthy()
     })
 
-    it('should render title input with initial value', () => {
+    test('should render title input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('Edit Test Book')).toBeTruthy()
     })
 
-    it('should render subtitle input with initial value', () => {
+    test('should render subtitle input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('Edit Subtitle')).toBeTruthy()
     })
 
-    it('should render author input with initial value', () => {
+    test('should render author input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('Edit Author')).toBeTruthy()
     })
 
-    it('should render description input with initial value', () => {
+    test('should render description input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('Edit Description')).toBeTruthy()
     })
 
-    it('should render category input with initial value', () => {
+    test('should render category input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('Fiction')).toBeTruthy()
     })
 
-    it('should render image input with initial value', () => {
+    test('should render image input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('https://example.com/image.jpg')).toBeTruthy()
     })
 
-    it('should render amount input with initial value', () => {
+    test('should render amount input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('2')).toBeTruthy()
     })
 
-    it('should render place input with initial value', () => {
+    test('should render place input with initial value', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('Shelf 2')).toBeTruthy()
     })
 
-    it('should render Cancelar button with correct href', () => {
+    test('should render Cancelar button with correct href', () => {
         render(<BookEditForm {...defaultProps} />)
         const cancelLink = screen.getByText('Cancelar')
         expect(cancelLink).toBeTruthy()
     })
 
-    it('should render Salvar button', () => {
+    test('should render Salvar button', () => {
         render(<BookEditForm {...defaultProps} />)
         const updateButton = screen.getByText('Salvar')
         expect(updateButton).toBeTruthy()
     })
 
-    it('should update ISBN on input change', () => {
+    test('should update ISBN on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const isbnInput = screen.getByDisplayValue('123456789') as HTMLInputElement
         fireEvent.change(isbnInput, { target: { value: '987654321' } })
         expect(isbnInput.value).toBe('987654321')
     })
 
-    it('should update title on input change', () => {
+    test('should update title on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const titleInput = screen.getByDisplayValue('Edit Test Book') as HTMLInputElement
         fireEvent.change(titleInput, { target: { value: 'Updated Title' } })
         expect(titleInput.value).toBe('Updated Title')
     })
 
-    it('should update subtitle on input change', () => {
+    test('should update subtitle on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const subtitleInput = screen.getByDisplayValue('Edit Subtitle') as HTMLInputElement
         fireEvent.change(subtitleInput, { target: { value: 'Updated Subtitle' } })
         expect(subtitleInput.value).toBe('Updated Subtitle')
     })
 
-    it('should update author on input change', () => {
+    test('should update author on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const authorInput = screen.getByDisplayValue('Edit Author') as HTMLInputElement
         fireEvent.change(authorInput, { target: { value: 'Updated Author' } })
         expect(authorInput.value).toBe('Updated Author')
     })
 
-    it('should update description on input change', () => {
+    test('should update description on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const descInput = screen.getByDisplayValue('Edit Description') as HTMLInputElement
         fireEvent.change(descInput, { target: { value: 'Updated Description' } })
         expect(descInput.value).toBe('Updated Description')
     })
 
-    it('should update category on input change', () => {
+    test('should update category on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const categoryInput = screen.getByDisplayValue('Fiction') as HTMLInputElement
         fireEvent.change(categoryInput, { target: { value: 'Science' } })
         expect(categoryInput.value).toBe('Science')
     })
 
-    it('should update image on input change', () => {
+    test('should update image on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const imageInput = screen.getByDisplayValue('https://example.com/image.jpg') as HTMLInputElement
         fireEvent.change(imageInput, { target: { value: 'https://example.com/new.jpg' } })
         expect(imageInput.value).toBe('https://example.com/new.jpg')
     })
 
-    it('should update amount on input change', () => {
+    test('should update amount on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const amountInput = screen.getByDisplayValue('2') as HTMLInputElement
         fireEvent.change(amountInput, { target: { value: '5' } })
         expect(amountInput.value).toBe('5')
     })
 
-    it('should update place on input change', () => {
+    test('should update place on input change', () => {
         render(<BookEditForm {...defaultProps} />)
         const placeInput = screen.getByDisplayValue('Shelf 2') as HTMLInputElement
         fireEvent.change(placeInput, { target: { value: 'Shelf 3' } })
         expect(placeInput.value).toBe('Shelf 3')
     })
 
-    it('should show SelectPhoto when camera button is clicked', () => {
+    test('should show SelectPhoto when camera button is clicked', () => {
         render(<BookEditForm {...defaultProps} />)
         const cameraButton = screen.getByRole('button', { name: /📷/i })
         fireEvent.click(cameraButton)
         expect(screen.getByTestId('select-photo')).toBeTruthy()
     })
 
-    it('should hide SelectPhoto when cancel is clicked', () => {
+    test('should hide SelectPhoto when cancel is clicked', () => {
         render(<BookEditForm {...defaultProps} />)
         const cameraButton = screen.getByRole('button', { name: /📷/i })
         fireEvent.click(cameraButton)
@@ -246,7 +246,7 @@ describe('BookEditForm', () => {
         expect(screen.queryByTestId('select-photo')).toBeFalsy()
     })
 
-    it('should update image when photo is saved', () => {
+    test('should update image when photo is saved', () => {
         render(<BookEditForm {...defaultProps} />)
         const cameraButton = screen.getByRole('button', { name: /📷/i })
         fireEvent.click(cameraButton)
@@ -257,7 +257,7 @@ describe('BookEditForm', () => {
         expect(mockToast).toHaveBeenCalledWith('Imagem selecionada com sucesso!', 'info')
     })
 
-    it('should show success toast on successful update', async () => {
+    test('should show success toast on successful update', async () => {
         ;(api.sheet.books.put as jest.Mock).mockResolvedValue({ status: 200 })
 
         render(<BookEditForm {...defaultProps} />)
@@ -272,7 +272,7 @@ describe('BookEditForm', () => {
         )
     })
 
-    it('should push to dashboard on successful update', async () => {
+    test('should push to dashboard on successful update', async () => {
         ;(api.sheet.books.put as jest.Mock).mockResolvedValue({ status: 200 })
 
         render(<BookEditForm {...defaultProps} />)
@@ -287,7 +287,7 @@ describe('BookEditForm', () => {
         )
     })
 
-    it('should show warning toast when update fails', async () => {
+    test('should show warning toast when update fails', async () => {
         ;(api.sheet.books.put as jest.Mock).mockResolvedValue({ status: 400 })
 
         render(<BookEditForm {...defaultProps} />)
@@ -302,7 +302,7 @@ describe('BookEditForm', () => {
         )
     })
 
-    it('should show error toast on catch error', async () => {
+    test('should show error toast on catch error', async () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
 
         ;(api.sheet.books.put as jest.Mock).mockRejectedValue(new Error('API Error'))
@@ -321,7 +321,7 @@ describe('BookEditForm', () => {
         consoleErrorSpy.mockRestore()
     })
 
-    it('should call api.sheet.books.put with correct parameters', async () => {
+    test('should call api.sheet.books.put with correct parameters', async () => {
         ;(api.sheet.books.put as jest.Mock).mockResolvedValue({ status: 200 })
 
         render(<BookEditForm {...defaultProps} />)
@@ -336,7 +336,7 @@ describe('BookEditForm', () => {
         )
     })
 
-    it('should not update if id is missing', async () => {
+    test('should not update if id is missing', async () => {
         const propsWithoutId = {
             ...defaultProps,
             id: undefined as unknown as string
@@ -350,7 +350,7 @@ describe('BookEditForm', () => {
         expect(api.sheet.books.put).not.toHaveBeenCalled()
     })
 
-    it('should handle null optional fields', () => {
+    test('should handle null optional fields', () => {
         const propsWithNullFields: BookEditFormProps = {
             ...defaultProps,
             subtitle: null as unknown as string,
@@ -361,13 +361,13 @@ describe('BookEditForm', () => {
         expect(screen.getByText('Formulário de Edição')).toBeTruthy()
     })
 
-    it('should initialize form values from props on mount', () => {
+    test('should initialize form values from props on mount', () => {
         render(<BookEditForm {...defaultProps} />)
         expect(screen.getByDisplayValue('Edit Test Book')).toBeTruthy()
         expect(screen.getByDisplayValue('Edit Author')).toBeTruthy()
     })
 
-    it('should preserve form data when showing and hiding SelectPhoto', () => {
+    test('should preserve form data when showing and hiding SelectPhoto', () => {
         render(<BookEditForm {...defaultProps} />)
         const titleInput = screen.getByDisplayValue('Edit Test Book') as HTMLInputElement
 
@@ -383,7 +383,7 @@ describe('BookEditForm', () => {
         expect(updatedTitleInput).toBeTruthy()
     })
 
-    it('should handle form submission with special characters', async () => {
+    test('should handle form submission with special characters', async () => {
         ;(api.sheet.books.put as jest.Mock).mockResolvedValue({ status: 200 })
 
         const specialProps = {

@@ -92,153 +92,153 @@ describe('BookCreateFormFromList', () => {
         jest.clearAllMocks()
     })
 
-    it('should render BookCreateFormFromList component', () => {
+    test('should render BookCreateFormFromList component', () => {
         const { container } = render(<BookCreateFormFromList {...defaultProps} />)
         expect(container).toBeTruthy()
     })
 
-    it('should display form title', () => {
+    test('should display form title', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         expect(screen.getByText('Formulário de Edição')).toBeTruthy()
     })
 
-    it('should render ISBN input with initial value', () => {
+    test('should render ISBN input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const isbnInput = screen.getByDisplayValue('123456789')
         expect(isbnInput).toBeTruthy()
     })
 
-    it('should render title input with initial value', () => {
+    test('should render title input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const titleInput = screen.getByDisplayValue('Test Book')
         expect(titleInput).toBeTruthy()
     })
 
-    it('should render subtitle input with initial value', () => {
+    test('should render subtitle input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const subtitleInput = screen.getByDisplayValue('Test Subtitle')
         expect(subtitleInput).toBeTruthy()
     })
 
-    it('should render author input with initial value', () => {
+    test('should render author input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const authorInput = screen.getByDisplayValue('Test Author')
         expect(authorInput).toBeTruthy()
     })
 
-    it('should render description input with initial value', () => {
+    test('should render description input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const descInput = screen.getByDisplayValue('Test Description')
         expect(descInput).toBeTruthy()
     })
 
-    it('should render category input with initial value', () => {
+    test('should render category input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const categoryInput = screen.getByDisplayValue('Fiction')
         expect(categoryInput).toBeTruthy()
     })
 
-    it('should render image input with initial value', () => {
+    test('should render image input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const imageInput = screen.getByDisplayValue('https://example.com/image.jpg')
         expect(imageInput).toBeTruthy()
     })
 
-    it('should render amount input with initial value', () => {
+    test('should render amount input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const amountInput = screen.getByDisplayValue('1')
         expect(amountInput).toBeTruthy()
     })
 
-    it('should render place input with initial value', () => {
+    test('should render place input with initial value', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const placeInput = screen.getByDisplayValue('Shelf 1')
         expect(placeInput).toBeTruthy()
     })
 
-    it('should render Cancel button with correct href', () => {
+    test('should render Cancel button with correct href', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const cancelLink = screen.getByText('Cancelar')
         expect(cancelLink).toBeTruthy()
     })
 
-    it('should render Register button', () => {
+    test('should render Register button', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const registerButton = screen.getByText('Cadastrar')
         expect(registerButton).toBeTruthy()
     })
 
-    it('should update ISBN on input change', () => {
+    test('should update ISBN on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const isbnInput = screen.getByDisplayValue('123456789') as HTMLInputElement
         fireEvent.change(isbnInput, { target: { value: '987654321' } })
         expect(isbnInput.value).toBe('987654321')
     })
 
-    it('should update title on input change', () => {
+    test('should update title on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const titleInput = screen.getByDisplayValue('Test Book') as HTMLInputElement
         fireEvent.change(titleInput, { target: { value: 'New Title' } })
         expect(titleInput.value).toBe('New Title')
     })
 
-    it('should update subtitle on input change', () => {
+    test('should update subtitle on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const subtitleInput = screen.getByDisplayValue('Test Subtitle') as HTMLInputElement
         fireEvent.change(subtitleInput, { target: { value: 'New Subtitle' } })
         expect(subtitleInput.value).toBe('New Subtitle')
     })
 
-    it('should update author on input change', () => {
+    test('should update author on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const authorInput = screen.getByDisplayValue('Test Author') as HTMLInputElement
         fireEvent.change(authorInput, { target: { value: 'New Author' } })
         expect(authorInput.value).toBe('New Author')
     })
 
-    it('should update description on input change', () => {
+    test('should update description on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const descInput = screen.getByDisplayValue('Test Description') as HTMLInputElement
         fireEvent.change(descInput, { target: { value: 'New Description' } })
         expect(descInput.value).toBe('New Description')
     })
 
-    it('should update category on input change', () => {
+    test('should update category on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const categoryInput = screen.getByDisplayValue('Fiction') as HTMLInputElement
         fireEvent.change(categoryInput, { target: { value: 'Science' } })
         expect(categoryInput.value).toBe('Science')
     })
 
-    it('should update image on input change', () => {
+    test('should update image on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const imageInput = screen.getByDisplayValue('https://example.com/image.jpg') as HTMLInputElement
         fireEvent.change(imageInput, { target: { value: 'https://example.com/new.jpg' } })
         expect(imageInput.value).toBe('https://example.com/new.jpg')
     })
 
-    it('should update amount on input change', () => {
+    test('should update amount on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const amountInput = screen.getByDisplayValue('1') as HTMLInputElement
         fireEvent.change(amountInput, { target: { value: '5' } })
         expect(amountInput.value).toBe('5')
     })
 
-    it('should update place on input change', () => {
+    test('should update place on input change', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const placeInput = screen.getByDisplayValue('Shelf 1') as HTMLInputElement
         fireEvent.change(placeInput, { target: { value: 'Shelf 2' } })
         expect(placeInput.value).toBe('Shelf 2')
     })
 
-    it('should show SelectPhoto component when camera button is clicked', () => {
+    test('should show SelectPhoto component when camera button is clicked', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const cameraButton = screen.getByRole('button', { name: /📷/i })
         fireEvent.click(cameraButton)
         expect(screen.getByTestId('select-photo')).toBeTruthy()
     })
 
-    it('should hide SelectPhoto when cancel is clicked', () => {
+    test('should hide SelectPhoto when cancel is clicked', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const cameraButton = screen.getByRole('button', { name: /📷/i })
         fireEvent.click(cameraButton)
@@ -249,7 +249,7 @@ describe('BookCreateFormFromList', () => {
         expect(screen.queryByTestId('select-photo')).toBeFalsy()
     })
 
-    it('should update image and hide SelectPhoto when photo is saved', () => {
+    test('should update image and hide SelectPhoto when photo is saved', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const cameraButton = screen.getByRole('button', { name: /📷/i })
         fireEvent.click(cameraButton)
@@ -261,7 +261,7 @@ describe('BookCreateFormFromList', () => {
         expect(screen.queryByTestId('select-photo')).toBeFalsy()
     })
 
-    it('should show error toast when book already exists', async () => {
+    test('should show error toast when book already exists', async () => {
         ;(api.sheet.books.get as jest.Mock).mockResolvedValue([{ isbn: '123456789', title: 'Existing Book' }])
 
         render(<BookCreateFormFromList {...defaultProps} />)
@@ -273,7 +273,7 @@ describe('BookCreateFormFromList', () => {
         })
     })
 
-    it('should not call setBooksInformations when book already exists', async () => {
+    test('should not call setBooksInformations when book already exists', async () => {
         ;(api.sheet.books.get as jest.Mock).mockResolvedValue([{ isbn: '123456789', title: 'Existing Book' }])
 
         render(<BookCreateFormFromList {...defaultProps} />)
@@ -285,7 +285,7 @@ describe('BookCreateFormFromList', () => {
         })
     })
 
-    it('should call setBooksInformations on successful register', async () => {
+    test('should call setBooksInformations on successful register', async () => {
         const newMockSetBooks = jest.fn()
         const propsWithNewMock = {
             ...defaultProps,
@@ -307,13 +307,13 @@ describe('BookCreateFormFromList', () => {
         )
     })
 
-    it('should attempt to call API when register button is clicked', () => {
+    test('should attempt to call API when register button is clicked', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const registerButton = screen.getByText('Cadastrar')
         expect(registerButton).toBeTruthy()
     })
 
-    it('should handle camera button click preventing default', () => {
+    test('should handle camera button click preventing default', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const cameraButton = screen.getByRole('button', { name: /📷/i })
         const preventDefaultSpy = jest.fn()
@@ -323,7 +323,7 @@ describe('BookCreateFormFromList', () => {
         expect(screen.getByTestId('select-photo')).toBeTruthy()
     })
 
-    it('should render with default prop values when not provided', () => {
+    test('should render with default prop values when not provided', () => {
         const minimalProps = {
             setBooksInformations: mockSetBooksInformations,
             rowIndex: '1',
@@ -342,7 +342,7 @@ describe('BookCreateFormFromList', () => {
         expect(screen.getByText('Formulário de Edição')).toBeTruthy()
     })
 
-    it('should preserve form data when showing and hiding SelectPhoto', () => {
+    test('should preserve form data when showing and hiding SelectPhoto', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const titleInput = screen.getByDisplayValue('Test Book') as HTMLInputElement
 
@@ -363,7 +363,7 @@ describe('BookCreateFormFromList', () => {
         expect(updatedTitleInput).toBeTruthy()
     })
 
-    it('should handle form with special characters in inputs', async () => {
+    test('should handle form with special characters in inputs', async () => {
         ;(api.sheet.books.get as jest.Mock).mockResolvedValue([])
         ;(api.sheet.books.post as jest.Mock).mockResolvedValue({ status: 200 })
 
@@ -378,14 +378,14 @@ describe('BookCreateFormFromList', () => {
         expect(screen.getByDisplayValue('Author & Co.')).toBeTruthy()
     })
 
-    it('should handle numeric ISBN correctly', () => {
+    test('should handle numeric ISBN correctly', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const isbnInput = screen.getByDisplayValue('123456789') as HTMLInputElement
         fireEvent.change(isbnInput, { target: { value: '999888777' } })
         expect(isbnInput.value).toBe('999888777')
     })
 
-    it('should handle numeric amount input', () => {
+    test('should handle numeric amount input', () => {
         render(<BookCreateFormFromList {...defaultProps} />)
         const amountInput = screen.getByDisplayValue('1') as HTMLInputElement
         fireEvent.change(amountInput, { target: { value: '10' } })

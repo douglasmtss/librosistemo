@@ -75,14 +75,14 @@ describe('Camera', () => {
         mockOnCancel = jest.fn()
     })
 
-    it('should render Camera component', async () => {
+    test('should render Camera component', async () => {
         const { container } = render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
         await waitFor(() => {
             expect(container).toBeTruthy()
         })
     })
 
-    it('should render with main container div', () => {
+    test('should render with main container div', () => {
         const { container } = render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         return waitFor(() => {
@@ -91,7 +91,7 @@ describe('Camera', () => {
         })
     })
 
-    it('should have buttons for user interaction', () => {
+    test('should have buttons for user interaction', () => {
         render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         return waitFor(() => {
@@ -100,7 +100,7 @@ describe('Camera', () => {
         })
     })
 
-    it('should call cancel callback when cancel button is clicked', () => {
+    test('should call cancel callback when cancel button is clicked', () => {
         render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         return waitFor(() => {
@@ -114,7 +114,7 @@ describe('Camera', () => {
         })
     })
 
-    it('should have flex container structure', () => {
+    test('should have flex container structure', () => {
         const { container } = render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         return waitFor(() => {
@@ -123,7 +123,7 @@ describe('Camera', () => {
         })
     })
 
-    it('should capture image when screenshot is taken', async () => {
+    test('should capture image when screenshot is taken', async () => {
         render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         await waitFor(() => {
@@ -132,7 +132,7 @@ describe('Camera', () => {
         })
     })
 
-    it('should handle camera ref correctly', async () => {
+    test('should handle camera ref correctly', async () => {
         const { container } = render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         await waitFor(() => {
@@ -140,7 +140,7 @@ describe('Camera', () => {
         })
     })
 
-    it('should have video stream setup', async () => {
+    test('should have video stream setup', async () => {
         render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         await waitFor(() => {
@@ -148,7 +148,7 @@ describe('Camera', () => {
         })
     })
 
-    it('should call onSave with compressed image', async () => {
+    test('should call onSave with compressed image', async () => {
         render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         await waitFor(() => {

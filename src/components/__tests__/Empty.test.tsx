@@ -9,28 +9,28 @@ jest.mock('react-icons/fa', () => ({
 }))
 
 describe('Empty', () => {
-    it('should render Empty component', () => {
+    test('should render Empty component', () => {
         const { container } = render(<Empty />)
         expect(container).toBeTruthy()
     })
 
-    it('should render folder icon', () => {
+    test('should render folder icon', () => {
         render(<Empty />)
         expect(screen.getByTestId('folder-icon')).toBeTruthy()
     })
 
-    it('should render empty message text', () => {
+    test('should render empty message text', () => {
         render(<Empty />)
         expect(screen.getByText('Nenhum dado foi econtrado')).toBeTruthy()
     })
 
-    it('should have correct padding on outer div', () => {
+    test('should have correct padding on outer div', () => {
         const { container } = render(<Empty />)
         const outerDiv = container.firstChild as HTMLElement
         expect(outerDiv.className).toContain('p-8')
     })
 
-    it('should have correct flex properties on inner div', () => {
+    test('should have correct flex properties on inner div', () => {
         const { container } = render(<Empty />)
         const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
         expect(innerDiv?.className).toContain('flex')
@@ -39,7 +39,7 @@ describe('Empty', () => {
         expect(innerDiv?.className).toContain('items-center')
     })
 
-    it('should have correct border styling', () => {
+    test('should have correct border styling', () => {
         const { container } = render(<Empty />)
         const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
         expect(innerDiv?.className).toContain('rounded-lg')
@@ -47,35 +47,35 @@ describe('Empty', () => {
         expect(innerDiv?.className).toContain('border-gray-200')
     })
 
-    it('should have correct icon styling', () => {
+    test('should have correct icon styling', () => {
         render(<Empty />)
         const icon = screen.getByTestId('folder-icon')
         expect(icon.className).toContain('text-gray-300')
         expect(icon.className).toContain('text-9xl')
     })
 
-    it('should have correct text styling', () => {
+    test('should have correct text styling', () => {
         render(<Empty />)
         const text = screen.getByText('Nenhum dado foi econtrado')
         expect(text.className).toContain('text-gray-400')
         expect(text.className).toContain('text-xl')
     })
 
-    it('should have full width and height', () => {
+    test('should have full width and height', () => {
         const { container } = render(<Empty />)
         const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
         expect(innerDiv?.className).toContain('w-full')
         expect(innerDiv?.className).toContain('h-full')
     })
 
-    it('should have minimum dimensions', () => {
+    test('should have minimum dimensions', () => {
         const { container } = render(<Empty />)
         const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
         expect(innerDiv?.className).toContain('min-w-62.5')
         expect(innerDiv?.className).toContain('min-h-62.5')
     })
 
-    it('should render correct DOM structure', () => {
+    test('should render correct DOM structure', () => {
         const { container } = render(<Empty />)
         const outerDiv = container.firstChild as HTMLElement
         const innerDiv = outerDiv.querySelector('div') as HTMLElement
@@ -88,7 +88,7 @@ describe('Empty', () => {
         expect(text).toBeTruthy()
     })
 
-    it('should return React.ReactNode', () => {
+    test('should return React.ReactNode', () => {
         const result = <Empty />
         expect(result).toBeTruthy()
     })

@@ -81,7 +81,7 @@ describe('BookCreateForm', () => {
         jest.clearAllMocks()
     })
 
-test('should render form with all input fields', () => {
+    test('should render form with all input fields', () => {
         render(<BookCreateForm {...mockBook} />)
 
         expect(screen.getByLabelText(/ISBN/)).toBeTruthy()
@@ -95,13 +95,13 @@ test('should render form with all input fields', () => {
         expect(screen.getByLabelText(/Local/)).toBeTruthy()
     })
 
-test('should render form title', () => {
+    test('should render form title', () => {
         render(<BookCreateForm {...mockBook} />)
 
         expect(screen.getByText('Formulário de Edição')).toBeTruthy()
     })
 
-test('should initialize form fields with provided props', () => {
+    test('should initialize form fields with provided props', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByDisplayValue('Test Book')
@@ -113,7 +113,7 @@ test('should initialize form fields with provided props', () => {
         expect(categoryInput).toBeTruthy()
     })
 
-test('should update title field when user types', () => {
+    test('should update title field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByLabelText(/Título/) as HTMLInputElement
@@ -122,7 +122,7 @@ test('should update title field when user types', () => {
         expect(titleInput.value).toBe('New Title')
     })
 
-test('should update subtitle field when user types', () => {
+    test('should update subtitle field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const subtitleInput = screen.getByLabelText(/Subtítulo/) as HTMLInputElement
@@ -131,7 +131,7 @@ test('should update subtitle field when user types', () => {
         expect(subtitleInput.value).toBe('New Subtitle')
     })
 
-test('should update ISBN field when user types', () => {
+    test('should update ISBN field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const isbnInput = screen.getByLabelText(/ISBN/) as HTMLInputElement
@@ -140,7 +140,7 @@ test('should update ISBN field when user types', () => {
         expect(isbnInput.value).toBe('789012')
     })
 
-test('should update author field when user types', () => {
+    test('should update author field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const authorInput = screen.getByLabelText(/Autor/) as HTMLInputElement
@@ -149,7 +149,7 @@ test('should update author field when user types', () => {
         expect(authorInput.value).toBe('New Author')
     })
 
-test('should update description field when user types', () => {
+    test('should update description field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const descriptionInput = screen.getByLabelText(/Descrição/) as HTMLInputElement
@@ -158,7 +158,7 @@ test('should update description field when user types', () => {
         expect(descriptionInput.value).toBe('New Description')
     })
 
-test('should update category field when user types', () => {
+    test('should update category field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const categoryInput = screen.getByLabelText(/Categoria/) as HTMLInputElement
@@ -167,7 +167,7 @@ test('should update category field when user types', () => {
         expect(categoryInput.value).toBe('New Category')
     })
 
-test('should update amount field when user types', () => {
+    test('should update amount field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const amountInput = screen.getByLabelText(/Quantidade/) as HTMLInputElement
@@ -176,7 +176,7 @@ test('should update amount field when user types', () => {
         expect(amountInput.value).toBe('10')
     })
 
-test('should update image field when user types URL', () => {
+    test('should update image field when user types URL', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const imageInput = screen.getByLabelText(/Imagem/) as HTMLInputElement
@@ -185,7 +185,7 @@ test('should update image field when user types URL', () => {
         expect(imageInput.value).toBe('https://example.com/image.jpg')
     })
 
-test('should update place field when user types', () => {
+    test('should update place field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const placeInput = screen.getByLabelText(/Local/) as HTMLInputElement
@@ -194,14 +194,14 @@ test('should update place field when user types', () => {
         expect(placeInput.value).toBe('New Place')
     })
 
-test('should render Camera button for photo selection', () => {
+    test('should render Camera button for photo selection', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByTestId('camera-icon')
         expect(cameraButton).toBeTruthy()
     })
 
-test('should show SelectPhoto component when camera button is clicked', () => {
+    test('should show SelectPhoto component when camera button is clicked', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -210,7 +210,7 @@ test('should show SelectPhoto component when camera button is clicked', () => {
         expect(screen.getByTestId('select-photo')).toBeTruthy()
     })
 
-test('should hide SelectPhoto component when onCancel is called', () => {
+    test('should hide SelectPhoto component when onCancel is called', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -224,7 +224,7 @@ test('should hide SelectPhoto component when onCancel is called', () => {
         expect(screen.queryByTestId('select-photo')).toBeFalsy()
     })
 
-test('should update image field when onSave is called in SelectPhoto', () => {
+    test('should update image field when onSave is called in SelectPhoto', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -237,7 +237,7 @@ test('should update image field when onSave is called in SelectPhoto', () => {
         expect(imageInput).toBeTruthy()
     })
 
-test('should show success toast when image is saved', () => {
+    test('should show success toast when image is saved', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -249,7 +249,7 @@ test('should show success toast when image is saved', () => {
         expect(mockToast).toHaveBeenCalledWith('Imagem selecionada com sucesso!', 'info')
     })
 
-test('should render Cancel and Register buttons', () => {
+    test('should render Cancel and Register buttons', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cancelLink = screen.getByText('Cancelar')
@@ -259,14 +259,14 @@ test('should render Cancel and Register buttons', () => {
         expect(registerButton).toBeTruthy()
     })
 
-test('should navigate to dashboard on cancel', () => {
+    test('should navigate to dashboard on cancel', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cancelLink = screen.getByText('Cancelar') as HTMLAnchorElement
         expect(cancelLink.getAttribute('href')).toBe('/pages/dashboard/book-registration')
     })
 
-test('should show error when book with same ISBN already exists', async () => {
+    test('should show error when book with same ISBN already exists', async () => {
         mockGetBooks.mockResolvedValue([
             {
                 isbn: 123456,
@@ -284,7 +284,7 @@ test('should show error when book with same ISBN already exists', async () => {
         })
     })
 
-test('should not call post when book already exists', async () => {
+    test('should not call post when book already exists', async () => {
         mockGetBooks.mockResolvedValue([
             {
                 isbn: 123456,
@@ -302,7 +302,7 @@ test('should not call post when book already exists', async () => {
         })
     })
 
-test('should successfully register new book', async () => {
+    test('should successfully register new book', async () => {
         mockGetBooks.mockResolvedValue([])
 
         render(<BookCreateForm {...mockBook} />)
@@ -319,7 +319,7 @@ test('should successfully register new book', async () => {
         })
     })
 
-test('should show success toast and navigate on successful registration', async () => {
+    test('should show success toast and navigate on successful registration', async () => {
         mockGetBooks.mockResolvedValue([])
 
         render(<BookCreateForm {...mockBook} />)
@@ -333,7 +333,7 @@ test('should show success toast and navigate on successful registration', async 
         })
     })
 
-test('should handle empty book list response', async () => {
+    test('should handle empty book list response', async () => {
         mockGetBooks.mockResolvedValue(null)
 
         render(<BookCreateForm {...mockBook} />)
@@ -346,7 +346,7 @@ test('should handle empty book list response', async () => {
         })
     })
 
-test('should update multiple fields in sequence', () => {
+    test('should update multiple fields in sequence', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByLabelText(/Título/) as HTMLInputElement
@@ -359,7 +359,7 @@ test('should update multiple fields in sequence', () => {
         expect(authorInput.value).toBe('Updated Author')
     })
 
-test('should handle zero amount', () => {
+    test('should handle zero amount', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const amountInput = screen.getByLabelText(/Quantidade/) as HTMLInputElement
@@ -368,7 +368,7 @@ test('should handle zero amount', () => {
         expect(amountInput.value).toBe('0')
     })
 
-test('should preserve form data across rerenders', async () => {
+    test('should preserve form data across rerenders', async () => {
         const { rerender } = render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByLabelText(/Título/) as HTMLInputElement

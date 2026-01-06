@@ -49,13 +49,13 @@ describe('BackToTopButton', () => {
         scrollEventListeners = []
     })
 
-test('should register scroll event listener on mount', () => {
+    test('should register scroll event listener on mount', () => {
         render(<BackToTopButton />)
 
         expect(document.addEventListener).toHaveBeenCalledWith('scroll', expect.any(Function))
     })
 
-test('should remove scroll event listener on unmount', () => {
+    test('should remove scroll event listener on unmount', () => {
         const { unmount } = render(<BackToTopButton />)
 
         unmount()
@@ -63,14 +63,14 @@ test('should remove scroll event listener on unmount', () => {
         expect(document.removeEventListener).toHaveBeenCalledWith('scroll', expect.any(Function))
     })
 
-test('should not show button when scrollY is 0', () => {
+    test('should not show button when scrollY is 0', () => {
         render(<BackToTopButton />)
 
         const button = screen.queryByRole('button')
         expect(button).toBeFalsy()
     })
 
-test('should show button when scrollY is greater than 100', async () => {
+    test('should show button when scrollY is greater than 100', async () => {
         render(<BackToTopButton />)
 
         // Manually set scrollY and trigger the scroll handler
@@ -93,7 +93,7 @@ test('should show button when scrollY is greater than 100', async () => {
         })
     })
 
-test('should scroll to top when button is clicked', async () => {
+    test('should scroll to top when button is clicked', async () => {
         render(<BackToTopButton />)
 
         // Set scrollY > 100 to show button
@@ -121,7 +121,7 @@ test('should scroll to top when button is clicked', async () => {
         expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
     })
 
-test('should render arrow up icon when button is visible', async () => {
+    test('should render arrow up icon when button is visible', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {
@@ -142,7 +142,7 @@ test('should render arrow up icon when button is visible', async () => {
         })
     })
 
-test('should have correct CSS classes on button', async () => {
+    test('should have correct CSS classes on button', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {
@@ -168,7 +168,7 @@ test('should have correct CSS classes on button', async () => {
         })
     })
 
-test('should have z-10 index', async () => {
+    test('should have z-10 index', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {
@@ -190,7 +190,7 @@ test('should have z-10 index', async () => {
         })
     })
 
-test('should handle multiple scroll events', async () => {
+    test('should handle multiple scroll events', async () => {
         render(<BackToTopButton />)
 
         // Scroll down
@@ -229,7 +229,7 @@ test('should handle multiple scroll events', async () => {
         })
     })
 
-test('should have correct icon class', async () => {
+    test('should have correct icon class', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {
@@ -251,7 +251,7 @@ test('should have correct icon class', async () => {
         })
     })
 
-test('should not show button when scrolling below threshold', async () => {
+    test('should not show button when scrolling below threshold', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {

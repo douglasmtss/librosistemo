@@ -10,62 +10,62 @@ describe('Img', () => {
         jest.clearAllMocks()
     })
 
-    it('should render img element', () => {
+    test('should render img element', () => {
         render(<Img src="test.jpg" alt="test image" />)
         const img = screen.getByAltText('test image')
         expect(img).toBeTruthy()
     })
 
-    it('should render with correct src attribute', () => {
+    test('should render with correct src attribute', () => {
         render(<Img src="test.jpg" alt="test" />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.src).toContain('test.jpg')
     })
 
-    it('should render with correct alt attribute', () => {
+    test('should render with correct alt attribute', () => {
         render(<Img src="test.jpg" alt="test image" />)
         const img = screen.getByAltText('test image')
         expect(img).toBeTruthy()
     })
 
-    it('should render with width attribute', () => {
+    test('should render with width attribute', () => {
         render(<Img src="test.jpg" alt="test" width={200} />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.width).toBe(200)
     })
 
-    it('should render with height attribute', () => {
+    test('should render with height attribute', () => {
         render(<Img src="test.jpg" alt="test" height={300} />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.height).toBe(300)
     })
 
-    it('should render with both width and height', () => {
+    test('should render with both width and height', () => {
         render(<Img src="test.jpg" alt="test" width={200} height={300} />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.width).toBe(200)
         expect(img.height).toBe(300)
     })
 
-    it('should apply custom className', () => {
+    test('should apply custom className', () => {
         render(<Img src="test.jpg" alt="test" className="custom-class" />)
         const img = screen.getByAltText('test')
         expect(img.className).toContain('custom-class')
     })
 
-    it('should render with empty className by default', () => {
+    test('should render with empty className by default', () => {
         render(<Img src="test.jpg" alt="test" />)
         const img = screen.getByAltText('test')
         expect(img.className).toBe('')
     })
 
-    it('should use img tag', () => {
+    test('should use img tag', () => {
         render(<Img src="test.jpg" alt="test" />)
         const img = screen.getByAltText('test')
         expect(img.tagName).toBe('IMG')
     })
 
-    it('should set fallback image when src is empty', () => {
+    test('should set fallback image when src is empty', () => {
         // Suppress console.error for this test since we're testing the empty string behavior
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
 
@@ -77,13 +77,13 @@ describe('Img', () => {
         consoleErrorSpy.mockRestore()
     })
 
-    it('should keep src when it is provided', () => {
+    test('should keep src when it is provided', () => {
         render(<Img src="provided-image.jpg" alt="test" />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.src).toContain('provided-image.jpg')
     })
 
-    it('should handle different image formats', () => {
+    test('should handle different image formats', () => {
         const { rerender } = render(<Img src="test.png" alt="test" />)
         let img = screen.getByAltText('test') as HTMLImageElement
         expect(img.src).toContain('test.png')
@@ -93,49 +93,49 @@ describe('Img', () => {
         expect(img.src).toContain('test.gif')
     })
 
-    it('should apply multiple custom classes', () => {
+    test('should apply multiple custom classes', () => {
         render(<Img src="test.jpg" alt="test" className="class1 class2" />)
         const img = screen.getByAltText('test')
         expect(img.className).toContain('class1')
         expect(img.className).toContain('class2')
     })
 
-    it('should render img with data attributes', () => {
+    test('should render img with data attributes', () => {
         const { container } = render(<Img src="test.jpg" alt="test" className="w-full" />)
         const img = container.querySelector('img')
         expect(img?.hasAttribute('alt')).toBe(true)
     })
 
-    it('should return React.ReactNode', () => {
+    test('should return React.ReactNode', () => {
         const result = <Img src="test.jpg" alt="test" />
         expect(result).toBeTruthy()
     })
 
-    it('should render with zero width', () => {
+    test('should render with zero width', () => {
         render(<Img src="test.jpg" alt="test" width={0} />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.width).toBe(0)
     })
 
-    it('should render with zero height', () => {
+    test('should render with zero height', () => {
         render(<Img src="test.jpg" alt="test" height={0} />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.height).toBe(0)
     })
 
-    it('should handle URL with special characters', () => {
+    test('should handle URL with special characters', () => {
         render(<Img src="test-image_v2.jpg" alt="test" />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.src).toContain('test-image_v2.jpg')
     })
 
-    it('should handle full URL path', () => {
+    test('should handle full URL path', () => {
         render(<Img src="https://example.com/image.jpg" alt="test" />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.src).toContain('example.com')
     })
 
-    it('should maintain aspect ratio with width and height', () => {
+    test('should maintain aspect ratio with width and height', () => {
         render(<Img src="test.jpg" alt="test" width={500} height={400} />)
         const img = screen.getByAltText('test') as HTMLImageElement
         expect(img.width / img.height).toBe(1.25)

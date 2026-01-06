@@ -48,43 +48,43 @@ describe('Gallery', () => {
         jest.restoreAllMocks()
     })
 
-    it('should render Gallery component', () => {
+    test('should render Gallery component', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         expect(container).toBeTruthy()
     })
 
-    it('should render main container div', () => {
+    test('should render main container div', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const mainDiv = container.querySelector('.flex.flex-col')
         expect(mainDiv).toBeTruthy()
     })
 
-    it('should render file input with correct label', () => {
+    test('should render file input with correct label', () => {
         render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const label = screen.getByText('Escolher arquivo')
         expect(label).toBeTruthy()
     })
 
-    it('should render file input element', () => {
+    test('should render file input element', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const fileInput = container.querySelector('input[type="file"]')
         expect(fileInput).toBeTruthy()
     })
 
-    it('should render Save button', () => {
+    test('should render Save button', () => {
         render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const buttons = screen.getAllByRole('button')
         const saveButton = buttons.find(btn => btn.textContent === 'Save')
         expect(saveButton).toBeTruthy()
     })
 
-    it('should render Cancel button', () => {
+    test('should render Cancel button', () => {
         render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const buttons = screen.getAllByRole('button')
         expect(buttons.length).toBeGreaterThanOrEqual(2)
     })
 
-    it('should call onCancel when cancel button clicked', () => {
+    test('should call onCancel when cancel button clicked', () => {
         render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const buttons = screen.getAllByRole('button')
         const cancelButton = buttons[buttons.length - 1]
@@ -92,7 +92,7 @@ describe('Gallery', () => {
         expect(mockOnCancel).toHaveBeenCalled()
     })
 
-    it('should handle file input change', async () => {
+    test('should handle file input change', async () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement
         const file = new File(['content'], 'test.png', { type: 'image/png' })
@@ -104,19 +104,19 @@ describe('Gallery', () => {
         })
     })
 
-    it('should render flex container structure', () => {
+    test('should render flex container structure', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const flexElements = container.querySelectorAll('.flex')
         expect(flexElements.length).toBeGreaterThan(0)
     })
 
-    it('should have white background container for controls', () => {
+    test('should have white background container for controls', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const whiteDiv = container.querySelector('.bg-white')
         expect(whiteDiv).toBeTruthy()
     })
 
-    it('should handle file input with no files selected', () => {
+    test('should handle file input with no files selected', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement
 
@@ -127,7 +127,7 @@ describe('Gallery', () => {
         expect(fileInput).toBeTruthy()
     })
 
-    it('should save image when Save button is clicked with valid image', async () => {
+    test('should save image when Save button is clicked with valid image', async () => {
         render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
         const fileInput = screen.getByLabelText('Escolher arquivo') as HTMLInputElement
 
