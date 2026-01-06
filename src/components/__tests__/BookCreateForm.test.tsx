@@ -81,7 +81,7 @@ describe('BookCreateForm', () => {
         jest.clearAllMocks()
     })
 
-    it('should render form with all input fields', () => {
+test('should render form with all input fields', () => {
         render(<BookCreateForm {...mockBook} />)
 
         expect(screen.getByLabelText(/ISBN/)).toBeTruthy()
@@ -95,13 +95,13 @@ describe('BookCreateForm', () => {
         expect(screen.getByLabelText(/Local/)).toBeTruthy()
     })
 
-    it('should render form title', () => {
+test('should render form title', () => {
         render(<BookCreateForm {...mockBook} />)
 
         expect(screen.getByText('Formulário de Edição')).toBeTruthy()
     })
 
-    it('should initialize form fields with provided props', () => {
+test('should initialize form fields with provided props', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByDisplayValue('Test Book')
@@ -113,7 +113,7 @@ describe('BookCreateForm', () => {
         expect(categoryInput).toBeTruthy()
     })
 
-    it('should update title field when user types', () => {
+test('should update title field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByLabelText(/Título/) as HTMLInputElement
@@ -122,7 +122,7 @@ describe('BookCreateForm', () => {
         expect(titleInput.value).toBe('New Title')
     })
 
-    it('should update subtitle field when user types', () => {
+test('should update subtitle field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const subtitleInput = screen.getByLabelText(/Subtítulo/) as HTMLInputElement
@@ -131,7 +131,7 @@ describe('BookCreateForm', () => {
         expect(subtitleInput.value).toBe('New Subtitle')
     })
 
-    it('should update ISBN field when user types', () => {
+test('should update ISBN field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const isbnInput = screen.getByLabelText(/ISBN/) as HTMLInputElement
@@ -140,7 +140,7 @@ describe('BookCreateForm', () => {
         expect(isbnInput.value).toBe('789012')
     })
 
-    it('should update author field when user types', () => {
+test('should update author field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const authorInput = screen.getByLabelText(/Autor/) as HTMLInputElement
@@ -149,7 +149,7 @@ describe('BookCreateForm', () => {
         expect(authorInput.value).toBe('New Author')
     })
 
-    it('should update description field when user types', () => {
+test('should update description field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const descriptionInput = screen.getByLabelText(/Descrição/) as HTMLInputElement
@@ -158,7 +158,7 @@ describe('BookCreateForm', () => {
         expect(descriptionInput.value).toBe('New Description')
     })
 
-    it('should update category field when user types', () => {
+test('should update category field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const categoryInput = screen.getByLabelText(/Categoria/) as HTMLInputElement
@@ -167,7 +167,7 @@ describe('BookCreateForm', () => {
         expect(categoryInput.value).toBe('New Category')
     })
 
-    it('should update amount field when user types', () => {
+test('should update amount field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const amountInput = screen.getByLabelText(/Quantidade/) as HTMLInputElement
@@ -176,7 +176,7 @@ describe('BookCreateForm', () => {
         expect(amountInput.value).toBe('10')
     })
 
-    it('should update image field when user types URL', () => {
+test('should update image field when user types URL', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const imageInput = screen.getByLabelText(/Imagem/) as HTMLInputElement
@@ -185,7 +185,7 @@ describe('BookCreateForm', () => {
         expect(imageInput.value).toBe('https://example.com/image.jpg')
     })
 
-    it('should update place field when user types', () => {
+test('should update place field when user types', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const placeInput = screen.getByLabelText(/Local/) as HTMLInputElement
@@ -194,14 +194,14 @@ describe('BookCreateForm', () => {
         expect(placeInput.value).toBe('New Place')
     })
 
-    it('should render Camera button for photo selection', () => {
+test('should render Camera button for photo selection', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByTestId('camera-icon')
         expect(cameraButton).toBeTruthy()
     })
 
-    it('should show SelectPhoto component when camera button is clicked', () => {
+test('should show SelectPhoto component when camera button is clicked', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -210,7 +210,7 @@ describe('BookCreateForm', () => {
         expect(screen.getByTestId('select-photo')).toBeTruthy()
     })
 
-    it('should hide SelectPhoto component when onCancel is called', () => {
+test('should hide SelectPhoto component when onCancel is called', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -224,7 +224,7 @@ describe('BookCreateForm', () => {
         expect(screen.queryByTestId('select-photo')).toBeFalsy()
     })
 
-    it('should update image field when onSave is called in SelectPhoto', () => {
+test('should update image field when onSave is called in SelectPhoto', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -237,7 +237,7 @@ describe('BookCreateForm', () => {
         expect(imageInput).toBeTruthy()
     })
 
-    it('should show success toast when image is saved', () => {
+test('should show success toast when image is saved', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cameraButton = screen.getByRole('button', { name: /Camera/ })
@@ -249,7 +249,7 @@ describe('BookCreateForm', () => {
         expect(mockToast).toHaveBeenCalledWith('Imagem selecionada com sucesso!', 'info')
     })
 
-    it('should render Cancel and Register buttons', () => {
+test('should render Cancel and Register buttons', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cancelLink = screen.getByText('Cancelar')
@@ -259,14 +259,14 @@ describe('BookCreateForm', () => {
         expect(registerButton).toBeTruthy()
     })
 
-    it('should navigate to dashboard on cancel', () => {
+test('should navigate to dashboard on cancel', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const cancelLink = screen.getByText('Cancelar') as HTMLAnchorElement
         expect(cancelLink.getAttribute('href')).toBe('/pages/dashboard/book-registration')
     })
 
-    it('should show error when book with same ISBN already exists', async () => {
+test('should show error when book with same ISBN already exists', async () => {
         mockGetBooks.mockResolvedValue([
             {
                 isbn: 123456,
@@ -284,7 +284,7 @@ describe('BookCreateForm', () => {
         })
     })
 
-    it('should not call post when book already exists', async () => {
+test('should not call post when book already exists', async () => {
         mockGetBooks.mockResolvedValue([
             {
                 isbn: 123456,
@@ -302,7 +302,7 @@ describe('BookCreateForm', () => {
         })
     })
 
-    it('should successfully register new book', async () => {
+test('should successfully register new book', async () => {
         mockGetBooks.mockResolvedValue([])
 
         render(<BookCreateForm {...mockBook} />)
@@ -319,7 +319,7 @@ describe('BookCreateForm', () => {
         })
     })
 
-    it('should show success toast and navigate on successful registration', async () => {
+test('should show success toast and navigate on successful registration', async () => {
         mockGetBooks.mockResolvedValue([])
 
         render(<BookCreateForm {...mockBook} />)
@@ -333,7 +333,7 @@ describe('BookCreateForm', () => {
         })
     })
 
-    it('should handle empty book list response', async () => {
+test('should handle empty book list response', async () => {
         mockGetBooks.mockResolvedValue(null)
 
         render(<BookCreateForm {...mockBook} />)
@@ -346,7 +346,7 @@ describe('BookCreateForm', () => {
         })
     })
 
-    it('should update multiple fields in sequence', () => {
+test('should update multiple fields in sequence', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByLabelText(/Título/) as HTMLInputElement
@@ -359,7 +359,7 @@ describe('BookCreateForm', () => {
         expect(authorInput.value).toBe('Updated Author')
     })
 
-    it('should handle zero amount', () => {
+test('should handle zero amount', () => {
         render(<BookCreateForm {...mockBook} />)
 
         const amountInput = screen.getByLabelText(/Quantidade/) as HTMLInputElement
@@ -368,7 +368,7 @@ describe('BookCreateForm', () => {
         expect(amountInput.value).toBe('0')
     })
 
-    it('should preserve form data across rerenders', async () => {
+test('should preserve form data across rerenders', async () => {
         const { rerender } = render(<BookCreateForm {...mockBook} />)
 
         const titleInput = screen.getByLabelText(/Título/) as HTMLInputElement
