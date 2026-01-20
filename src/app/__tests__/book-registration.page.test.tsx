@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import React from 'react'
 import '@testing-library/jest-dom'
+import fs from 'fs'
+import path from 'path'
 
 jest.mock('@/components/BackButton', () => {
-    return function MockBackButton() {
+    return function MockBackButton(): React.JSX.Element {
         return <div data-testid="back-button">Back Button</div>
     }
 })
@@ -23,8 +25,6 @@ describe('BookRegistration Page', () => {
     })
 
     test('should be a client component', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/book-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
 
