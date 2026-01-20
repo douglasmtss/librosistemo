@@ -1,11 +1,10 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
 // Mock dinâmico deve ser antes de importar o layout
 jest.mock('next/dynamic', () => {
-    return function MockDynamic(fn: () => Promise<{ default: React.ComponentType<any> }>) {
-        return function MockedComponent(props: any) {
+    return function MockDynamic() {
+        return function MockedComponent(): React.JSX.Element {
             return <div data-testid="layout-menu">Mocked Layout Menu</div>
         }
     }
@@ -15,12 +14,12 @@ import RootLayout from '../layout'
 
 // Mock ToastContainer
 jest.mock('react-toastify', () => ({
-    ToastContainer: () => <div data-testid="toast-container" />
+    ToastContainer: (): React.JSX.Element => <div data-testid="toast-container" />
 }))
 
 // Mock StyledComponentsRegistry
 jest.mock('@/lib/registry', () => {
-    return function MockRegistry({ children }: { children: React.ReactNode }) {
+    return function MockRegistry({ children }: { children: React.ReactNode }): React.JSX.Element {
         return <div data-testid="styled-registry">{children}</div>
     }
 })
