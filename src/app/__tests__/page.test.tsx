@@ -1,10 +1,12 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
+import fs from 'fs'
+import path from 'path'
 
 // Mock para PaginatedBooks
 jest.mock('@/components/PaginatedBooks', () => ({
-    PaginatedBooks: ({ itemsPerPage }: { itemsPerPage: number }) => (
+    PaginatedBooks: ({ itemsPerPage }: { itemsPerPage: number }): React.JSX.Element => (
         <div data-testid="paginated-books">Paginated Books - Items per page: {itemsPerPage}</div>
     )
 }))
@@ -49,11 +51,10 @@ describe('Home Page', () => {
 
     test('should be a client component', async () => {
         // Verificar que o arquivo começa com 'use client'
-        const fs = require('fs')
-        const path = require('path')
+
         const filePath = path.join(__dirname, '../page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toMatch(/['"]use client['"]/)
     })
 })
