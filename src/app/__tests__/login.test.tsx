@@ -1,19 +1,26 @@
-import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import React, { HTMLAttributes } from 'react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
+import fs from 'fs'
+import path from 'path'
 
 // Mock dependencies first
 jest.mock('@/components/Loading', () => {
-    return function MockLoading() {
+    return function MockLoading(): React.JSX.Element {
         return <div data-testid="loading">Loading...</div>
     }
 })
 
-jest.mock('@/hooks/useToastify', () => ({
-    useToastify: () => ({
-        toast: jest.fn()
+jest.mock(
+    '@/hooks/useToastify',
+    (): {
+        useToastify: () => { toast: jest.Mock }
+    } => ({
+        useToastify: () => ({
+            toast: jest.fn()
+        })
     })
-}))
+)
 
 jest.mock('@/services/api', () => ({
     api: {
@@ -24,19 +31,26 @@ jest.mock('@/services/api', () => ({
 }))
 
 jest.mock('styled-components', () => {
-    const React = require('react')
-    
-    const createStyledComponent = () => {
-        const styledFn = (strings: any, ...values: any[]) => (props: any) => {
-            return React.createElement('div', { ...props })
+    const createStyledComponent = (): React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement> => {
+        const styledFn = (): React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement> => {
+            const C = (
+                props: React.ComponentProps<'div'>
+            ): React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement> => {
+                return React.createElement('div', { ...props })
+            }
+
+            return C as unknown as React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement>
         }
-        styledFn.withConfig = () => styledFn
-        styledFn.attrs = () => styledFn
-        return styledFn
+        styledFn.withConfig = (): React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement> =>
+            styledFn as unknown as React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement>
+        styledFn.attrs = (): React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement> =>
+            styledFn as unknown as React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement>
+
+        return styledFn as unknown as React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement>
     }
 
     const handler = {
-        get: (_target: any, prop: string) => createStyledComponent()
+        get: (): React.DetailedReactHTMLElement<HTMLAttributes<HTMLDivElement>, HTMLElement> => createStyledComponent()
     }
 
     return {
@@ -67,7 +81,7 @@ describe('Auth Page', () => {
 
     test('should render Auth form', () => {
         const component = <Auth />
-        
+
         render(component)
 
         expect(screen.getByPlaceholderText('Usuário')).toBeInTheDocument()
@@ -169,10 +183,6 @@ describe('Auth Page', () => {
     test('should set cookie and redirect on successful login', async () => {
         mockApiPost.mockResolvedValue({ status: 200 })
 
-        // Mock window.location
-        delete (window as any).location
-        window.location = { href: '' } as any
-
         const component = <Auth />
 
         render(component)
@@ -183,7 +193,7 @@ describe('Auth Page', () => {
 
         fireEvent.change(usernameInput, { target: { value: 'testuser' } })
         fireEvent.change(passwordInput, { target: { value: 'testpass' } })
-        
+
         // Verify button is enabled before clicking
         expect(button).not.toBeDisabled()
     })
@@ -241,17 +251,13 @@ describe('Auth Page', () => {
 
         fireEvent.change(usernameInput, { target: { value: 'testuser' } })
         fireEvent.change(passwordInput, { target: { value: 'testpass' } })
-        
+
         // The component should render properly
         expect(screen.getByPlaceholderText('Usuário')).toBeInTheDocument()
     })
 
     test('should show success toast on successful login', () => {
         mockApiPost.mockResolvedValue({ status: 200 })
-
-        // Mock window.location
-        delete (window as any).location
-        window.location = { href: '' } as any
 
         const component = <Auth />
 
@@ -263,17 +269,15 @@ describe('Auth Page', () => {
 
         fireEvent.change(usernameInput, { target: { value: 'testuser' } })
         fireEvent.change(passwordInput, { target: { value: 'testpass' } })
-        
+
         // Verify button is enabled when both fields are filled
         expect(button).not.toBeDisabled()
     })
 
     test('should be a client component', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../login/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toMatch(/['"]use client['"]/)
     })
 })
