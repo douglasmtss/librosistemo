@@ -1,4 +1,8 @@
+import React from 'react'
 import '@testing-library/jest-dom'
+import fs from 'fs'
+import path from 'path'
+import LendRegistration from '../pages/dashboard/lends/lend-registration/page'
 
 jest.mock('@/services/api', () => ({
     api: {
@@ -26,19 +30,21 @@ jest.mock('@/services/api', () => ({
 }))
 
 jest.mock('@/components/Loading', () => {
-    return function MockLoading() {
+    return function MockLoading(): React.JSX.Element {
         return <div data-testid="loading">Loading</div>
     }
 })
 
 jest.mock('@/components/BackButton', () => {
-    return function MockBackButton() {
+    return function MockBackButton(): React.JSX.Element {
         return <div data-testid="back-button">BackButton</div>
     }
 })
 
 jest.mock('@/hooks/useToastify', () => ({
-    useToastify: () => ({
+    useToastify: (): {
+        toast: jest.Mock<void, [string, { type: 'success' | 'error' | 'info' | 'warning' }]>
+    } => ({
         toast: jest.fn()
     })
 }))
@@ -67,140 +73,122 @@ jest.mock('@/hooks/getBookAmountAndAvailable', () => ({
 }))
 
 jest.mock('next/navigation', () => ({
-    useRouter: () => ({
+    useRouter: (): {
+        push: jest.Mock<void, [string]>
+        back: jest.Mock<void, []>
+    } => ({
         push: jest.fn(),
         back: jest.fn()
     })
 }))
 
 jest.mock('react-icons/fa', () => ({
-    FaPencilAlt: () => <div data-testid="edit-icon">Edit</div>
+    FaPencilAlt: (): React.JSX.Element => <div data-testid="edit-icon">Edit</div>
 }))
 
 jest.mock('react-select', () => {
-    return function MockSelect() {
+    return function MockSelect(): React.JSX.Element {
         return <div data-testid="select">Select</div>
     }
 })
 
-jest.mock('uuid', () => ({
-    v4: () => 'test-uuid-1234'
-}))
+jest.mock(
+    'uuid',
+    (): {
+        v4: () => string
+    } => ({
+        v4: () => 'test-uuid-1234'
+    })
+)
 
 describe('LendRegistration Page', () => {
     test('should export default LendRegistration component', () => {
-        const LendRegistration = require('../pages/dashboard/lends/lend-registration/page').default
-        
         expect(LendRegistration).toBeDefined()
         expect(typeof LendRegistration).toBe('function')
     })
 
     test('should be a client component', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toMatch(/['"]use client['"]/)
     })
 
     test('should import api from services', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain("import { api } from '@/services/api'")
     })
 
     test('should import useEntities hook', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('useEntities')
     })
 
     test('should import getBookAmountAndAvailable hook', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('getBookAmountAndAvailable')
     })
 
     test('should import Loading component', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('Loading')
     })
 
     test('should import BackButton component', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('BackButton')
     })
 
     test('should import react-select', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain("import Select from 'react-select'")
     })
 
     test('should use useState hook', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('useState')
     })
 
     test('should use useEffect hook', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('useEffect')
     })
 
     test('should use useCallback hook', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('useCallback')
     })
 
     test('should have user and book selection', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('userSelected')
         expect(content).toContain('bookSelected')
     })
 
     test('should use useRouter for navigation', () => {
-        const fs = require('fs')
-        const path = require('path')
         const filePath = path.join(__dirname, '../pages/dashboard/lends/lend-registration/page.tsx')
         const content = fs.readFileSync(filePath, 'utf-8')
-        
+
         expect(content).toContain('useRouter')
     })
 })
