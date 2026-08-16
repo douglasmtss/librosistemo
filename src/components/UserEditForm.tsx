@@ -1,10 +1,10 @@
 'use client'
 import { api } from '@/services/api'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { useToastify } from '@/hooks/useToastify'
+import { CancelLink, Form, FormActions, FormContainer, FormTitle, SubmitButton, TextInput } from './formStyles'
 
 type UserEditFormProps = {
     rowIndex: string
@@ -46,12 +46,12 @@ export default function UserEditForm(props: UserEditFormProps): React.ReactNode 
     }, [first_name, last_name, phone])
 
     return (
-        <div className="p-8">
-            <h2 className="text-2xl">Formulário de Edição</h2>
-            <form className="mt-4">
+        <FormContainer>
+            <FormTitle>Formulário de Edição</FormTitle>
+            <Form>
                 <label htmlFor="first_name">
                     Primeiro nome
-                    <input
+                    <TextInput
                         type="text"
                         name="first_name"
                         id="first_name"
@@ -63,12 +63,11 @@ export default function UserEditForm(props: UserEditFormProps): React.ReactNode 
                                 first_name: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="last_name">
                     Sobrenome
-                    <input
+                    <TextInput
                         type="text"
                         name="last_name"
                         id="last_name"
@@ -80,12 +79,11 @@ export default function UserEditForm(props: UserEditFormProps): React.ReactNode 
                                 last_name: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="phone">
                     Telefone
-                    <input
+                    <TextInput
                         type="text"
                         name="phone"
                         id="phone"
@@ -97,23 +95,15 @@ export default function UserEditForm(props: UserEditFormProps): React.ReactNode 
                                 phone: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
-            </form>
+            </Form>
 
-            <div className="flex w-full justify-between items-center">
-                <Link href={'/pages/dashboard'} className="py-4 px-8 rounded-lg bg-primary text-white font-semibold">
-                    Cancelar
-                </Link>
+            <FormActions>
+                <CancelLink href={'/pages/dashboard'}>Cancelar</CancelLink>
 
-                <button
-                    className="py-4 px-8 rounded-lg bg-primary text-white font-semibold"
-                    onClick={() => handleSubmit(value)}
-                >
-                    Salvar
-                </button>
-            </div>
-        </div>
+                <SubmitButton onClick={() => handleSubmit(value)}>Salvar</SubmitButton>
+            </FormActions>
+        </FormContainer>
     )
 }

@@ -1,29 +1,43 @@
+'use client'
 import Link from 'next/link'
+import styled from 'styled-components'
 
 export default function Dashboard(): React.ReactNode {
     return (
-        <div className="w-full max-w-185 mx-auto">
-            <div className="w-full flex flex-col justify-center items-center mb-8">
-                <Link
-                    href={'/pages/dashboard/books'}
-                    className="py-2 px-4 bg-primary text-white w-80 text-center mt-8 font-semibold uppercase"
-                >
-                    Livros
-                </Link>
-                <Link
-                    href={'/pages/dashboard/users'}
-                    className="py-2 px-4 bg-primary text-white w-80 text-center mt-8 font-semibold uppercase"
-                >
-                    Usuários
-                </Link>
+        <PageContainer>
+            <NavigationContainer>
+                <NavigationLink href={'/pages/dashboard/books'}>Livros</NavigationLink>
+                <NavigationLink href={'/pages/dashboard/users'}>Usuários</NavigationLink>
 
-                <Link
-                    href={'/pages/dashboard/lends'}
-                    className="py-2 px-4 bg-primary text-white w-80 text-center mt-8 font-semibold uppercase"
-                >
-                    Empréstimos
-                </Link>
-            </div>
-        </div>
+                <NavigationLink href={'/pages/dashboard/lends'}>Empréstimos</NavigationLink>
+            </NavigationContainer>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const NavigationContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+`
+
+const NavigationLink = styled(Link)`
+    padding: 8px 16px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    width: 320px;
+    text-align: center;
+    margin-top: 32px;
+    font-weight: 600;
+    text-transform: uppercase;
+`

@@ -1,18 +1,16 @@
 import '@testing-library/jest-dom'
+import React from 'react'
+import { render, screen } from '@testing-library/react'
 import fs from 'fs'
 import path from 'path'
 
-jest.mock('@/components/BackButton', () => {
-    return function MockBackButton(): React.JSX.Element {
-        return <div data-testid="back-button">Back Button</div>
-    }
-})
+jest.mock('@/components/BackButton', () => ({
+    BackButton: (): React.JSX.Element => <div data-testid="back-button">Back Button</div>
+}))
 
-jest.mock('@/components/Scan', () => {
-    return function MockScan(): React.JSX.Element {
-        return <div data-testid="scan-component">Scan Component</div>
-    }
-})
+jest.mock('@/components/Scan', () => ({
+    Scan: (): React.JSX.Element => <div data-testid="scan-component">Scan Component</div>
+}))
 
 import Scanner from '../pages/dashboard/book-registration/scanner/page'
 
@@ -36,12 +34,12 @@ describe('Scanner Page', () => {
         expect(content).toMatch(/['"]use client['"]/)
     })
 
-    test('should contain heading element in JSX', () => {
-        const filePath = path.join(__dirname, '../pages/dashboard/book-registration/scanner/page.tsx')
-        const content = fs.readFileSync(filePath, 'utf-8')
+    test('should render heading element with page title', () => {
+        render(<Scanner />)
 
-        expect(content).toContain('<h1')
-        expect(content).toContain('Escanear código ISBN')
+        const heading = screen.getByRole('heading', { level: 1 })
+
+        expect(heading).toHaveTextContent('Escanear código ISBN')
     })
 
     test('should import BackButton component', () => {

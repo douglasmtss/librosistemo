@@ -23,11 +23,11 @@ jest.mock('@/components/BookEditForm', () => {
     }
 })
 
-jest.mock('@/components/BackButton', () => {
-    return function MockBackButton(): React.JSX.Element {
+jest.mock('@/components/BackButton', () => ({
+    BackButton: function MockBackButton(): React.JSX.Element {
         return <div data-testid="back-button">BackButton</div>
     }
-})
+}))
 
 describe('EditBook Page [rowIndex]', () => {
     test('should export default EditBook component', () => {

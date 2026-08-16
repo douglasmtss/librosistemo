@@ -6,6 +6,7 @@ import { api } from '@/services/api'
 import { ImCamera } from 'react-icons/im'
 import { SelectPhoto } from '@/components/SelectPhoto'
 import { useToastify } from '@/hooks/useToastify'
+import styled from 'styled-components'
 
 import { v4 as uuidv4 } from 'uuid'
 import { BackButton } from '@/components/BackButton'
@@ -60,14 +61,16 @@ export default function ManualRegister(): React.ReactNode {
     }
 
     return (
-        <div className="p-8 w-full max-w-185 mx-auto">
-            <BackButton classNameContainer="mb-8" />
-            <h2 className="text-2xl">Cadastro manual</h2>
+        <PageContainer>
+            <BackButtonWrapper>
+                <BackButton />
+            </BackButtonWrapper>
+            <PageTitle>Cadastro manual</PageTitle>
             {getPhoto && <SelectPhoto onCancel={() => setGetPhoto(false)} onSave={handleSave} />}
-            <form className="mt-4">
+            <RegisterForm>
                 <label htmlFor="isbn">
                     ISBN
-                    <input
+                    <FormInput
                         type="text"
                         name="isbn"
                         id="isbn"
@@ -79,12 +82,11 @@ export default function ManualRegister(): React.ReactNode {
                                 isbn: +e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="title">
                     Título
-                    <input
+                    <FormInput
                         type="text"
                         name="title"
                         id="title"
@@ -96,12 +98,11 @@ export default function ManualRegister(): React.ReactNode {
                                 title: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="subtitle">
                     Subtítulo
-                    <input
+                    <FormInput
                         type="text"
                         name="subtitle"
                         id="subtitle"
@@ -113,12 +114,11 @@ export default function ManualRegister(): React.ReactNode {
                                 subtitle: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="author">
                     Autor
-                    <input
+                    <FormInput
                         type="text"
                         name="author"
                         id="author"
@@ -130,12 +130,11 @@ export default function ManualRegister(): React.ReactNode {
                                 author: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="description">
                     Descrição
-                    <input
+                    <FormInput
                         type="text"
                         name="description"
                         id="description"
@@ -147,12 +146,11 @@ export default function ManualRegister(): React.ReactNode {
                                 description: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="category">
                     Categoria
-                    <input
+                    <FormInput
                         type="text"
                         name="category"
                         id="category"
@@ -164,13 +162,12 @@ export default function ManualRegister(): React.ReactNode {
                                 category: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="image">
                     Imagem
-                    <div className="flex items-center mb-4">
-                        <input
+                    <ImageFieldRow>
+                        <ImageUrlInput
                             type="text"
                             name="image"
                             id="image"
@@ -182,22 +179,20 @@ export default function ManualRegister(): React.ReactNode {
                                     image: e.target.value
                                 })
                             }
-                            className="border-2 border-gray-400 rounded-md p-2 w-full h-10"
                         />
-                        <button
-                            className="h-10 py-2 px-4 rounded-lg bg-primary ml-2 cursor-pointer text-white"
+                        <CameraButton
                             onClick={e => {
                                 e.preventDefault()
                                 setGetPhoto(true)
                             }}
                         >
                             <ImCamera />
-                        </button>
-                    </div>
+                        </CameraButton>
+                    </ImageFieldRow>
                 </label>
                 <label htmlFor="amount">
                     Quantidade
-                    <input
+                    <FormInput
                         type="number"
                         name="amount"
                         id="amount"
@@ -209,12 +204,11 @@ export default function ManualRegister(): React.ReactNode {
                                 amount: +e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="place">
                     Local
-                    <input
+                    <FormInput
                         type="text"
                         name="place"
                         id="place"
@@ -226,23 +220,88 @@ export default function ManualRegister(): React.ReactNode {
                                 place: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
-            </form>
+            </RegisterForm>
 
-            <div className="flex w-full justify-between items-center">
-                <Link
-                    href={'/pages/dashboard/book-registration'}
-                    className="py-4 px-8 rounded-lg bg-primary text-white font-semibold"
-                >
-                    Cancelar
-                </Link>
+            <ActionsRow>
+                <CancelLink href={'/pages/dashboard/book-registration'}>Cancelar</CancelLink>
 
-                <button onClick={handleSubmit} className="py-4 px-8 rounded-lg bg-primary text-white font-semibold">
-                    Cadastrar
-                </button>
-            </div>
-        </div>
+                <SubmitButton onClick={handleSubmit}>Cadastrar</SubmitButton>
+            </ActionsRow>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    padding: 32px;
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const BackButtonWrapper = styled.div`
+    margin-bottom: 32px;
+`
+
+const PageTitle = styled.h2`
+    font-size: 24px;
+    line-height: 32px;
+`
+
+const RegisterForm = styled.form`
+    margin-top: 16px;
+`
+
+const FormInput = styled.input`
+    border: 2px solid #9ca3af;
+    border-radius: 6px;
+    padding: 8px;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 16px;
+`
+
+const ImageFieldRow = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+`
+
+const ImageUrlInput = styled(FormInput)`
+    margin-bottom: 0;
+`
+
+const CameraButton = styled.button`
+    height: 40px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    margin-left: 8px;
+    cursor: pointer;
+    color: var(--color-white);
+`
+
+const ActionsRow = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+`
+
+const CancelLink = styled(Link)`
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 600;
+`
+
+const SubmitButton = styled.button`
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 600;
+`

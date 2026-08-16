@@ -27,14 +27,12 @@ describe('Dashboard Page', () => {
         expect(lendsLink).toHaveAttribute('href', '/pages/dashboard/lends')
     })
 
-    test('should apply correct CSS classes to links', () => {
+    test('should render exactly three navigation links', () => {
         const component = <Dashboard />
 
         render(component)
 
-        const booksLink = screen.getByRole('link', { name: /livros/i })
-
-        expect(booksLink).toHaveClass('py-2', 'px-4', 'bg-primary')
+        expect(screen.getAllByRole('link')).toHaveLength(3)
     })
 
     test('should render dashboard container with correct structure', () => {
@@ -42,8 +40,9 @@ describe('Dashboard Page', () => {
 
         const { container } = render(component)
 
-        const mainDiv = container.querySelector('.w-full.max-w-185.mx-auto')
+        const mainDiv = container.firstChild as HTMLElement
         expect(mainDiv).toBeInTheDocument()
+        expect(mainDiv.querySelectorAll('a')).toHaveLength(3)
     })
 
     test('should return React.ReactNode', () => {

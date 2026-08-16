@@ -1,5 +1,6 @@
 'use client'
 import { memo, useState } from 'react'
+import styled from 'styled-components'
 import { BookModal } from './BookModal'
 import { Img } from './Img'
 import { BookStatus } from './BookStatus'
@@ -14,7 +15,7 @@ function AllBooks({ books, lends }: AllBooksProps): React.ReactNode {
     const [openModal, setOpenModal] = useState<Book | Record<string, never>>({})
 
     return (
-        <div className="w-full flex flex-wrap gap-4  justify-center p-2 max-w-7xl mx-auto">
+        <BooksGrid>
             {openModal?.title && <BookModal onClose={() => setOpenModal({})} book={openModal} />}
 
             <BackToTopButton />
@@ -23,49 +24,120 @@ function AllBooks({ books, lends }: AllBooksProps): React.ReactNode {
                 const bookAmountAndAvailable = getBookAmountAndAvailable(String(book?.id), books, lends)
 
                 return (
-                    <div
+                    <BookCard
                         key={index}
-                        className="w-full p-8 max-w-72 bg-white shadow-2xl rounded-lg overflow-hidden transform transition-transform hover:scale-105 cursor-pointer"
                         onClick={() => {
                             setOpenModal(book)
                         }}
                     >
-                        <Img
-                            src={book?.image}
-                            alt={book.title}
-                            width={136}
-                            height={196}
-                            className="w-full h-56 object-cover"
-                        />
-                        <div className="p-4">
-                            <h2 className="font-semibold text-lg text-gray-800 mb-1">
+                        <CoverImage src={book?.image} alt={book.title} width={136} height={196} />
+                        <BookInfo>
+                            <CardTitle>
                                 <TextElipsis text={book.title} width={144} height={32} />
-                            </h2>
-                            <h3 className="text-sm text-gray-600 mb-2">
+                            </CardTitle>
+                            <BookAuthor>
                                 <TextElipsis text={book.author} width={144} height={16} />
-                            </h3>
-                            <h3 className="text-sm text-gray-600">
+                            </BookAuthor>
+                            <BookMeta>
                                 <TextElipsis text={`Quantidade: ${book.amount}`} width={144} height={16} />
-                            </h3>
-                            <h3 className="text-sm text-gray-600 mt-1">
+                            </BookMeta>
+                            <BookAvailability>
                                 <TextElipsis
                                     text={`Disponíveis: ${bookAmountAndAvailable?.booksAvailable}`}
                                     width={144}
                                     height={16}
                                 />
-                            </h3>
-                            <h4 className="mt-4 text-sm w-full inline-block">
-                                <BookStatus
-                                    label={book?.status}
-                                    className="w-full inline-block text-center text-white bg-blue-500 rounded-md py-1"
-                                />
-                            </h4>
-                        </div>
-                    </div>
+                            </BookAvailability>
+                            <StatusHeading>
+                                <StatusBadge label={book?.status} />
+                            </StatusHeading>
+                        </BookInfo>
+                    </BookCard>
                 )
             })}
-        </div>
+        </BooksGrid>
     )
 }
 
 export default memo(AllBooks)
+
+const BooksGrid = styled.div`
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 8px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const BookCard = styled.div`
+    width: 100%;
+    padding: 32px;
+    max-width: 288px;
+    background-color: var(--color-white);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+`
+
+const CoverImage = styled(Img)`
+    width: 100%;
+    height: 224px;
+    object-fit: cover;
+`
+
+const BookInfo = styled.div`
+    padding: 16px;
+`
+
+const CardTitle = styled.h2`
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 28px;
+    color: var(--color-gray-800);
+    margin-bottom: 4px;
+`
+
+const BookMeta = styled.h3`
+    font-size: 14px;
+    line-height: 20px;
+    color: #4b5563;
+`
+
+const BookAuthor = styled(BookMeta)`
+    margin-bottom: 8px;
+`
+
+const BookAvailability = styled(BookMeta)`
+    margin-top: 4px;
+`
+
+const StatusHeading = styled.h4`
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 20px;
+    width: 100%;
+    display: inline-block;
+`
+
+const StatusBadge = styled(BookStatus)`
+    && {
+        width: 100%;
+        display: inline-block;
+        text-align: center;
+        color: var(--color-white);
+        background-color: #3b82f6;
+        border-radius: var(--radius-md);
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+`

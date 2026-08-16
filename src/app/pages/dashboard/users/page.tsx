@@ -6,6 +6,7 @@ import { PaginatedUserItems } from '@/components/PaginatedUserItems'
 import { api } from '@/services/api'
 import Link from 'next/link'
 import { ChangeEvent, useEffect, useState } from 'react'
+import styled from 'styled-components'
 
 export default function Users(): React.ReactNode {
     const [users, setUsers] = useState<User[]>([])
@@ -43,33 +44,77 @@ export default function Users(): React.ReactNode {
     }, [])
 
     return (
-        <div className="w-full max-w-185 mx-auto">
-            <BackButton classNameContainer="ml-4 mb-8" />
-            <div className="w-full flex justify-center items-center mb-8">
-                <Link
-                    href={'/pages/dashboard/users/user-registration'}
-                    className="py-2 px-4 bg-primary text-white rounded-lg"
-                >
-                    Cadastrar usuário
-                </Link>
-            </div>
+        <PageContainer>
+            <PositionedBackButton />
+            <RegisterLinkRow>
+                <RegisterLink href={'/pages/dashboard/users/user-registration'}>Cadastrar usuário</RegisterLink>
+            </RegisterLinkRow>
             {loading ? (
                 <Loading />
             ) : !filteredUsers?.length ? (
                 <Empty />
             ) : (
-                <div className="px-4">
-                    <div className="flex justify-between items-center mb-8">
-                        <input
+                <Content>
+                    <SearchRow>
+                        <SearchInput
                             type="text"
                             placeholder="Pesquise pelo primeiro nome do usuário"
-                            className="border-2 border-gray-300 w-full h-10 p-2"
                             onChange={handleChange}
                         />
-                    </div>
+                    </SearchRow>
                     <PaginatedUserItems itemsPerPage={10} users={filteredUsers} onDelete={handleDelete} />
-                </div>
+                </Content>
             )}
-        </div>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const BackButtonWithClassName = ({ className }: { className?: string }): React.ReactNode => (
+    <BackButton classNameContainer={className} />
+)
+
+const PositionedBackButton = styled(BackButtonWithClassName)`
+    margin-left: 16px;
+    margin-bottom: 32px;
+`
+
+const RegisterLinkRow = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+`
+
+const RegisterLink = styled(Link)`
+    padding: 8px 16px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-radius: var(--radius-md);
+`
+
+const Content = styled.div`
+    padding-left: 16px;
+    padding-right: 16px;
+`
+
+const SearchRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+`
+
+const SearchInput = styled.input`
+    border: 2px solid var(--color-gray-300);
+    width: 100%;
+    height: 40px;
+    padding: 8px;
+`

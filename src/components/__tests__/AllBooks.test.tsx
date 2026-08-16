@@ -154,8 +154,9 @@ describe('AllBooks', (): void => {
     test('should render empty list when no books provided', (): void => {
         const { container } = render(<AllBooks books={[]} lends={[]} />)
 
-        const bookCards = container.querySelectorAll('[class*="max-w-72"]')
+        const bookCards = container.querySelectorAll('h2')
         expect(bookCards.length).toBe(0)
+        expect(container.querySelectorAll('img').length).toBe(0)
     })
 
     test('should call getBookAmountAndAvailable for each book', (): void => {

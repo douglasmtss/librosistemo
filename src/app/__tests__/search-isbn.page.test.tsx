@@ -11,11 +11,11 @@ jest.mock('@/services/api', () => ({
     }
 }))
 
-jest.mock('@/components/Empty', () => {
-    return function MockEmpty(): React.JSX.Element {
+jest.mock('@/components/Empty', () => ({
+    Empty: function MockEmpty(): React.JSX.Element {
         return <div data-testid="empty">Empty</div>
     }
-})
+}))
 
 jest.mock('@/components/BookCreateForm', () => {
     return function MockBookCreateForm(): React.JSX.Element {
@@ -23,17 +23,17 @@ jest.mock('@/components/BookCreateForm', () => {
     }
 })
 
-jest.mock('@/components/Img', () => {
-    return function MockImg(): React.JSX.Element {
+jest.mock('@/components/Img', () => ({
+    Img: function MockImg(): React.JSX.Element {
         return <div data-testid="img">Img</div>
     }
-})
+}))
 
-jest.mock('@/components/BackButton', () => {
-    return function MockBackButton(): React.JSX.Element {
+jest.mock('@/components/BackButton', () => ({
+    BackButton: function MockBackButton(): React.JSX.Element {
         return <div data-testid="back-button">BackButton</div>
     }
-})
+}))
 
 jest.mock(
     '@/hooks/useToastify',

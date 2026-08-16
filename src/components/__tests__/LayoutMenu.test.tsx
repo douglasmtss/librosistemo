@@ -155,14 +155,21 @@ describe('LayoutMenu', () => {
         expect(menuSlider).toBeTruthy()
     })
 
-    test('should have menu slider div with correct classes when show is false', () => {
+    test('should change menu slider styling when hamburger toggles visibility', async () => {
         const { container } = render(<LayoutMenu />)
         const menuSlider = container.querySelector('#menu-slider')
         expect(menuSlider).toBeTruthy()
 
-        // Check for translate-x-full when menu is closed
-        const className = menuSlider?.getAttribute('class') || ''
-        expect(className).toContain('translate-x-full')
+        const closedClassName = menuSlider?.getAttribute('class') || ''
+
+        const hamburger = await screen.findByTestId('hamburger-closer')
+        await act(async () => {
+            fireEvent.click(hamburger)
+        })
+
+        // styled-components gera uma classe diferente para o estado aberto ($show=true)
+        const openClassName = menuSlider?.getAttribute('class') || ''
+        expect(openClassName).not.toBe(closedClassName)
     })
 
     test('should handle menu visibility toggle', async () => {

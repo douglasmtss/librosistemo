@@ -135,58 +135,43 @@ describe('BookModal', () => {
         expect(image.height).toBe(350)
     })
 
-    test('should render with fixed position overlay', () => {
+    test('should render an overlay as the outermost element wrapping all content', () => {
         const { container } = render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const overlay = container.querySelector('[class*="fixed"]')
-        expect(overlay?.className).toContain('fixed')
-        expect(overlay?.className).toContain('w-screen')
-        expect(overlay?.className).toContain('h-screen')
+        const overlay = container.firstChild as HTMLElement
+        expect(overlay.tagName).toBe('DIV')
+        expect(overlay.contains(screen.getByText('Test Book'))).toBe(true)
+        expect(overlay.contains(screen.getByTestId('book-image'))).toBe(true)
     })
 
-    test('should have semi-transparent background', () => {
+    test('should render a single modal content wrapper inside the overlay', () => {
         const { container } = render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const overlay = container.querySelector('[class*="bg-"]')
-        expect(overlay?.className).toContain('bg-[#0009]')
+        const overlay = container.firstChild as HTMLElement
+        expect(overlay.children.length).toBe(1)
+        expect((overlay.firstChild as HTMLElement).tagName).toBe('DIV')
     })
 
-    test('should center content on screen', () => {
+    test('should render close button as the first element of the modal content', () => {
         const { container } = render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const overlay = container.querySelector('[class*="flex"]')
-        expect(overlay?.className).toContain('flex')
-        expect(overlay?.className).toContain('justify-center')
-        expect(overlay?.className).toContain('items-center')
+        const content = (container.firstChild as HTMLElement).firstChild as HTMLElement
+        const closeButton = content.firstChild as HTMLElement
+        expect(closeButton.tagName).toBe('BUTTON')
+        expect(closeButton.contains(screen.getByTestId('close-icon'))).toBe(true)
     })
 
-    test('should have z-10 positioning', () => {
+    test('should render image section before details section', () => {
         const { container } = render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const overlay = container.querySelector('[class*="z-"]')
-        expect(overlay?.className).toContain('z-10')
+        const content = (container.firstChild as HTMLElement).firstChild as HTMLElement
+        const [, imageSection, detailsSection] = Array.from(content.children) as HTMLElement[]
+        expect(imageSection.contains(screen.getByTestId('book-image'))).toBe(true)
+        expect(detailsSection.contains(screen.getByText('Test Book'))).toBe(true)
     })
 
-    test('should have relative positioning for content', () => {
+    test('should apply generated styled-components classes to overlay and content', () => {
         const { container } = render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const content = container.querySelector('[class*="relative"]')
-        expect(content?.className).toContain('relative')
-    })
-
-    test('should have white background for content', () => {
-        const { container } = render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const content = container.querySelector('[class*="bg-white"]')
-        expect(content?.className).toContain('bg-white')
-    })
-
-    test('should allow overflow y scroll', () => {
-        const { container } = render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const content = container.querySelector('[class*="overflow"]')
-        expect(content?.className).toContain('overflow-y-auto')
-    })
-
-    test('should position close button absolutely in top right', () => {
-        render(<BookModal book={mockBook} onClose={mockOnClose} />)
-        const closeButton = screen.getByTestId('close-icon').closest('button')
-        expect(closeButton?.className).toContain('absolute')
-        expect(closeButton?.className).toContain('top-4')
-        expect(closeButton?.className).toContain('right-4')
+        const overlay = container.firstChild as HTMLElement
+        const content = overlay.firstChild as HTMLElement
+        expect(overlay.className).not.toBe('')
+        expect(content.className).not.toBe('')
     })
 
     test('should render empty book object without errors', () => {

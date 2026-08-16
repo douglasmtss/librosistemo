@@ -4,6 +4,7 @@ import BookEditForm from '@/components/BookEditForm'
 import { BackButton } from '@/components/BackButton'
 import { useEffect, useState } from 'react'
 import { api } from '@/services/api'
+import styled from 'styled-components'
 
 interface EditBookProps {
     params: Promise<{
@@ -26,7 +27,7 @@ export default function EditBook({ params }: EditBookProps): React.ReactNode {
 
     return (
         <>
-            <BackButton classNameContainer="ml-8" />
+            <IndentedBackButton />
             <BookEditForm
                 id={book?.id}
                 rowIndex={`${rowIndex}`}
@@ -43,3 +44,7 @@ export default function EditBook({ params }: EditBookProps): React.ReactNode {
         </>
     )
 }
+
+const IndentedBackButton = styled(BackButton)`
+    margin-left: 32px;
+`

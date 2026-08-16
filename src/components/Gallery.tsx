@@ -1,3 +1,4 @@
+'use client'
 import { reduceImageFileSize } from '@/lib/reduceImageFileSize'
 import { toBase64 } from '@/lib/toBase64'
 import { ChangeEvent, useState } from 'react'
@@ -30,33 +31,21 @@ export const Gallery = ({ onCancel, onSave }: GalleryProps): React.ReactNode => 
     }
 
     return (
-        <div className="flex flex-col justify-center items-center w-full h-full fixed bottom-0 top-0 right-0 left-0 bg-[#0008]">
-            <div className="flex flex-col justify-center items-center w-full h-full">
+        <Overlay>
+            <ContentWrapper>
                 {img && (
-                    <div className="border flex justify-center items-center w-max">
+                    <PreviewWrapper>
                         <Img src={img.compressed} width={250} alt="pré visualização da imagem" />
-                    </div>
+                    </PreviewWrapper>
                 )}
-                <div className="flex justify-center items-center sm:h-16 mt-8 bg-white p-4 sm:w-auto rounded-md">
-                    <StyledDiv>
+                <ControlsBar>
+                    <FilePickerWrapper>
                         <label htmlFor="file">Escolher arquivo</label>
-                        <input
-                            name="file"
-                            id="file"
-                            className="py-4 px-8 rounded-lg font-semibold ml-10"
-                            type="file"
-                            onChange={handleChange}
-                        />
-                    </StyledDiv>
+                        <FileInput name="file" id="file" type="file" onChange={handleChange} />
+                    </FilePickerWrapper>
 
-                    <button
-                        className="py-2 px-4 rounded-lg bg-primary text-xl text-white font-semibold ml-2"
-                        onClick={() => onSave(img.compressed)}
-                    >
-                        Save
-                    </button>
-                    <button
-                        className="py-2 px-4 rounded-lg bg-primary text-xl text-white font-semibold ml-2"
+                    <ActionButton onClick={() => onSave(img.compressed)}>Save</ActionButton>
+                    <ActionButton
                         onClick={() => {
                             onCancel()
                             setImg({
@@ -66,14 +55,76 @@ export const Gallery = ({ onCancel, onSave }: GalleryProps): React.ReactNode => 
                         }}
                     >
                         Cancelar
-                    </button>
-                </div>
-            </div>
-        </div>
+                    </ActionButton>
+                </ControlsBar>
+            </ContentWrapper>
+        </Overlay>
     )
 }
 
-const StyledDiv = styled.div`
+const Overlay = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    inset: 0;
+    background-color: #0008;
+`
+
+const ContentWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+`
+
+const PreviewWrapper = styled.div`
+    border: 1px solid var(--color-gray-200);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+`
+
+const ControlsBar = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    background-color: var(--color-white);
+    padding: 16px;
+    border-radius: var(--radius-md);
+
+    @media (min-width: 640px) {
+        height: 64px;
+        width: auto;
+    }
+`
+
+const FileInput = styled.input`
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    margin-left: 40px;
+`
+
+const ActionButton = styled.button`
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    font-size: 20px;
+    line-height: 28px;
+    color: var(--color-white);
+    font-weight: 600;
+    margin-left: 8px;
+`
+
+const FilePickerWrapper = styled.div`
     input[type='file'] {
         display: none;
     }

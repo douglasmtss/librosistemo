@@ -2,6 +2,7 @@
 import { BackButton } from '@/components/BackButton'
 import { api } from '@/services/api'
 import { useEffect, useState } from 'react'
+import styled from 'styled-components'
 
 interface LendViewProps {
     params: {
@@ -39,32 +40,71 @@ export default function LendView(props: LendViewProps): React.ReactNode {
     }, [])
 
     return (
-        <div className="w-full max-w-185 mx-auto">
-            <div className="flex flex-col px-4">
-                <BackButton classNameContainer="mb-8" />
-                <h1 className="text-2xl">Emprestimo</h1>
+        <PageContainer>
+            <ContentContainer>
+                <SpacedBackButton />
+                <Title>Emprestimo</Title>
 
-                <span className="mt-2 text-xl">
-                    <span className="font-semibold">Nome:</span> {lend?.first_name}
-                </span>
-                <span className="mt-2 text-xl">
-                    <span className="font-semibold">Sobrenome:</span> {lend?.last_name}
-                </span>
-                <span className="mt-2 text-xl">
-                    <span className="font-semibold">Livro:</span> {lend?.book_title}
-                </span>
-                <span className="mt-2 text-xl">
-                    <span className="font-semibold">Data do empéstimo:</span>{' '}
+                <DetailRow>
+                    <DetailLabel>Nome:</DetailLabel> {lend?.first_name}
+                </DetailRow>
+                <DetailRow>
+                    <DetailLabel>Sobrenome:</DetailLabel> {lend?.last_name}
+                </DetailRow>
+                <DetailRow>
+                    <DetailLabel>Livro:</DetailLabel> {lend?.book_title}
+                </DetailRow>
+                <DetailRow>
+                    <DetailLabel>Data do empéstimo:</DetailLabel>{' '}
                     {lend?.created && new Date(lend?.created).toLocaleDateString()}
-                </span>
+                </DetailRow>
 
-                <button
-                    onClick={() => handleDelete(`${lend?.id}`)}
-                    className="py-2 px-4 rounded-md text-white bg-red-500 mt-8 text-xl font-semibold"
-                >
-                    Excluir
-                </button>
-            </div>
-        </div>
+                <DeleteButton onClick={() => handleDelete(`${lend?.id}`)}>Excluir</DeleteButton>
+            </ContentContainer>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const ContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding-left: 16px;
+    padding-right: 16px;
+`
+
+const SpacedBackButton = styled(BackButton)`
+    margin-bottom: 32px;
+`
+
+const Title = styled.h1`
+    font-size: 24px;
+    line-height: 32px;
+`
+
+const DetailRow = styled.span`
+    margin-top: 8px;
+    font-size: 20px;
+    line-height: 28px;
+`
+
+const DetailLabel = styled.span`
+    font-weight: 600;
+`
+
+const DeleteButton = styled.button`
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: var(--color-white);
+    background-color: var(--color-danger);
+    margin-top: 32px;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+`

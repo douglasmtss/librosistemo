@@ -52,10 +52,11 @@ describe('Gallery', () => {
         expect(container).toBeTruthy()
     })
 
-    test('should render main container div', () => {
+    test('should render main container div wrapping all content', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
-        const mainDiv = container.querySelector('.flex.flex-col')
-        expect(mainDiv).toBeTruthy()
+        const mainDiv = container.firstChild as HTMLElement
+        expect(mainDiv.tagName).toBe('DIV')
+        expect(mainDiv.contains(screen.getByText('Escolher arquivo'))).toBe(true)
     })
 
     test('should render file input with correct label', () => {
@@ -103,16 +104,19 @@ describe('Gallery', () => {
         })
     })
 
-    test('should render flex container structure', () => {
+    test('should render nested container structure', () => {
         const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
-        const flexElements = container.querySelectorAll('.flex')
-        expect(flexElements.length).toBeGreaterThan(0)
+        const divElements = container.querySelectorAll('div')
+        expect(divElements.length).toBeGreaterThan(0)
     })
 
-    test('should have white background container for controls', () => {
-        const { container } = render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
-        const whiteDiv = container.querySelector('.bg-white')
-        expect(whiteDiv).toBeTruthy()
+    test('should render controls inside the same controls bar', () => {
+        render(<Gallery onSave={mockOnSave} onCancel={mockOnCancel} />)
+        const saveButton = screen.getByText('Save')
+        const cancelButton = screen.getByText('Cancelar')
+        const filePicker = screen.getByText('Escolher arquivo').parentElement
+        expect(saveButton.parentElement).toBe(cancelButton.parentElement)
+        expect(filePicker?.parentElement).toBe(saveButton.parentElement)
     })
 
     test('should handle file input with no files selected', () => {

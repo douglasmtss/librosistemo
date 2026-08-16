@@ -13,6 +13,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { checkIfBookAlreadyExists } from '@/lib/checkIfBookAlreadyExists'
 import { ISBN_LOOKUP_DELAY_MS } from '@/services/api'
 import { BackToTopButton } from '@/components/BackToTopButton'
+import styled, { keyframes } from 'styled-components'
 
 type ErrorObj = { error: boolean; message: string }
 
@@ -224,7 +225,7 @@ function SearchPageImpl(): React.ReactNode {
     if ((!booksInformations?.length && !loading) || sended) {
         return (
             <>
-                <BackButton classNameContainer="ml-8" />
+                <BackButtonOffsetLeft />
                 <Empty />
             </>
         )
@@ -232,50 +233,46 @@ function SearchPageImpl(): React.ReactNode {
 
     if (booksInformations?.length) {
         return (
-            <div className="w-full h-full md:p-8 mx-auto">
+            <PageContainer>
                 {loadingPost && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-                            <h2 className="text-xl font-bold mb-4">Progresso do Cadastro</h2>
-                            <p className="mb-2">Cadastrando livros...</p>
-                            <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
-                                <div
-                                    className="bg-blue-500 h-4 rounded-full"
+                    <ModalOverlay>
+                        <ModalBox>
+                            <ModalTitle>Progresso do Cadastro</ModalTitle>
+                            <ModalText>Cadastrando livros...</ModalText>
+                            <ProgressTrack>
+                                <ProgressFill
                                     style={{
                                         width: `${(countItems / filteredByUnique.length) * 100}%`
                                     }}
-                                ></div>
-                            </div>
-                            <p className="text-sm text-gray-600">
+                                ></ProgressFill>
+                            </ProgressTrack>
+                            <ProgressLabel>
                                 {countItems} de {filteredByUnique.length} livros cadastrados
-                            </p>
+                            </ProgressLabel>
                             {remainingTime ? (
-                                <p className="text-sm text-gray-600 mt-2">
+                                <ProgressNote>
                                     Continuaremos o cadastro em: {remainingTime}s (Limite da API do Google)
-                                </p>
+                                </ProgressNote>
                             ) : null}
-                        </div>
-                    </div>
+                        </ModalBox>
+                    </ModalOverlay>
                 )}
-                <div className="w-full flex flex-col lg:flex lg:flex-row justify-between items-end px-8 md:px-28">
-                    <div className="w-full">
-                        <BackButton classNameContainer="mb-8" />
+                <HeaderRow>
+                    <HeaderInfo>
+                        <BackButtonSpacedBottom />
                         <h2>Resultado da pesquisa</h2>
                         <span>Verifique se está correto antes de cadastrar</span>
-                    </div>
-                    <div className="w-full md:w-max flex justify-end items-end lg:mr-8">
-                        <button
-                            onClick={handleRegisterAll}
-                            className="w-full md:w-max mt-4 bg-blue-500 text-white py-2 px-4 hover:bg-white hover:text-blue-500 border-2 border-blue-500 text-xl"
-                        >
+                    </HeaderInfo>
+                    <RegisterActionWrapper>
+                        <RegisterAllButton onClick={handleRegisterAll}>
                             {booksInformations?.length} (
                             {booksInformations?.length > 1 ? 'livros encontrados' : 'livro encontrado'}) - CADASTRAR
                             TODOS
-                        </button>
-                    </div>
-                    <div className="w-full md:w-max  flex justify-end items-end">
+                        </RegisterAllButton>
+                    </RegisterActionWrapper>
+                    <ErrorsActionWrapper>
                         {codesWithErrors?.length ? (
-                            <button
+                            <DownloadErrorsButton
                                 onClick={() => {
                                     const blob = new Blob([codesWithErrors.join('\n')], { type: 'text/plain' })
                                     const url = URL.createObjectURL(blob)
@@ -285,67 +282,58 @@ function SearchPageImpl(): React.ReactNode {
                                     a.click()
                                     URL.revokeObjectURL(url)
                                 }}
-                                className="w-full md:w-max md:min-w-96 mt-4 bg-red-500 text-white py-2 px-4 hover:bg-white hover:text-red-500 border-2 border-red-500 text-xl"
                             >
                                 {codesWithErrors?.length} (
                                 {codesWithErrors?.length > 1 ? 'códigos com erro' : 'código com erros'}) - BAIXAR
                                 CÓDIGOS COM ERROS
-                            </button>
+                            </DownloadErrorsButton>
                         ) : null}
-                    </div>
-                </div>
+                    </ErrorsActionWrapper>
+                </HeaderRow>
                 {thereAreExistingBooks?.length ? (
-                    <div
-                        className="w-full max-w-[85%] mx-auto bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4 mt-8"
-                        role="alert"
-                    >
-                        <p className="font-bold">Informação</p>
+                    <InfoAlert role="alert">
+                        <BoldText>Informação</BoldText>
                         <p>Os livros com os seguintes códigos ISBN já foram cadastrados anteriormente:</p>
-                        <ul className="list-disc list-inside">
+                        <DiscList>
                             {thereAreExistingBooks.map((isbn, index) => (
                                 <li key={index}>{isbn}</li>
                             ))}
-                        </ul>
-                    </div>
+                        </DiscList>
+                    </InfoAlert>
                 ) : null}
                 {codesWithErrors?.length ? (
-                    <div
-                        className="w-full max-w-[85%] mx-auto bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 mt-8"
-                        role="alert"
-                    >
-                        <p className="font-bold">Atenção</p>
+                    <WarningAlert role="alert">
+                        <BoldText>Atenção</BoldText>
                         <p>
                             Alguns códigos não são válidos para a Brasil API. Considere tentar outra API para obter os
                             dados.
                         </p>
                         <p>
-                            <a
-                                className="text-blue-500 underline"
+                            <ErrorsLink
                                 href={getCodesWithErrrosUrl()}
                                 download={`${codesWithErrors?.length}_codigos_com_erros-${new Date().getTime()}.txt`}
                             >
                                 Consulte os códigos com erros.
-                            </a>
+                            </ErrorsLink>
                         </p>
                         <p>
                             {'Ao clicar em "CADASTRAR TODOS", apenas os livros com códigos válidos serão cadastrados.'}
                         </p>
-                    </div>
+                    </WarningAlert>
                 ) : null}
-                <div className="w-full h-full p-8 mx-auto flex flex-wrap gap-4">
+                <BooksGrid>
                     <BackToTopButton />
                     {booksInformations?.map((book, index) => {
                         return (
-                            <div key={book?.title + index} className="w-full h-full p-8 max-w-160 mx-auto border">
-                                <div className="flex flex-col">
-                                    <div className="p-8">
-                                        <Img
+                            <BookCard key={book?.title + index}>
+                                <CardColumn>
+                                    <CoverImageWrapper>
+                                        <CoverImage
                                             src={`${(book as unknown as GoogleApiBooks)?.imageLinks?.thumbnail ?? '/images/empty-book.png'}`}
                                             alt="capa do livro"
                                             width={250}
-                                            className="mb-4"
                                         />
-                                    </div>
+                                    </CoverImageWrapper>
                                     <BookCreateFormFromList
                                         setBooksInformations={setBooksInformations}
                                         isbn={+book?.isbn}
@@ -358,49 +346,44 @@ function SearchPageImpl(): React.ReactNode {
                                         category={book?.subjects?.join(', ')}
                                         place=""
                                     />
-                                </div>
-                            </div>
+                                </CardColumn>
+                            </BookCard>
                         )
                     })}
-                </div>
-            </div>
+                </BooksGrid>
+            </PageContainer>
         )
     }
 
     return (
-        <div className="w-full h-full p-8 max-w-185 mx-auto">
-            <div className="flex flex-col justify-center items-center">
-                <button
-                    className={`
-                        mt-4 ${apiSelected.brasilapi && loading ? 'border-4 border-green-500' : ''} w-80 bg-primary text-white py-2 px-4 hover:bg-white hover:text-primary border-2 border-primary text-xl flex justify-center items-center}
-                    `}
-                >
+        <LoadingContainer>
+            <CenteredColumn>
+                <BrasilApiButton $highlighted={apiSelected.brasilapi && loading}>
                     Brasil API
                     {apiSelected.brasilapi && (
-                        <div className="ml-4">
-                            <AiOutlineLoading3Quarters className="animate-spin text-white text-2xl" />
-                        </div>
+                        <SpinnerWrapper>
+                            <SpinnerIcon />
+                        </SpinnerWrapper>
                     )}
-                </button>
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-                        <h2 className="text-xl font-bold mb-4">Progresso da busca</h2>
-                        <p className="mb-2">Procurando livros...</p>
-                        <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
-                            <div
-                                className="bg-blue-500 h-4 rounded-full"
+                </BrasilApiButton>
+                <ModalOverlay>
+                    <ModalBox>
+                        <ModalTitle>Progresso da busca</ModalTitle>
+                        <ModalText>Procurando livros...</ModalText>
+                        <ProgressTrack>
+                            <ProgressFill
                                 style={{
                                     width: `${(countCodeItems / codes.length) * 100}%`
                                 }}
-                            ></div>
-                        </div>
-                        <p className="text-sm text-gray-600">
+                            ></ProgressFill>
+                        </ProgressTrack>
+                        <ProgressLabel>
                             {countCodeItems} de {codes.length} códigos verificados
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        </ProgressLabel>
+                    </ModalBox>
+                </ModalOverlay>
+            </CenteredColumn>
+        </LoadingContainer>
     )
 }
 export default function SearchPage(): React.ReactNode {
@@ -410,3 +393,291 @@ export default function SearchPage(): React.ReactNode {
         </Suspense>
     )
 }
+
+const spin = keyframes`
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+`
+
+const PageContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (min-width: 768px) {
+        padding: 32px;
+    }
+`
+
+const BackButtonOffsetLeft = styled(BackButton)`
+    margin-left: 32px;
+`
+
+const BackButtonSpacedBottom = styled(BackButton)`
+    margin-bottom: 32px;
+`
+
+const ModalOverlay = styled.div`
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+`
+
+const ModalBox = styled.div`
+    background-color: var(--color-white);
+    padding: 32px;
+    border-radius: var(--radius-md);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    width: 384px;
+`
+
+const ModalTitle = styled.h2`
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+`
+
+const ModalText = styled.p`
+    margin-bottom: 8px;
+`
+
+const ProgressTrack = styled.div`
+    width: 100%;
+    background-color: var(--color-gray-200);
+    border-radius: 9999px;
+    height: 16px;
+    margin-bottom: 16px;
+`
+
+const ProgressFill = styled.div`
+    background-color: #3b82f6;
+    height: 16px;
+    border-radius: 9999px;
+`
+
+const ProgressLabel = styled.p`
+    font-size: 14px;
+    line-height: 20px;
+    color: #4b5563;
+`
+
+const ProgressNote = styled(ProgressLabel)`
+    margin-top: 8px;
+`
+
+const HeaderRow = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-left: 32px;
+    padding-right: 32px;
+
+    @media (min-width: 768px) {
+        padding-left: 112px;
+        padding-right: 112px;
+    }
+
+    @media (min-width: 1024px) {
+        flex-direction: row;
+    }
+`
+
+const HeaderInfo = styled.div`
+    width: 100%;
+`
+
+const RegisterActionWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    @media (min-width: 768px) {
+        width: max-content;
+    }
+
+    @media (min-width: 1024px) {
+        margin-right: 32px;
+    }
+`
+
+const ErrorsActionWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    @media (min-width: 768px) {
+        width: max-content;
+    }
+`
+
+const RegisterAllButton = styled.button`
+    width: 100%;
+    margin-top: 16px;
+    background-color: #3b82f6;
+    color: var(--color-white);
+    padding: 8px 16px;
+    border: 2px solid #3b82f6;
+    font-size: 20px;
+    line-height: 28px;
+
+    &:hover {
+        background-color: var(--color-white);
+        color: #3b82f6;
+    }
+
+    @media (min-width: 768px) {
+        width: max-content;
+    }
+`
+
+const DownloadErrorsButton = styled.button`
+    width: 100%;
+    margin-top: 16px;
+    background-color: var(--color-danger);
+    color: var(--color-white);
+    padding: 8px 16px;
+    border: 2px solid var(--color-danger);
+    font-size: 20px;
+    line-height: 28px;
+
+    &:hover {
+        background-color: var(--color-white);
+        color: var(--color-danger);
+    }
+
+    @media (min-width: 768px) {
+        width: max-content;
+        min-width: 384px;
+    }
+`
+
+const InfoAlert = styled.div`
+    width: 100%;
+    max-width: 85%;
+    margin: 32px auto 16px;
+    background-color: #dbeafe;
+    border-left: 4px solid #3b82f6;
+    color: #1d4ed8;
+    padding: 16px;
+`
+
+const WarningAlert = styled.div`
+    width: 100%;
+    max-width: 85%;
+    margin: 32px auto 16px;
+    background-color: #fef9c3;
+    border-left: 4px solid #eab308;
+    color: #a16207;
+    padding: 16px;
+`
+
+const BoldText = styled.p`
+    font-weight: 700;
+`
+
+const DiscList = styled.ul`
+    list-style-type: disc;
+    list-style-position: inside;
+`
+
+const ErrorsLink = styled.a`
+    color: #3b82f6;
+    text-decoration-line: underline;
+`
+
+const BooksGrid = styled.div`
+    width: 100%;
+    height: 100%;
+    padding: 32px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+`
+
+const BookCard = styled.div`
+    width: 100%;
+    height: 100%;
+    padding: 32px;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid var(--color-gray-200);
+`
+
+const CardColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const CoverImageWrapper = styled.div`
+    padding: 32px;
+`
+
+const CoverImage = styled(Img)`
+    margin-bottom: 16px;
+`
+
+const LoadingContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    padding: 32px;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const CenteredColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
+
+const BrasilApiButton = styled.button<{ $highlighted: boolean }>`
+    margin-top: 16px;
+    width: 320px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 8px 16px;
+    border: 2px solid var(--color-primary);
+    font-size: 20px;
+    line-height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        background-color: var(--color-white);
+        color: var(--color-primary);
+    }
+
+    ${({ $highlighted }): string => ($highlighted ? 'border-width: 4px; border-color: var(--color-success);' : '')}
+`
+
+const SpinnerWrapper = styled.div`
+    margin-left: 16px;
+`
+
+const SpinnerIcon = styled(AiOutlineLoading3Quarters)`
+    animation: ${spin} 1s linear infinite;
+    color: var(--color-white);
+    font-size: 24px;
+`

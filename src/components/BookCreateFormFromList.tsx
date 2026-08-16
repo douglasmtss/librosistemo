@@ -1,10 +1,21 @@
 'use client'
-import Link from 'next/link'
 import { useState } from 'react'
 import { api } from '@/services/api'
 import { useToastify } from '@/hooks/useToastify'
 import { SelectPhoto } from './SelectPhoto'
 import { ImCamera } from 'react-icons/im'
+import {
+    CameraButton,
+    CancelLink,
+    Form,
+    FormActions,
+    FormContainer,
+    FormTitle,
+    ImageFieldRow,
+    ImageInput,
+    SubmitButton,
+    TextInput
+} from './formStyles'
 
 import { v4 as uuidv4 } from 'uuid'
 
@@ -76,13 +87,13 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
     }
 
     return (
-        <div className="p-8">
-            <h2 className="text-2xl">Formulário de Edição</h2>
+        <FormContainer>
+            <FormTitle>Formulário de Edição</FormTitle>
             {getPhoto && <SelectPhoto onCancel={() => setGetPhoto(false)} onSave={handleSave} />}
-            <form className="mt-4">
+            <Form>
                 <label htmlFor="isbn">
                     ISBN
-                    <input
+                    <TextInput
                         type="text"
                         name="isbn"
                         id="isbn"
@@ -94,12 +105,11 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 isbn: +e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="title">
                     Título
-                    <input
+                    <TextInput
                         type="text"
                         name="title"
                         id="title"
@@ -111,12 +121,11 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 title: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="subtitle">
                     Subtítulo
-                    <input
+                    <TextInput
                         type="text"
                         name="subtitle"
                         id="subtitle"
@@ -128,12 +137,11 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 subtitle: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="author">
                     Autor
-                    <input
+                    <TextInput
                         type="text"
                         name="author"
                         id="author"
@@ -145,12 +153,11 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 author: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="description">
                     Descrição
-                    <input
+                    <TextInput
                         type="text"
                         name="description"
                         id="description"
@@ -162,12 +169,11 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 description: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="category">
                     Categoria
-                    <input
+                    <TextInput
                         type="text"
                         name="category"
                         id="category"
@@ -179,13 +185,12 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 category: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="image">
                     Imagem
-                    <div className="flex items-center mb-4">
-                        <input
+                    <ImageFieldRow>
+                        <ImageInput
                             type="text"
                             name="image"
                             id="image"
@@ -197,22 +202,20 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                     image: e.target.value
                                 })
                             }
-                            className="border-2 border-gray-400 rounded-md p-2 w-full h-10"
                         />
-                        <button
-                            className="h-10 py-2 px-4 rounded-lg bg-primary ml-2 cursor-pointer text-white"
+                        <CameraButton
                             onClick={e => {
                                 e.preventDefault()
                                 setGetPhoto(true)
                             }}
                         >
                             <ImCamera />
-                        </button>
-                    </div>
+                        </CameraButton>
+                    </ImageFieldRow>
                 </label>
                 <label htmlFor="amount">
                     Quantidade
-                    <input
+                    <TextInput
                         type="number"
                         name="amount"
                         id="amount"
@@ -224,12 +227,11 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 amount: +e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="place">
                     Local
-                    <input
+                    <TextInput
                         type="text"
                         name="place"
                         id="place"
@@ -241,26 +243,15 @@ export default function BookCreateFormFromList(props: BookCreateFormProps): Reac
                                 place: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
-            </form>
+            </Form>
 
-            <div className="flex w-full justify-between items-center">
-                <Link
-                    href={'/pages/dashboard/book-registration'}
-                    className="py-4 px-8 rounded-lg bg-primary text-white font-semibold"
-                >
-                    Cancelar
-                </Link>
+            <FormActions>
+                <CancelLink href={'/pages/dashboard/book-registration'}>Cancelar</CancelLink>
 
-                <button
-                    className="py-4 px-8 rounded-lg bg-primary text-white font-semibold"
-                    onClick={() => handleSubmit(value)}
-                >
-                    Cadastrar
-                </button>
-            </div>
-        </div>
+                <SubmitButton onClick={() => handleSubmit(value)}>Cadastrar</SubmitButton>
+            </FormActions>
+        </FormContainer>
     )
 }

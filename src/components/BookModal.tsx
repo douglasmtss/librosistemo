@@ -1,4 +1,6 @@
+'use client'
 import { IoMdClose } from 'react-icons/io'
+import styled from 'styled-components'
 import { Img } from './Img'
 import { BookStatus } from './BookStatus'
 
@@ -6,35 +8,95 @@ export const BookModal = (props: { book: Book | Record<string, never>; onClose: 
     const { book, onClose } = props
 
     return (
-        <div className="z-10 fixed w-screen h-screen top-0 bottom-0 left-0 right-0 bg-[#0009] flex justify-center items-center">
-            <div className="relative bg-white w-[90%] max-w-125 h-[90%] flex flex-col overflow-y-auto">
-                <button className="absolute top-4 right-4 text-2xl" onClick={onClose}>
+        <Overlay>
+            <ModalContent>
+                <CloseButton onClick={onClose}>
                     <IoMdClose />
-                </button>
+                </CloseButton>
 
-                <div className="flex justify-center items-center px-8 pt-10">
+                <ImageWrapper>
                     <Img src={book.image} alt={book.title} width={250} height={350} />
-                </div>
+                </ImageWrapper>
 
-                <div className="px-8 mt-6">
-                    <h1 className="text-md text-gray-500">{book.title}</h1>
-                    <span className="block mt-2">
-                        Por: <span className="text-emerald-900">{book.author}</span>
-                    </span>
-                    <span className="block mt-2">
-                        Categoria: <span className="text-emerald-900">{book.category}</span>
-                    </span>
-                    <span className="block mt-2">
-                        Local: <span className="text-emerald-900">{book.place}</span>
-                    </span>
-                    <span className="block mt-2">
-                        Quantidade: <span className="text-emerald-900">{book.amount}</span>
-                    </span>
-                    <h4 className="mt-6">
+                <DetailsSection>
+                    <BookTitle>{book.title}</BookTitle>
+                    <DetailRow>
+                        Por: <DetailValue>{book.author}</DetailValue>
+                    </DetailRow>
+                    <DetailRow>
+                        Categoria: <DetailValue>{book.category}</DetailValue>
+                    </DetailRow>
+                    <DetailRow>
+                        Local: <DetailValue>{book.place}</DetailValue>
+                    </DetailRow>
+                    <DetailRow>
+                        Quantidade: <DetailValue>{book.amount}</DetailValue>
+                    </DetailRow>
+                    <StatusHeading>
                         <BookStatus label={book?.status} />
-                    </h4>
-                </div>
-            </div>
-        </div>
+                    </StatusHeading>
+                </DetailsSection>
+            </ModalContent>
+        </Overlay>
     )
 }
+
+const Overlay = styled.div`
+    z-index: 10;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    inset: 0;
+    background-color: #0009;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+const ModalContent = styled.div`
+    position: relative;
+    background-color: var(--color-white);
+    width: 90%;
+    max-width: 500px;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+`
+
+const CloseButton = styled.button`
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 24px;
+    line-height: 32px;
+`
+
+const ImageWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 32px 0;
+`
+
+const DetailsSection = styled.div`
+    padding: 0 32px;
+    margin-top: 24px;
+`
+
+const BookTitle = styled.h1`
+    color: var(--color-gray-500);
+`
+
+const DetailRow = styled.span`
+    display: block;
+    margin-top: 8px;
+`
+
+const DetailValue = styled.span`
+    color: #064e3b;
+`
+
+const StatusHeading = styled.h4`
+    margin-top: 24px;
+`

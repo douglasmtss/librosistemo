@@ -2,6 +2,7 @@
 import { BackButton } from '@/components/BackButton'
 import Link from 'next/link'
 import { useState } from 'react'
+import styled from 'styled-components'
 
 export default function List(): React.ReactNode {
     const [inputValue, setInputValue] = useState('')
@@ -21,38 +22,85 @@ export default function List(): React.ReactNode {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center p-8 w-full max-w-185 mx-auto">
-            <BackButton classNameContainer="mb-8" />
+        <PageContainer>
+            <BackButtonWrapper>
+                <BackButton />
+            </BackButtonWrapper>
             <h2>Digite ou cole uma lista de códigos ISBN</h2>
             <h3>Deve haver apenas um código por linha</h3>
-            <textarea
+            <IsbnTextArea
                 value={inputValue}
                 placeholder={`9788570460097\n9788570460097\n9788570460097`}
-                className="border-2 border-gray-400 rounded-md p-2 my-2 w-full h-48"
                 onChange={handleChange}
             />
-            <div className="w-full flex justify-between items-center">
-                <Link
-                    href={`/pages/dashboard/book-registration`}
-                    className="py-4 px-8 rounded-lg bg-primary text-white font-semibold"
-                >
-                    Cancelar
-                </Link>
+            <ActionsRow>
+                <CancelLink href={`/pages/dashboard/book-registration`}>Cancelar</CancelLink>
 
                 {inputValue ? (
-                    <button
-                        onClick={handleSearch}
-                        // href={`/pages/dashboard/book-registration/${inputValue}`}
-                        className="py-4 px-8 rounded-lg bg-primary text-white font-semibold border-none"
-                    >
-                        Pesquisar
-                    </button>
+                    <SearchButton onClick={handleSearch}>Pesquisar</SearchButton>
                 ) : (
-                    <button disabled className="py-4 px-8 rounded-lg bg-primary text-white font-semibold opacity-45">
-                        Pesquisar
-                    </button>
+                    <DisabledSearchButton disabled>Pesquisar</DisabledSearchButton>
                 )}
-            </div>
-        </div>
+            </ActionsRow>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const BackButtonWrapper = styled.div`
+    margin-bottom: 32px;
+`
+
+const IsbnTextArea = styled.textarea`
+    border: 2px solid #9ca3af;
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    width: 100%;
+    height: 192px;
+`
+
+const ActionsRow = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`
+
+const CancelLink = styled(Link)`
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 600;
+`
+
+const SearchButton = styled.button`
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 600;
+    border: none;
+`
+
+const DisabledSearchButton = styled.button`
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 600;
+    opacity: 0.45;
+`

@@ -39,11 +39,11 @@ jest.mock('@/components/Loading', () => {
     }
 })
 
-jest.mock('@/components/BackButton', () => {
-    return function MockBackButton(): React.JSX.Element {
+jest.mock('@/components/BackButton', () => ({
+    BackButton: function MockBackButton(): React.JSX.Element {
         return <div data-testid="back-button">BackButton</div>
     }
-})
+}))
 
 jest.mock('@/hooks/useEntities', () => ({
     useEntities: jest.fn(() => ({

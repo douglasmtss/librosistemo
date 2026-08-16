@@ -86,8 +86,9 @@ describe('Camera', () => {
         const { container } = render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         return waitFor(() => {
-            const mainDiv = container.querySelector('.flex.flex-col.justify-center')
-            expect(mainDiv).toBeTruthy()
+            const mainDiv = container.firstChild as HTMLElement
+            expect(mainDiv.tagName).toBe('DIV')
+            expect(mainDiv.contains(screen.getByText('Cancelar'))).toBe(true)
         })
     })
 
@@ -114,12 +115,12 @@ describe('Camera', () => {
         })
     })
 
-    test('should have flex container structure', () => {
+    test('should have nested container structure', () => {
         const { container } = render(<Camera onSave={mockOnSave} onCancel={mockOnCancel} />)
 
         return waitFor(() => {
-            const flexElements = container.querySelectorAll('.flex')
-            expect(flexElements.length).toBeGreaterThan(0)
+            const divElements = container.querySelectorAll('div')
+            expect(divElements.length).toBeGreaterThan(1)
         })
     })
 

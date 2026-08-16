@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ChangeEvent, useEffect, useState, useRef } from 'react'
 import { BackButton } from '@/components/BackButton'
 import { Loading } from '@/components/Loading'
+import styled from 'styled-components'
 
 export type FilterBook = {
     label: 'Título' | 'Autor' | 'Categoria' | 'ISBN'
@@ -77,88 +78,56 @@ export default function Books(): React.ReactNode {
     }
 
     return (
-        <div className="w-full max-w-185 mx-auto">
-            <div className="w-full flex justify-between items-center mb-8 p-4">
+        <PageContainer>
+            <Header>
                 <BackButton />
-                <Link
-                    href={'/pages/dashboard/book-registration'}
-                    className="py-2 px-4 bg-primary text-white rounded-lg"
-                >
-                    Cadastrar livro
-                </Link>
-            </div>
-            <div className="px-4">
-                <div className="flex flex-col md:flex-row-reverse  mb-8 md:px-8">
-                    <div
-                        ref={filterRef}
-                        className="relative w-full md:w-32 md:ml-4 h-10 mb-2 flex justify-center items-center border cursor-pointer"
-                    >
-                        <div
-                            onClick={() => setShowFilter(!showFilter)}
-                            className="w-full flex justify-center items-center"
-                        >
+                <RegisterLink href={'/pages/dashboard/book-registration'}>Cadastrar livro</RegisterLink>
+            </Header>
+            <Content>
+                <SearchRow>
+                    <FilterSelector ref={filterRef}>
+                        <FilterToggle onClick={() => setShowFilter(!showFilter)}>
                             <span>{filter.label}</span>
-                        </div>
+                        </FilterToggle>
                         {showFilter ? (
-                            <div className="absolute top-full right-0 w-full flex flex-col justify-center items-center border bg-white">
-                                <div
+                            <FilterDropdown>
+                                <FilterOption
                                     onClick={handleFilterBook}
                                     data-filter="title"
                                     data-label="Título"
-                                    className={
-                                        filter.value === 'title'
-                                            ? 'hidden'
-                                            : 'w-full flex justify-center items-center p-2  hover:bg-slate-300 odd:bg-slate-100'
-                                    }
+                                    $hidden={filter.value === 'title'}
                                 >
                                     Título
-                                </div>
-                                <div
+                                </FilterOption>
+                                <FilterOption
                                     onClick={handleFilterBook}
                                     data-filter="author"
                                     data-label="Autor"
-                                    className={
-                                        filter.value === 'author'
-                                            ? 'hidden'
-                                            : 'w-full flex justify-center items-center p-2 hover:bg-slate-300 odd:bg-slate-100'
-                                    }
+                                    $hidden={filter.value === 'author'}
                                 >
                                     Autor
-                                </div>
-                                <div
+                                </FilterOption>
+                                <FilterOption
                                     onClick={handleFilterBook}
                                     data-filter="category"
                                     data-label="Categoria"
-                                    className={
-                                        filter.value === 'category'
-                                            ? 'hidden'
-                                            : 'w-full flex justify-center items-center p-2 hover:bg-slate-300 odd:bg-slate-100'
-                                    }
+                                    $hidden={filter.value === 'category'}
                                 >
                                     Categoria
-                                </div>
-                                <div
+                                </FilterOption>
+                                <FilterOption
                                     onClick={handleFilterBook}
                                     data-filter="isbn"
                                     data-label="ISBN"
-                                    className={
-                                        filter.value === 'isbn'
-                                            ? 'hidden'
-                                            : 'w-full flex justify-center items-center p-2 hover:bg-slate-300 odd:bg-slate-100'
-                                    }
+                                    $hidden={filter.value === 'isbn'}
                                 >
                                     ISBN
-                                </div>
-                            </div>
+                                </FilterOption>
+                            </FilterDropdown>
                         ) : null}
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Pesquise pelo título do livro"
-                        className="border-2 border-gray-300 w-full h-10 p-2"
-                        onChange={handleChange}
-                    />
-                </div>
+                    </FilterSelector>
+                    <SearchInput type="text" placeholder="Pesquise pelo título do livro" onChange={handleChange} />
+                </SearchRow>
                 {loading ? (
                     <Loading />
                 ) : !filteredBooks?.length ? (
@@ -166,7 +135,107 @@ export default function Books(): React.ReactNode {
                 ) : (
                     <PaginatedBookItems itemsPerPage={10} books={filteredBooks} onDelete={handleDelete} />
                 )}
-            </div>
-        </div>
+            </Content>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const Header = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 16px;
+`
+
+const RegisterLink = styled(Link)`
+    padding: 8px 16px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-radius: var(--radius-md);
+`
+
+const Content = styled.div`
+    padding-left: 16px;
+    padding-right: 16px;
+`
+
+const SearchRow = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 32px;
+
+    @media (min-width: 768px) {
+        flex-direction: row-reverse;
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+`
+
+const FilterSelector = styled.div`
+    position: relative;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--color-gray-200);
+    cursor: pointer;
+
+    @media (min-width: 768px) {
+        width: 128px;
+        margin-left: 16px;
+    }
+`
+
+const FilterToggle = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+const FilterDropdown = styled.div`
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--color-gray-200);
+    background-color: var(--color-white);
+`
+
+const FilterOption = styled.div<{ $hidden: boolean }>`
+    display: ${({ $hidden }): string => ($hidden ? 'none' : 'flex')};
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+
+    &:nth-child(odd) {
+        background-color: var(--color-gray-100);
+    }
+
+    &:hover {
+        background-color: var(--color-gray-300);
+    }
+`
+
+const SearchInput = styled.input`
+    border: 2px solid var(--color-gray-300);
+    width: 100%;
+    height: 40px;
+    padding: 8px;
+`

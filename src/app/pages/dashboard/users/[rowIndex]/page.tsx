@@ -3,6 +3,7 @@ import UserEditForm from '@/components/UserEditForm'
 import { BackButton } from '@/components/BackButton'
 import { useEffect, useState } from 'react'
 import { api } from '@/services/api'
+import styled from 'styled-components'
 
 interface EditUserProps {
     params: {
@@ -21,7 +22,7 @@ export default function EditUser({ params }: EditUserProps): React.ReactNode {
 
     return (
         <>
-            <BackButton classNameContainer="ml-8 mb-8" />
+            <PositionedBackButton />
             <UserEditForm
                 id={user?.id}
                 rowIndex={params?.rowIndex}
@@ -32,3 +33,12 @@ export default function EditUser({ params }: EditUserProps): React.ReactNode {
         </>
     )
 }
+
+const BackButtonWithClassName = ({ className }: { className?: string }): React.ReactNode => (
+    <BackButton classNameContainer={className} />
+)
+
+const PositionedBackButton = styled(BackButtonWithClassName)`
+    margin-left: 32px;
+    margin-bottom: 32px;
+`

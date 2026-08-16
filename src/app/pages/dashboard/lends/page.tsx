@@ -7,6 +7,7 @@ import { useEntities } from '@/hooks/useEntities'
 import { api } from '@/services/api'
 import Link from 'next/link'
 import { ChangeEvent } from 'react'
+import styled from 'styled-components'
 
 export default function Lends(): React.ReactNode {
     const { books, lends, setLends, filteredLends, setFilteredLends, loadingLends } = useEntities(['books', 'lends'])
@@ -46,33 +47,75 @@ export default function Lends(): React.ReactNode {
     }
 
     return (
-        <div className="w-full max-w-185 mx-auto">
-            <BackButton classNameContainer="ml-4 mb-8" />
-            <div className="w-full flex justify-center items-center mb-8">
-                <Link
-                    href={'/pages/dashboard/lends/lend-registration'}
-                    className="py-2 px-4 bg-primary text-white rounded-lg"
-                >
+        <PageContainer>
+            <IndentedBackButton />
+            <RegisterLinkContainer>
+                <RegisterLendLink href={'/pages/dashboard/lends/lend-registration'}>
                     Registrar um empréstimo
-                </Link>
-            </div>
+                </RegisterLendLink>
+            </RegisterLinkContainer>
             {loadingLends ? (
                 <Loading />
             ) : !filteredLends?.length ? (
                 <Empty />
             ) : (
-                <div className="px-4">
-                    <div className="flex justify-between items-center mb-8">
-                        <input
+                <ListContainer>
+                    <SearchContainer>
+                        <SearchInput
                             type="text"
                             placeholder="Pesquise pelo primeiro nome do usuário"
-                            className="border-2 border-gray-300 w-full h-10 p-2"
                             onChange={handleChange}
                         />
-                    </div>
+                    </SearchContainer>
                     <PaginatedLendsItems itemsPerPage={10} lends={filteredLends} onDelete={handleDelete} />
-                </div>
+                </ListContainer>
             )}
-        </div>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const IndentedBackButton = styled(BackButton)`
+    margin-left: 16px;
+    margin-bottom: 32px;
+`
+
+const RegisterLinkContainer = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+`
+
+const RegisterLendLink = styled(Link)`
+    padding: 8px 16px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-radius: var(--radius-md);
+`
+
+const ListContainer = styled.div`
+    padding-left: 16px;
+    padding-right: 16px;
+`
+
+const SearchContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+`
+
+const SearchInput = styled.input`
+    border: 2px solid var(--color-gray-300);
+    width: 100%;
+    height: 40px;
+    padding: 8px;
+`

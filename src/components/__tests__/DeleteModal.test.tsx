@@ -63,50 +63,40 @@ describe('DeleteModal', () => {
         expect(mockOnCancel).not.toHaveBeenCalled()
     })
 
-    test('should have correct styling on Cancel button', () => {
+    test('should render Cancel button as a button element with a styled class', () => {
         render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
         const cancelButton = screen.getByText('Cancelar')
-        expect(cancelButton.className).toContain('px-2')
-        expect(cancelButton.className).toContain('py-4')
-        expect(cancelButton.className).toContain('rounded-md')
-        expect(cancelButton.className).toContain('text-white')
-        expect(cancelButton.className).toContain('bg-primary')
-        expect(cancelButton.className).toContain('flex-1')
+        expect(cancelButton.tagName).toBe('BUTTON')
+        expect(cancelButton.className).not.toBe('')
     })
 
-    test('should have correct styling on Confirm button', () => {
+    test('should render Confirm button as a button element with a styled class', () => {
         render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
         const confirmButton = screen.getByText('Confirmar')
-        expect(confirmButton.className).toContain('px-2')
-        expect(confirmButton.className).toContain('py-4')
-        expect(confirmButton.className).toContain('rounded-md')
-        expect(confirmButton.className).toContain('text-white')
-        expect(confirmButton.className).toContain('bg-red-500')
-        expect(confirmButton.className).toContain('flex-1')
+        expect(confirmButton.tagName).toBe('BUTTON')
+        expect(confirmButton.className).not.toBe('')
     })
 
-    test('should have correct margin on Confirm button', () => {
+    test('should style Cancel and Confirm buttons differently', () => {
         render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
+        const cancelButton = screen.getByText('Cancelar')
         const confirmButton = screen.getByText('Confirmar')
-        expect(confirmButton.className).toContain('ml-8')
+        expect(cancelButton.className).not.toBe(confirmButton.className)
     })
 
-    test('should have fixed overlay styling', () => {
+    test('should render an overlay as the outermost element wrapping both buttons', () => {
         const { container } = render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
-        const overlay = container.querySelector('[class*="fixed"]')
-        expect(overlay?.className).toContain('z-10')
-        expect(overlay?.className).toContain('fixed')
-        expect(overlay?.className).toContain('w-screen')
-        expect(overlay?.className).toContain('h-screen')
-        expect(overlay?.className).toContain('bg-[#0009]')
+        const overlay = container.firstChild as HTMLElement
+        expect(overlay.tagName).toBe('DIV')
+        expect(overlay.contains(screen.getByText('Cancelar'))).toBe(true)
+        expect(overlay.contains(screen.getByText('Confirmar'))).toBe(true)
     })
 
-    test('should have correct positioning and centering', () => {
-        const { container } = render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
-        const overlay = container.querySelector('[class*="fixed"]')
-        expect(overlay?.className).toContain('flex')
-        expect(overlay?.className).toContain('justify-center')
-        expect(overlay?.className).toContain('items-center')
+    test('should render both buttons inside the same actions wrapper', () => {
+        render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
+        const cancelButton = screen.getByText('Cancelar')
+        const confirmButton = screen.getByText('Confirmar')
+        expect(cancelButton.parentElement).toBe(confirmButton.parentElement)
     })
 
     test('should handle multiple clicks on Cancel button', () => {
@@ -139,11 +129,11 @@ describe('DeleteModal', () => {
         expect(buttons[1].textContent).toBe('Confirmar')
     })
 
-    test('should have correct max-width and relative positioning', () => {
+    test('should render the actions wrapper as the only child of the overlay', () => {
         const { container } = render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
-        const contentDiv = container.querySelector('[class*="relative"]')
-        expect(contentDiv?.className).toContain('w-[90%]')
-        expect(contentDiv?.className).toContain('max-w-125')
+        const overlay = container.firstChild as HTMLElement
+        expect(overlay.children.length).toBe(1)
+        expect((overlay.firstChild as HTMLElement).tagName).toBe('DIV')
     })
 
     test('should return React.ReactNode', () => {
@@ -151,10 +141,11 @@ describe('DeleteModal', () => {
         expect(result).toBeTruthy()
     })
 
-    test('should have correct flex layout for buttons container', () => {
+    test('should contain only the two action buttons in the actions wrapper', () => {
         const { container } = render(<DeleteModal onCancel={mockOnCancel} onConfirm={mockOnConfirm} />)
-        const contentDiv = container.querySelector('[class*="relative"]')
-        expect(contentDiv?.className).toContain('flex')
-        expect(contentDiv?.className).toContain('overflow-y-auto')
+        const actionsWrapper = (container.firstChild as HTMLElement).firstChild as HTMLElement
+        expect(actionsWrapper.children.length).toBe(2)
+        expect(actionsWrapper.children[0].tagName).toBe('BUTTON')
+        expect(actionsWrapper.children[1].tagName).toBe('BUTTON')
     })
 })

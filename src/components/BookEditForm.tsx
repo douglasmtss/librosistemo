@@ -1,11 +1,22 @@
 'use client'
 import { api } from '@/services/api'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ImCamera } from 'react-icons/im'
 import { SelectPhoto } from './SelectPhoto'
 import { useToastify } from '@/hooks/useToastify'
+import {
+    CameraButton,
+    CancelLink,
+    Form,
+    FormActions,
+    FormContainer,
+    FormTitle,
+    ImageFieldRow,
+    ImageInput,
+    SubmitButton,
+    TextInput
+} from './formStyles'
 
 export type BookEditFormProps = {
     rowIndex: string
@@ -57,13 +68,13 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
     }, [props])
 
     return (
-        <div className="p-8">
-            <h2 className="text-2xl">Formulário de Edição</h2>
+        <FormContainer>
+            <FormTitle>Formulário de Edição</FormTitle>
             {getPhoto && <SelectPhoto onCancel={() => setGetPhoto(false)} onSave={handleSave} />}
-            <form className="mt-4">
+            <Form>
                 <label htmlFor="isbn">
                     ISBN
-                    <input
+                    <TextInput
                         type="text"
                         name="isbn"
                         id="isbn"
@@ -75,12 +86,11 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 isbn: +e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="title">
                     Título
-                    <input
+                    <TextInput
                         type="text"
                         name="title"
                         id="title"
@@ -92,12 +102,11 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 title: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="subtitle">
                     Subtítulo
-                    <input
+                    <TextInput
                         type="text"
                         name="subtitle"
                         id="subtitle"
@@ -109,12 +118,11 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 subtitle: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="author">
                     Autor
-                    <input
+                    <TextInput
                         type="text"
                         name="author"
                         id="author"
@@ -126,12 +134,11 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 author: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="description">
                     Descrição
-                    <input
+                    <TextInput
                         type="text"
                         name="description"
                         id="description"
@@ -143,12 +150,11 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 description: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="category">
                     Categoria
-                    <input
+                    <TextInput
                         type="text"
                         name="category"
                         id="category"
@@ -160,13 +166,12 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 category: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="image">
                     Imagem
-                    <div className="flex items-center mb-4">
-                        <input
+                    <ImageFieldRow>
+                        <ImageInput
                             type="text"
                             name="image"
                             id="image"
@@ -178,22 +183,20 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                     image: e.target.value
                                 })
                             }
-                            className="border-2 border-gray-400 rounded-md p-2 w-full h-10"
                         />
-                        <button
-                            className="h-10 py-2 px-4 rounded-lg bg-primary ml-2 cursor-pointer text-white"
+                        <CameraButton
                             onClick={e => {
                                 e.preventDefault()
                                 setGetPhoto(true)
                             }}
                         >
                             <ImCamera />
-                        </button>
-                    </div>
+                        </CameraButton>
+                    </ImageFieldRow>
                 </label>
                 <label htmlFor="amount">
                     Quantidade
-                    <input
+                    <TextInput
                         type="number"
                         name="amount"
                         id="amount"
@@ -205,12 +208,11 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 amount: +e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
                 <label htmlFor="place">
                     Local
-                    <input
+                    <TextInput
                         type="text"
                         name="place"
                         id="place"
@@ -222,23 +224,15 @@ export default function BookEditForm(props: BookEditFormProps): React.ReactNode 
                                 place: e.target.value
                             })
                         }
-                        className="border-2 border-gray-400 rounded-md p-2 w-full h-10 mb-4"
                     />
                 </label>
-            </form>
+            </Form>
 
-            <div className="flex w-full justify-between items-center">
-                <Link href={'/pages/dashboard'} className="py-4 px-8 rounded-lg bg-primary text-white font-semibold">
-                    Cancelar
-                </Link>
+            <FormActions>
+                <CancelLink href={'/pages/dashboard'}>Cancelar</CancelLink>
 
-                <button
-                    className="py-4 px-8 rounded-lg bg-primary text-white font-semibold"
-                    onClick={() => handleSubmit(value)}
-                >
-                    Salvar
-                </button>
-            </div>
-        </div>
+                <SubmitButton onClick={() => handleSubmit(value)}>Salvar</SubmitButton>
+            </FormActions>
+        </FormContainer>
     )
 }

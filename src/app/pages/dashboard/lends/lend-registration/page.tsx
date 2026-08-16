@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { FaPencilAlt } from 'react-icons/fa'
 import Select from 'react-select'
+import styled from 'styled-components'
 
 import { v4 as uuidv4 } from 'uuid'
 import { useEntities } from '@/hooks/useEntities'
@@ -76,40 +77,39 @@ export default function LendRegistration(): React.ReactNode {
     }, [bookSelected?.label, bookSelected?.value, userSelected?.first_name, userSelected?.id, userSelected?.last_name])
 
     return (
-        <div className="w-full max-w-185 mx-auto">
-            <BackButton classNameContainer="ml-4 mb-8" />
+        <PageContainer>
+            <IndentedBackButton />
             {loadingUsers ? (
                 <Loading />
             ) : (
                 !userSelected?.id &&
                 users.map(user => {
                     return (
-                        <div
+                        <UserRow
                             key={user.id}
-                            className="flex  items-center w-full border-b-2 p-4 even:bg-slate-100 hover:bg-slate-200"
                             onClick={() => {
                                 setUserSelected(user)
                             }}
                         >
-                            <div className="flex justify-between items-center flex-1 flex-col sm:flex-row">
+                            <UserInfo>
                                 <span>{user.first_name}</span>
                                 <span> {user.last_name}</span>
                                 <span> {user.phone}</span>
-                            </div>
-                            <button className="text-primary ml-4">
+                            </UserInfo>
+                            <EditUserButton>
                                 <FaPencilAlt />
-                            </button>
-                        </div>
+                            </EditUserButton>
+                        </UserRow>
                     )
                 })
             )}
 
             {userSelected?.id && (
                 <>
-                    <div className="flex flex-col p-4">
-                        <span className="mb-4">Nome: {userSelected.first_name}</span>
-                        <span className="mb-4">Sobrenome: {userSelected.last_name}</span>
-                        <span className="mb-4">Telefone: {userSelected.phone}</span>
+                    <SelectedUserContainer>
+                        <SelectedUserField>Nome: {userSelected.first_name}</SelectedUserField>
+                        <SelectedUserField>Sobrenome: {userSelected.last_name}</SelectedUserField>
+                        <SelectedUserField>Telefone: {userSelected.phone}</SelectedUserField>
 
                         <div>
                             <h2>Selecione o livro:</h2>
@@ -121,27 +121,93 @@ export default function LendRegistration(): React.ReactNode {
                                 }}
                             />
                         </div>
-                        <span className="mt-2">{`Quantidade: ${selectedBookAmount}`}</span>
-                        <span className="mt-2">{`Quantidade disponível: ${booksAvailable}`}</span>
-                    </div>
+                        <BookAmountInfo>{`Quantidade: ${selectedBookAmount}`}</BookAmountInfo>
+                        <BookAmountInfo>{`Quantidade disponível: ${booksAvailable}`}</BookAmountInfo>
+                    </SelectedUserContainer>
 
-                    <div className="p-4">
-                        <button
+                    <SaveButtonContainer>
+                        <SaveButton
                             disabled={!booksAvailable || alreadyLent}
-                            className={
-                                booksAvailable
-                                    ? 'py-2 px-4 rounded-md bg-primary text-white'
-                                    : 'py-2 px-4 rounded-md bg-gray-300 text-gray-500'
-                            }
+                            $available={!!booksAvailable}
                             onClick={() => {
                                 handleSubmit()
                             }}
                         >
                             Salvar
-                        </button>
-                    </div>
+                        </SaveButton>
+                    </SaveButtonContainer>
                 </>
             )}
-        </div>
+        </PageContainer>
     )
 }
+
+const PageContainer = styled.div`
+    width: 100%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const IndentedBackButton = styled(BackButton)`
+    margin-left: 16px;
+    margin-bottom: 32px;
+`
+
+const UserRow = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom-width: 2px;
+    padding: 16px;
+
+    &:nth-child(even) {
+        background-color: #f1f5f9;
+    }
+
+    &:hover {
+        background-color: #e2e8f0;
+    }
+`
+
+const UserInfo = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 1 0%;
+    flex-direction: column;
+
+    @media (min-width: 640px) {
+        flex-direction: row;
+    }
+`
+
+const EditUserButton = styled.button`
+    color: var(--color-primary);
+    margin-left: 16px;
+`
+
+const SelectedUserContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+`
+
+const SelectedUserField = styled.span`
+    margin-bottom: 16px;
+`
+
+const BookAmountInfo = styled.span`
+    margin-top: 8px;
+`
+
+const SaveButtonContainer = styled.div`
+    padding: 16px;
+`
+
+const SaveButton = styled.button<{ $available: boolean }>`
+    padding: 8px 16px;
+    border-radius: 6px;
+    background-color: ${({ $available }): string => ($available ? 'var(--color-primary)' : 'var(--color-gray-300)')};
+    color: ${({ $available }): string => ($available ? 'var(--color-white)' : 'var(--color-gray-500)')};
+`

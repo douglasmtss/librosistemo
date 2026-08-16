@@ -158,44 +158,43 @@ describe('SelectPhoto', () => {
         expect(mockOnSave).toHaveBeenCalledWith('gallery-image.jpg')
     })
 
-    test('should have correct styling on Cancel button', () => {
+    test('should render Cancel button as a button element with a styled class', () => {
         render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
         const cancelButton = screen.getByText('Cancelar')
-        expect(cancelButton.className).toContain('py-2')
-        expect(cancelButton.className).toContain('px-4')
-        expect(cancelButton.className).toContain('rounded-lg')
-        expect(cancelButton.className).toContain('bg-gray-200')
+        expect(cancelButton.tagName).toBe('BUTTON')
+        expect(cancelButton.className).not.toBe('')
     })
 
-    test('should have correct styling on Gallery button', () => {
+    test('should style Gallery and Camera buttons the same way', () => {
         render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
         const galleryButton = screen.getByText('Galeria')
-        expect(galleryButton.className).toContain('bg-primary')
-        expect(galleryButton.className).toContain('text-white')
-    })
-
-    test('should have correct styling on Camera button', () => {
-        render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
         const cameraButton = screen.getByText('Camera')
-        expect(cameraButton.className).toContain('bg-primary')
-        expect(cameraButton.className).toContain('text-white')
+        expect(galleryButton.className).toBe(cameraButton.className)
     })
 
-    test('should have fixed full-screen overlay', () => {
-        const { container } = render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
-        const overlay = container.querySelector('[class*="fixed"]')
-        expect(overlay?.className).toContain('fixed')
-        expect(overlay?.className).toContain('w-full')
-        expect(overlay?.className).toContain('h-full')
-        expect(overlay?.className).toContain('bg-[#0008]')
+    test('should style Cancel button differently from primary buttons', () => {
+        render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
+        const cancelButton = screen.getByText('Cancelar')
+        const cameraButton = screen.getByText('Camera')
+        expect(cancelButton.className).not.toBe(cameraButton.className)
     })
 
-    test('should center content', () => {
+    test('should render an overlay as the outermost element', () => {
         const { container } = render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
-        const overlay = container.querySelector('[class*="flex"]')
-        expect(overlay?.className).toContain('flex')
-        expect(overlay?.className).toContain('justify-center')
-        expect(overlay?.className).toContain('items-center')
+        const overlay = container.firstChild as HTMLElement
+        expect(overlay.tagName).toBe('DIV')
+        expect(overlay.contains(screen.getByText('Cancelar'))).toBe(true)
+        expect(overlay.contains(screen.getByText('Galeria'))).toBe(true)
+        expect(overlay.contains(screen.getByText('Camera'))).toBe(true)
+    })
+
+    test('should render all buttons inside the same actions row', () => {
+        render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
+        const cancelButton = screen.getByText('Cancelar')
+        const galleryButton = screen.getByText('Galeria')
+        const cameraButton = screen.getByText('Camera')
+        expect(cancelButton.parentElement).toBe(galleryButton.parentElement)
+        expect(galleryButton.parentElement).toBe(cameraButton.parentElement)
     })
 
     test('should not call onCancel when Gallery button is clicked', () => {
@@ -214,15 +213,14 @@ describe('SelectPhoto', () => {
         expect(mockOnCancel).not.toHaveBeenCalled()
     })
 
-    test('should render buttons with correct margin', () => {
+    test('should render buttons in the correct order', () => {
         render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
         const buttons = screen.getAllByRole('button')
 
-        buttons.forEach((button, index) => {
-            if (index > 0) {
-                expect(button.className).toContain('ml-2')
-            }
-        })
+        expect(buttons.length).toBe(3)
+        expect(buttons[0].textContent).toBe('Cancelar')
+        expect(buttons[1].textContent).toBe('Galeria')
+        expect(buttons[2].textContent).toBe('Camera')
     })
 
     test('should return React.ReactNode', () => {
@@ -230,15 +228,12 @@ describe('SelectPhoto', () => {
         expect(result).toBeTruthy()
     })
 
-    test('should have text-xl class on buttons', () => {
+    test('should apply generated styled-components classes to all buttons', () => {
         render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
-        const cancelButton = screen.getByText('Cancelar')
-        expect(cancelButton.className).toContain('text-xl')
-    })
+        const buttons = screen.getAllByRole('button')
 
-    test('should have font-semibold class on buttons', () => {
-        render(<SelectPhoto onCancel={mockOnCancel} onSave={mockOnSave} />)
-        const galleryButton = screen.getByText('Galeria')
-        expect(galleryButton.className).toContain('font-semibold')
+        buttons.forEach(button => {
+            expect(button.className).not.toBe('')
+        })
     })
 })

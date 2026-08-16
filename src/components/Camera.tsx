@@ -1,5 +1,7 @@
+'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
+import styled from 'styled-components'
 import { Img } from './Img'
 import { reduceImageFileSize } from '@/lib/reduceImageFileSize'
 
@@ -54,8 +56,8 @@ export const Camera = ({ onCancel, onSave }: CameraProps): React.ReactNode => {
     }, [webcamRef])
 
     return (
-        <div className="flex flex-col justify-center items-center w-full h-full fixed bottom-0 top-0 right-0 left-0 bg-[#0008]">
-            <div className="flex flex-col justify-center items-center w-full h-full">
+        <Overlay>
+            <ContentWrapper>
                 {image.origial ? (
                     <div>
                         <Img src={image.origial} alt="foto agora" />
@@ -69,47 +71,97 @@ export const Camera = ({ onCancel, onSave }: CameraProps): React.ReactNode => {
                                 videoConstraints={{ deviceId }}
                             />
                         ) : (
-                            <div className="bg-white w-full flex flex-col p-4">
+                            <DevicesPanel>
                                 {devices?.map((device, key) => {
                                     return (
-                                        <button
-                                            key={key}
-                                            onClick={() => setDeviceId(device.deviceId)}
-                                            className="py-2 px-4 rounded-md bg-gray-400 text-white mb-2"
-                                        >
+                                        <DeviceButton key={key} onClick={() => setDeviceId(device.deviceId)}>
                                             {device?.label || `Device ${key + 1}`}
-                                        </button>
+                                        </DeviceButton>
                                     )
                                 })}
-                            </div>
+                            </DevicesPanel>
                         )}
                     </>
                 )}
 
-                <div className="flex justify-center items-center h-12 mt-8">
-                    <button
-                        className="py-4 px-8 rounded-lg bg-primary text-xl text-white font-semibold mr-10"
-                        onClick={onCancel}
-                    >
-                        Cancelar
-                    </button>
+                <ActionsRow>
+                    <CancelButton onClick={onCancel}>Cancelar</CancelButton>
                     {image.origial ? (
-                        <button
-                            className="py-4 px-8 rounded-lg bg-green-500 text-xl text-white font-semibold ml-10"
-                            onClick={() => onSave(image.compressed)}
-                        >
-                            Salvar
-                        </button>
+                        <SaveButton onClick={() => onSave(image.compressed)}>Salvar</SaveButton>
                     ) : (
-                        <button
-                            className="py-4 px-8 rounded-lg bg-primary text-xl text-white font-semibold ml-10"
-                            onClick={capture}
-                        >
-                            Tirar foto
-                        </button>
+                        <CaptureButton onClick={capture}>Tirar foto</CaptureButton>
                     )}
-                </div>
-            </div>
-        </div>
+                </ActionsRow>
+            </ContentWrapper>
+        </Overlay>
     )
 }
+
+const Overlay = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    inset: 0;
+    background-color: #0008;
+`
+
+const ContentWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+`
+
+const DevicesPanel = styled.div`
+    background-color: var(--color-white);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+`
+
+const DeviceButton = styled.button`
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    background-color: #9ca3af;
+    color: var(--color-white);
+    margin-bottom: 8px;
+`
+
+const ActionsRow = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    margin-top: 32px;
+`
+
+const ActionButton = styled.button`
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
+    font-size: 20px;
+    line-height: 28px;
+    color: var(--color-white);
+    font-weight: 600;
+`
+
+const CancelButton = styled(ActionButton)`
+    background-color: var(--color-primary);
+    margin-right: 40px;
+`
+
+const SaveButton = styled(ActionButton)`
+    background-color: var(--color-success);
+    margin-left: 40px;
+`
+
+const CaptureButton = styled(ActionButton)`
+    background-color: var(--color-primary);
+    margin-left: 40px;
+`

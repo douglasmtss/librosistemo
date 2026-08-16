@@ -1,14 +1,13 @@
 import React from 'react'
 import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
 import fs from 'fs'
 import path from 'path'
 import List from '../pages/dashboard/book-registration/list/page'
 
-jest.mock('@/components/BackButton', () => {
-    return function MockBackButton(): React.JSX.Element {
-        return <div data-testid="back-button">Back Button</div>
-    }
-})
+jest.mock('@/components/BackButton', () => ({
+    BackButton: (): React.JSX.Element => <div data-testid="back-button">Back Button</div>
+}))
 
 describe('List Page', () => {
     test('should export default List component', () => {
@@ -31,11 +30,13 @@ describe('List Page', () => {
         expect(content).toContain('Digite ou cole uma lista de códigos ISBN')
     })
 
-    test('should contain textarea element', () => {
-        const filePath = path.join(__dirname, '../pages/dashboard/book-registration/list/page.tsx')
-        const content = fs.readFileSync(filePath, 'utf-8')
+    test('should render textarea element for the ISBN list', () => {
+        render(<List />)
 
-        expect(content).toContain('<textarea')
+        const textarea = screen.getByRole('textbox')
+
+        expect(textarea.tagName).toBe('TEXTAREA')
+        expect(textarea).toHaveAttribute('placeholder', '9788570460097\n9788570460097\n9788570460097')
     })
 
     test('should import BackButton component', () => {

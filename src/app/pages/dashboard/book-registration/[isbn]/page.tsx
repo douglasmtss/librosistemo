@@ -7,6 +7,7 @@ import { Img } from '@/components/Img'
 import { useToastify } from '@/hooks/useToastify'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BackButton } from '@/components/BackButton'
+import styled, { keyframes } from 'styled-components'
 
 interface SearchPageProps {
     params: {
@@ -62,7 +63,7 @@ export default function SearchPage({ params }: SearchPageProps): React.ReactNode
     if (!bookInfo?.title && !loading) {
         return (
             <>
-                <BackButton classNameContainer="ml-8" />
+                <BackButtonOffsetLeft />
                 <Empty />
             </>
         )
@@ -70,19 +71,18 @@ export default function SearchPage({ params }: SearchPageProps): React.ReactNode
 
     if (bookInfo?.title) {
         return (
-            <div className="w-full h-full p-8 max-w-185 mx-auto">
-                <BackButton classNameContainer="mb-8" />
+            <PageContainer>
+                <BackButtonSpacedBottom />
                 <h2>Resultado da pesquisa</h2>
                 <span>Verifique se está correto antes de cadastrar</span>
-                <div className="flex flex-col">
-                    <div className="p-8">
-                        <Img
+                <FormColumn>
+                    <CoverImageWrapper>
+                        <CoverImage
                             src={`${bookInfo?.imageLinks?.thumbnail ?? '/images/empty-book.png'}`}
                             alt="capa do livro"
                             width={250}
-                            className="mb-4"
                         />
-                    </div>
+                    </CoverImageWrapper>
                     <BookCreateForm
                         isbn={+params?.isbn}
                         title={bookInfo?.title}
@@ -94,27 +94,100 @@ export default function SearchPage({ params }: SearchPageProps): React.ReactNode
                         category={String(bookInfo?.categories)}
                         place=""
                     />
-                </div>
-            </div>
+                </FormColumn>
+            </PageContainer>
         )
     }
 
     return (
-        <div className="w-full h-full p-8 max-w-185 mx-auto">
-            <div className="flex flex-col justify-center items-center">
-                <button
-                    className={`
-                        mt-4 ${apiSelected.brasilapi && loading ? 'border-4 border-green-500' : ''} w-80 bg-primary text-white py-2 px-4 hover:bg-white hover:text-primary border-2 border-primary text-xl flex justify-center items-center}
-                    `}
-                >
+        <PageContainer>
+            <CenteredColumn>
+                <BrasilApiButton $highlighted={apiSelected.brasilapi && loading}>
                     Brasil API
                     {apiSelected.brasilapi && (
-                        <div className="ml-4">
-                            <AiOutlineLoading3Quarters className="animate-spin text-white text-2xl" />
-                        </div>
+                        <SpinnerWrapper>
+                            <SpinnerIcon />
+                        </SpinnerWrapper>
                     )}
-                </button>
-            </div>
-        </div>
+                </BrasilApiButton>
+            </CenteredColumn>
+        </PageContainer>
     )
 }
+
+const spin = keyframes`
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+`
+
+const PageContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    padding: 32px;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+`
+
+const BackButtonOffsetLeft = styled(BackButton)`
+    margin-left: 32px;
+`
+
+const BackButtonSpacedBottom = styled(BackButton)`
+    margin-bottom: 32px;
+`
+
+const FormColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const CoverImageWrapper = styled.div`
+    padding: 32px;
+`
+
+const CoverImage = styled(Img)`
+    margin-bottom: 16px;
+`
+
+const CenteredColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
+
+const BrasilApiButton = styled.button<{ $highlighted: boolean }>`
+    margin-top: 16px;
+    width: 320px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 8px 16px;
+    border: 2px solid var(--color-primary);
+    font-size: 20px;
+    line-height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        background-color: var(--color-white);
+        color: var(--color-primary);
+    }
+
+    ${({ $highlighted }): string => ($highlighted ? 'border-width: 4px; border-color: var(--color-success);' : '')}
+`
+
+const SpinnerWrapper = styled.div`
+    margin-left: 16px;
+`
+
+const SpinnerIcon = styled(AiOutlineLoading3Quarters)`
+    animation: ${spin} 1s linear infinite;
+    color: var(--color-white);
+    font-size: 24px;
+`

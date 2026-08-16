@@ -9,15 +9,15 @@
 **Spec**: [001-hardening-seguranca](./specs/001-hardening-seguranca/spec.md) (aprovada) + hotfixes de bug.
 **Agentes**: `security-specialist`, `data-layer-specialist`. **Esforço estimado: 2–4 dias.**
 
-- [ ] **S1** Validar `sheet` contra o enum e nunca expor a aba `auth` (`GET ?sheet=auth` → 400). *Hotfix imediato, independente do resto.*
-- [ ] **S2** Sessão real: cookie httpOnly assinado com expiração emitido pelo servidor; middleware valida assinatura; logout de verdade.
-- [ ] **S3** Renomear env vars removendo `NEXT_PUBLIC_` (código, `env.template`, READMEs, testes).
-- [ ] **S4** Hash de senha (bcrypt/scrypt), HTTP 401 real, `type="password"`, remover logs de auth.
-- [ ] **B9** `/api/spreadsheet`: instanciar acesso por handler (fim da variável de módulo), `await` nas escritas, status HTTP corretos.
+- [x] **S1** Validar entidade contra allowlist (`?entity=admins`/inválida → 400). *(2026-08-16, commit dfe3395 — rota nova `/api/entities`)*
+- [x] **S2** Sessão real: cookie httpOnly assinado (HMAC-SHA256) com expiração; proxy valida assinatura; logout via `DELETE /api/auth`. *(2026-08-16, dfe3395)*
+- [x] **S3** Env vars sem `NEXT_PUBLIC_` — credenciais Google saíram do runtime (só devDeps do script de importação). *(2026-08-16, dfe3395)*
+- [x] **S4** Hash bcrypt, HTTP 401 real, `type="password"`, logs de auth removidos. *(2026-08-16, dfe3395)*
+- [x] **B9** Resolvido pela migração para SQLite/Prisma: sem variável de módulo, `await` nas escritas, status corretos. *(2026-08-16, dfe3395 — spec 002/ADR 0007)*
 - [ ] **B2** Corrigir links de edição (usar `id` UUID na URL em vez de índice do slice) — hoje edita o registro errado a partir da página 2.
 - [ ] **B3** Corrigir filtro invertido na exclusão de empréstimo.
 - [ ] **B6** Só marcar livro `available` quando não restarem empréstimos ativos dele.
-- [ ] Testes comportamentais reais para as rotas de API (substituir os testes de "arquivo-como-string") — pré-requisito para confiar nas correções.
+- [x] Testes comportamentais reais para as rotas de API (auth, entities, sessão, repositórios). *(2026-08-16, dfe3395)*
 
 ## Fase 1 — Compatibilidade Next 16 e correções funcionais restantes
 
@@ -35,12 +35,14 @@
 
 **Agentes**: `migration-specialist`, `testing-specialist`. **Esforço: 1–2 dias.**
 
-- [ ] Declarar `clsx`; subir `tailwind-merge` para v3 (compatível com Tailwind 4); remover `@types/uuid`; `@types/node` → 24; afrouxar `engines` para `>=24` + criar `.nvmrc`.
-- [ ] GitHub Actions: `yarn install --frozen-lockfile && yarn lint --max-warnings 0 && tsc --noEmit && yarn testc && yarn build` em Node 24; adicionar script `typecheck`.
-- [ ] Habilitar `coverageThreshold` no Jest (começar nos números atuais e subir por fase); projeto Jest `node` para rotas de API.
+- [x] Tailwind/tailwind-merge removidos (ADR 0008); `@types/uuid` removido; `@types/node` → 24; `engines` `>=24` + `.nvmrc`; deps atualizadas às últimas versões estáveis (TS mantido na série 5.x e ESLint na 9.x até o ecossistema de plugins acompanhar TS 7/ESLint 10). *(2026-08-16, dfe3395/4f51f50)*
+- [x] GitHub Actions (`.github/workflows/ci.yml`): job `yarn ci` (lint + typecheck + testc + build) + job E2E Playwright; scripts `typecheck`, `ci` e `devloop` criados (ADR 0009). *(2026-08-16, 4f51f50)*
+- [x] E2E com Playwright (`e2e/`, config com banco descartável, perfis mobile/desktop). *(2026-08-16, 4f51f50)*
+- [x] Docker/compose para rodar local (alvos prod e dev com hot reload). *(2026-08-16, 4f51f50)*
+- [ ] Habilitar `coverageThreshold` no Jest (começar nos números atuais e subir por fase).
 - [ ] Dependabot/Renovate; template de PR; LICENSE.
 - [ ] Avaliar substituto mantido para `html5-qrcode` (ex.: `barcode-detector`/ZXing) — registrar ADR.
-- [ ] Documentar `BASE_URL` no `env.template`.
+- [x] Documentar `BASE_URL` no `env.template`. *(2026-08-16, dfe3395)*
 
 ## Fase 3 — Dívida de código (consolidação)
 
@@ -70,11 +72,11 @@
 
 **Agentes**: `migration-specialist`, `data-layer-specialist`. **Condicionada a crescimento de uso — decidir via ADR antes de executar.**
 
-- [ ] Cache server-side do Sheets (revalidate/`unstable_cache` + invalidação nas escritas) — elimina recarga total por request; corrige também o custo do login.
-- [ ] Batch real no cadastro em lote (uma leitura, N `addRows`).
-- [ ] Capas fora da planilha (filesystem/object storage/Drive) — hoje base64 na célula.
-- [ ] **Migração Sheets → banco real** (SQLite/Turso/Postgres): extrair interface de repositório preservando `api.sheet.*`, implementar novo backend, script de migração de dados, dupla-escrita temporária, corte. Substitui o ADR 0002.
-- [ ] Campo de devolução em `Lend` (hoje devolver = excluir linha, sem histórico) — mudança de modelo + template da planilha.
+- [x] ~~Cache server-side do Sheets~~ — morto pela migração para SQLite. *(2026-08-16)*
+- [x] **Migração Sheets → banco real**: SQLite via Prisma 7, contrato `api.sheet.*` preservado, script de importação one-shot (`yarn db:import-sheets`). ADR 0007 substitui 0002/0003. *(2026-08-16, dfe3395 — spec 002)*
+- [ ] Capas fora do banco (filesystem/object storage) — hoje base64 na coluna `image`.
+- [ ] Normalizar modelo (FKs em `Lend`, fim dos campos copiados) + campo de devolução em `Lend` (hoje devolver = excluir, sem histórico) — exige spec própria.
+- [ ] Deploy serverless (Vercel): trocar datasource para Turso/Neon via novo ADR (SQLite exige filesystem persistente).
 
 ## Sequência recomendada
 
