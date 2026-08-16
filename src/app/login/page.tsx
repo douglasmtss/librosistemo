@@ -33,11 +33,8 @@ export default function Auth(): React.ReactNode {
             .post({ username, password })
             .then(res => {
                 if (res.status === 200) {
-                    document.cookie = 'app-logged=yes'
-
-                    // router.refresh()
-                    // router.push('/')
-                    window.location.href = '/'
+                    // A sessão vem em cookie httpOnly definido pelo servidor.
+                    window.location.href = '/pages/dashboard'
 
                     toast('Você está logado', 'success')
                 } else {
@@ -72,7 +69,7 @@ export default function Auth(): React.ReactNode {
                         />
                         <input
                             value={password}
-                            type="text"
+                            type="password"
                             placeholder="Senha"
                             name="password"
                             id="password"

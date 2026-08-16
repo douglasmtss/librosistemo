@@ -11,7 +11,7 @@ import { useEntities } from '@/hooks/useEntities'
 import { v4 as uuidv4 } from 'uuid'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { checkIfBookAlreadyExists } from '@/lib/checkIfBookAlreadyExists'
-import { GOOGLE_API_LIMIT } from '@/services/api'
+import { ISBN_LOOKUP_DELAY_MS } from '@/services/api'
 import { BackToTopButton } from '@/components/BackToTopButton'
 
 type ErrorObj = { error: boolean; message: string }
@@ -174,9 +174,9 @@ function SearchPageImpl(): React.ReactNode {
             }
 
             if (countItems < booksInformations.length) {
-                setRemainingTime(GOOGLE_API_LIMIT / 1000)
+                setRemainingTime(ISBN_LOOKUP_DELAY_MS / 1000)
                 // Wait 60 seconds between each chunk because Google API has a limit of 60 requests per minute
-                await new Promise(resolve => setTimeout(resolve, GOOGLE_API_LIMIT))
+                await new Promise(resolve => setTimeout(resolve, ISBN_LOOKUP_DELAY_MS))
                 setRemainingTime(0)
                 setLoadingPost(false)
 

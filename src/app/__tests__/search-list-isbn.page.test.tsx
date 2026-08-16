@@ -19,7 +19,7 @@ jest.mock('@/services/api', () => ({
         brasilapi: jest.fn(),
         google: jest.fn()
     },
-    GOOGLE_API_LIMIT: 100
+    ISBN_LOOKUP_DELAY_MS: 100
 }))
 
 jest.mock('@/components/Empty', () => {

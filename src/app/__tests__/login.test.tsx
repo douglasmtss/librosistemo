@@ -111,7 +111,7 @@ describe('Auth Page', () => {
 
         expect(passwordInput).toHaveAttribute('name', 'password')
         expect(passwordInput).toHaveAttribute('id', 'password')
-        expect(passwordInput).toHaveAttribute('type', 'text')
+        expect(passwordInput).toHaveAttribute('type', 'password')
     })
 
     test('should have disabled button initially', () => {

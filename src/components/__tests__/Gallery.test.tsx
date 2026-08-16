@@ -8,11 +8,10 @@ jest.mock('@/lib/reduceImageFileSize', () => ({
 }))
 
 jest.mock('@/lib/toBase64', () => ({
-    toBase64: jest.fn(
-        (): Promise<string> =>
-            Promise.resolve(
-                'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
-            )
+    toBase64: jest.fn((): Promise<string> =>
+        Promise.resolve(
+            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+        )
     )
 }))
 
