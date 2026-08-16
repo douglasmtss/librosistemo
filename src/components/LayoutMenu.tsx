@@ -64,7 +64,8 @@ export default function LayoutMenu(): React.ReactNode {
                                             <ExitText>Sair</ExitText> <ExitIcon title="Sair" />
                                         </ExitLabel>
                                     ),
-                                    path: '/'
+                                    // Rota de logout: expira o cookie httpOnly e volta para a landing
+                                    path: '/api/auth/logout'
                                 }}
                             />
                         </li>
