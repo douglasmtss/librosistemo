@@ -1,0 +1,41 @@
+# Rodar o projeto local com Docker:
+#   docker compose up --build            → produção local em http://localhost:3000
+#   docker compose --profile dev up dev  → dev server com hot reload
+# O banco SQLite fica no volume nomeado (persiste entre subidas).
+
+services:
+    app:
+        build:
+            context: .
+            target: prod
+        ports:
+            - '3000:3000'
+        environment:
+            DATABASE_URL: file:/app/data/librosistemo.db
+            SESSION_SECRET: ${SESSION_SECRET:-troque-este-segredo-em-producao}
+            ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+            ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
+        volumes:
+            - librosistemo-data:/app/data
+
+    dev:
+        profiles: ['dev']
+        build:
+            context: .
+            target: dev
+        ports:
+            - '3000:3000'
+        environment:
+            DATABASE_URL: file:/app/data/librosistemo.db
+            SESSION_SECRET: ${SESSION_SECRET:-segredo-de-dev}
+            ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+            ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - /app/.next
+            - librosistemo-dev-data:/app/data
+
+volumes:
+    librosistemo-data:
+    librosistemo-dev-data:

@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+coverage
+test-results
+playwright-report
+.git
+.env
+*.db
+*.db-journal
+src/generated
+badges
+docs

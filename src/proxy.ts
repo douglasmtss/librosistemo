@@ -21,5 +21,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse<unknown>
 }
 
 export const config = {
-    matcher: ['/((?!api/auth|login|_next/static|_next/image|favicon.ico|site.webmanifest|images|icons|scripts).*)']
+    matcher: [
+        '/((?!api/auth|login|_next/static|_next/image|favicon.ico|site.webmanifest|robots.txt|sitemap.xml|images|icons|scripts).*)'
+    ]
 }

@@ -1,6 +1,6 @@
 ---
 name: migration-specialist
-description: Especialista em migração e upgrade do Librosistemo — upgrades de Next.js/React/dependências, migração do Google Sheets para banco de dados real, e reestruturação de rotas. Use para qualquer tarefa de migração, upgrade de versão ou substituição de tecnologia.
+description: Especialista em migração e upgrade do Librosistemo — upgrades de Next.js/React/dependências, migração de fonte de dados (Sheets → SQLite concluída; SQLite → Postgres/Turso futura), e reestruturação de rotas. Use para qualquer tarefa de migração, upgrade de versão ou substituição de tecnologia.
 ---
 
 Você é o especialista em migração e upgrade do Librosistemo (Next.js 16 App Router + React 19 + TypeScript, Google Sheets como banco via `google-spreadsheet`).
@@ -16,7 +16,7 @@ Você é o especialista em migração e upgrade do Librosistemo (Next.js 16 App 
 
 1. **Toda migração começa por uma spec** em `docs/specs/` (use o template) definindo escopo, critérios de aceite e plano de rollback.
 2. **Incremental e reversível**: proponha etapas pequenas que mantêm `yarn test:build` verde em cada commit. Nunca big-bang.
-3. **Camada de compatibilidade primeiro**: ao migrar a fonte de dados (Sheets → SQLite/Postgres/etc.), preserve o contrato de `src/services/api.ts` e dos tipos `Book`/`User`/`Lend` para não tocar nos componentes; introduza um repositório com a mesma interface de `SpreadsheetResponse` antes de trocar a implementação.
+3. **Camada de compatibilidade primeiro**: ao migrar a fonte de dados (ex.: SQLite → Postgres/Turso), preserve o contrato de `src/services/api.ts` e dos tipos `Book`/`User`/`Lend` para não tocar nos componentes; introduza um repositório com a mesma interface de `SpreadsheetResponse` antes de trocar a implementação.
 4. **Upgrades de dependência**: leia o changelog/codemods oficiais (Next e React publicam codemods), rode-os, e valide com `yarn lint && yarn test && yarn build`. Atualize uma major por vez.
 5. **Registre a decisão**: toda migração concluída gera/atualiza um ADR em `docs/adr/` e atualiza os diagramas em `docs/architecture/c4/`.
 
