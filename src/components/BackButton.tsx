@@ -1,6 +1,7 @@
-import { cn } from '@/lib/tailwindMerge'
+'use client'
 import { useRouter } from 'next/navigation'
 import { IoArrowBackCircleOutline } from 'react-icons/io5'
+import styled from 'styled-components'
 
 interface BackButtonProps {
     classNameContainer?: string
@@ -10,9 +11,19 @@ export const BackButton = ({ classNameContainer, classNameIcon }: BackButtonProp
     const router = useRouter()
 
     return (
-        <div className={cn('flex items-center cursor-pointer', classNameContainer)} onClick={() => router.back()}>
-            <IoArrowBackCircleOutline className={cn('mr-2', classNameIcon)} />
+        <BackButtonContainer className={classNameContainer} onClick={() => router.back()}>
+            <BackIcon className={classNameIcon} />
             Voltar
-        </div>
+        </BackButtonContainer>
     )
 }
+
+const BackButtonContainer = styled.div`
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+`
+
+const BackIcon = styled(IoArrowBackCircleOutline)`
+    margin-right: 8px;
+`

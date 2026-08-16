@@ -102,7 +102,10 @@ describe('services/api', (): void => {
             expect(axiosInstance.post).toHaveBeenCalledWith(
                 '/api/auth',
                 JSON.stringify({ username: 'a', password: 'b' }),
-                { headers: { 'Content-Type': 'application/json' } }
+                expect.objectContaining({
+                    headers: { 'Content-Type': 'application/json' },
+                    validateStatus: expect.any(Function)
+                })
             )
             expect(response.status).toBe(200)
         })

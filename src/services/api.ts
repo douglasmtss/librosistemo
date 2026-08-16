@@ -73,7 +73,11 @@ export const api = {
     auth: {
         post: async (auth: { username: string; password: string }): Promise<AxiosResponse> => {
             const response = await ax
-                .post<AxiosResponse>('/api/auth', JSON.stringify(auth), jsonHeaders)
+                .post<AxiosResponse>('/api/auth', JSON.stringify(auth), {
+                    ...jsonHeaders,
+                    // 401 é resposta esperada (credenciais erradas), não erro de rede
+                    validateStatus: status => status < 500
+                })
                 .then(res => {
                     if (res?.data?.status === 200) {
                         return res

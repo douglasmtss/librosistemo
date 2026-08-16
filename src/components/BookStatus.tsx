@@ -1,4 +1,5 @@
-import { cn } from '@/lib/tailwindMerge'
+'use client'
+import styled from 'styled-components'
 
 interface BookStatusProps {
     label: Book['status'] | 'default'
@@ -13,14 +14,14 @@ export const BookStatus = ({ label = 'default', className = '' }: BookStatusProp
 
     const components = {
         available: (
-            <span className={cn('font-semibold border-2 rounded-md p-2 text-green-500 border-green-500', className)}>
+            <StatusBadge $color="var(--color-success)" className={className}>
                 {statusLabel[label]}
-            </span>
+            </StatusBadge>
         ),
         borrowed: (
-            <span className={cn('font-semibold border-2 rounded-md p-2 text-red-500 border-red-500', className)}>
+            <StatusBadge $color="var(--color-danger)" className={className}>
                 {statusLabel[label]}
-            </span>
+            </StatusBadge>
         ),
         default: <></>
     }
@@ -29,3 +30,11 @@ export const BookStatus = ({ label = 'default', className = '' }: BookStatusProp
 
     return <>{renderComponent}</>
 }
+
+const StatusBadge = styled.span<{ $color: string }>`
+    font-weight: 600;
+    border: 2px solid ${({ $color }): string => $color};
+    border-radius: var(--radius-md);
+    padding: 8px;
+    color: ${({ $color }): string => $color};
+`

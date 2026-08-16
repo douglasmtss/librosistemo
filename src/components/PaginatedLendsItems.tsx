@@ -4,6 +4,7 @@ import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Link from 'next/link'
 import { FaTrash } from 'react-icons/fa'
+import styled from 'styled-components'
 import { useToastify } from '@/hooks/useToastify'
 import { TextElipsis } from './TextElipsis'
 import { VscOpenPreview } from 'react-icons/vsc'
@@ -47,46 +48,111 @@ export const PaginatedLendsItems = ({
     return (
         <PaginatedContainer disabled={currentItems.length <= itemsPerPage}>
             {deleting && <DeleteModal onCancel={onCancel} onConfirm={onConfirm} />}
-            <div className="flex flex-col">
+            <ItemsList>
                 {currentItems?.map((lend, index) => {
                     return (
-                        <div
-                            key={`${lend.first_name} - ${index}`}
-                            className="flex items-center w-full h-12 border-b-2 p-4 even:bg-slate-100 hover:bg-slate-200"
-                        >
-                            <span className="flex-1 text-gray-500 font-semibold">
+                        <ItemRow key={`${lend.first_name} - ${index}`}>
+                            <ItemName>
                                 <TextElipsis width={'100%'} height={16} text={lend.first_name + ' ' + lend.last_name} />
-                            </span>
+                            </ItemName>
 
-                            <Link href={`/pages/dashboard/lends/${index}`} className="mr-8 text-primary">
-                                <VscOpenPreview className="text-xl" />
-                            </Link>
-                            <button className="text-red-500" onClick={() => setDeleting(`${lend?.id}`)}>
+                            <ViewLink href={`/pages/dashboard/lends/${index}`}>
+                                <PreviewIcon />
+                            </ViewLink>
+                            <DeleteButton onClick={() => setDeleting(`${lend?.id}`)}>
                                 <FaTrash />
-                            </button>
-                        </div>
+                            </DeleteButton>
+                        </ItemRow>
                     )
                 })}
-            </div>
-            <div className="mx-auto w-full flex justify-center items-center -mb-12 mt-8">
+            </ItemsList>
+            <CountRow>
                 {lends?.length ? (
                     <span>
                         {lends?.length} {lends?.length > 1 ? 'empréstimos encontrados' : ' empréstimo encontrado'}
                     </span>
                 ) : null}
-            </div>
-            <ReactPaginate
-                activeLinkClassName="bg-primary text-white rounded-full px-2"
+            </CountRow>
+            <StyledPaginate
+                activeLinkClassName="active-page-link"
                 breakLabel="..."
                 nextLabel={paginateNavigationButtons(lends, 'right')}
-                nextClassName="relative"
+                nextClassName="paginate-next"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
                 previousLabel={paginateNavigationButtons(lends, 'left')}
-                previousClassName="relative "
+                previousClassName="paginate-previous"
                 renderOnZeroPageCount={null}
             />
         </PaginatedContainer>
     )
 }
+
+const ItemsList = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const ItemRow = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    border-bottom: 2px solid var(--color-gray-200);
+    padding: 16px;
+
+    &:nth-child(even) {
+        background-color: var(--color-gray-100);
+    }
+
+    &:hover {
+        background-color: var(--color-gray-200);
+    }
+`
+
+const ItemName = styled.span`
+    flex: 1 1 0%;
+    color: var(--color-gray-500);
+    font-weight: 600;
+`
+
+const ViewLink = styled(Link)`
+    margin-right: 32px;
+    color: var(--color-primary);
+`
+
+const PreviewIcon = styled(VscOpenPreview)`
+    font-size: 20px;
+    line-height: 28px;
+`
+
+const DeleteButton = styled.button`
+    color: var(--color-danger);
+`
+
+const CountRow = styled.div`
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -48px;
+    margin-top: 32px;
+`
+
+const StyledPaginate = styled(ReactPaginate)`
+    li.paginate-next,
+    li.paginate-previous {
+        position: relative;
+    }
+
+    a.active-page-link {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        border-radius: 9999px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+`

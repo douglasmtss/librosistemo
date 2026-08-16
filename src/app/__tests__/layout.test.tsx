@@ -1,12 +1,10 @@
 import React from 'react'
 import '@testing-library/jest-dom'
 
-// Mock dinâmico deve ser antes de importar o layout
-jest.mock('next/dynamic', () => {
-    return function MockDynamic() {
-        return function MockedComponent(): React.JSX.Element {
-            return <div data-testid="layout-menu">Mocked Layout Menu</div>
-        }
+// Mock LayoutChrome (client component com styled-components)
+jest.mock('@/components/LayoutChrome', () => {
+    return function MockLayoutChrome({ children }: { children: React.ReactNode }): React.JSX.Element {
+        return <div data-testid="layout-chrome">{children}</div>
     }
 })
 
@@ -49,6 +47,15 @@ describe('RootLayout', () => {
         expect(component).toBeDefined()
     })
 
+    test('should render html element with pt-BR lang', async () => {
+        const component = (await RootLayout({ children: <div>Test Children</div> })) as React.ReactElement<{
+            lang: string
+        }>
+
+        expect(component.type).toBe('html')
+        expect(component.props.lang).toBe('pt-BR')
+    })
+
     test('should include StyledComponentsRegistry in component tree', async () => {
         const component = await RootLayout({ children: <div>Test Children</div> })
 
@@ -63,13 +70,7 @@ describe('RootLayout', () => {
         expect(component).toBeTruthy()
     })
 
-    test('should include header element in layout', async () => {
-        const component = await RootLayout({ children: <div>Test Children</div> })
-
-        expect(component).toBeTruthy()
-    })
-
-    test('should include footer element in layout', async () => {
+    test('should include LayoutChrome in layout', async () => {
         const component = await RootLayout({ children: <div>Test Children</div> })
 
         expect(component).toBeTruthy()

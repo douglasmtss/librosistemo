@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
+import styled from 'styled-components'
 import AllBooks from './AllBooks'
 import { Empty } from './Empty'
 import { PaginatedContainer } from './styles'
@@ -27,23 +28,48 @@ export const PaginatedBooks = ({ itemsPerPage }: { itemsPerPage: number }): Reac
         <PaginatedContainer disabled={currentItems.length <= itemsPerPage}>
             {loadingBooks ? <Loading /> : !books?.length ? <Empty /> : <AllBooks lends={lends} books={currentItems} />}
 
-            <div className="mx-auto w-full flex justify-center items-center -mb-12 mt-8">
-                {books?.length ? <span>{books?.length} livros encontrados</span> : null}
-            </div>
+            <CountRow>{books?.length ? <span>{books?.length} livros encontrados</span> : null}</CountRow>
 
-            <ReactPaginate
-                className="relative"
-                activeLinkClassName="bg-primary text-white rounded-full px-2"
+            <StyledPaginate
+                activeLinkClassName="active-page-link"
                 breakLabel="..."
                 nextLabel={paginateNavigationButtons(books, 'right')}
-                nextClassName="relative"
+                nextClassName="paginate-next"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={1}
                 pageCount={pageCount}
                 previousLabel={paginateNavigationButtons(books, 'left')}
-                previousClassName="relative "
+                previousClassName="paginate-previous"
                 renderOnZeroPageCount={null}
             />
         </PaginatedContainer>
     )
 }
+
+const CountRow = styled.div`
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -48px;
+    margin-top: 32px;
+`
+
+const StyledPaginate = styled(ReactPaginate)`
+    position: relative;
+
+    li.paginate-next,
+    li.paginate-previous {
+        position: relative;
+    }
+
+    a.active-page-link {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        border-radius: 9999px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+`

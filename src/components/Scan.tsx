@@ -42,33 +42,51 @@ export const Scan = (): React.ReactNode => {
 
     if (scanResult) {
         return (
-            <div className="w-screen md:w-full flex flex-col items-center justify-center">
+            <ScanResultContainer>
                 <h2>Succcess: {scanResult}</h2>
-                <Link
-                    href={`/pages/dashboard/book-registration/${scanResult}`}
-                    className="py-4 px-6 bg-green-500 rounded-lg text-white"
-                >
-                    Pesquisar
-                </Link>
-            </div>
+                <SearchLink href={`/pages/dashboard/book-registration/${scanResult}`}>Pesquisar</SearchLink>
+            </ScanResultContainer>
         )
     }
 
     return (
         <StyledDiv>
-            <div className="w-full" id="reader"></div>
+            <ReaderArea id="reader"></ReaderArea>
         </StyledDiv>
     )
 }
 
+const ScanResultContainer = styled.div`
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    @media (min-width: 768px) {
+        width: 100%;
+    }
+`
+
+const SearchLink = styled(Link)`
+    padding: 16px 24px;
+    background-color: var(--color-success);
+    border-radius: var(--radius-md);
+    color: var(--color-white);
+`
+
+const ReaderArea = styled.div`
+    width: 100%;
+`
+
 const StyledDiv = styled.div`
     display: flex;
     justify-content: center;
-    border: 4px solid #000;
+    border: 4px solid var(--color-black);
 
     #html5-qrcode-button-camera-permission {
-        background-color: #0b8ec2;
-        color: #fff;
+        background-color: var(--color-primary);
+        color: var(--color-white);
         padding: 4px 8px;
         cursor: pointer;
     }
@@ -81,8 +99,8 @@ const StyledDiv = styled.div`
 
     #html5-qrcode-button-camera-stop,
     #html5-qrcode-button-camera-start {
-        background-color: #0b8ec2;
-        color: #fff;
+        background-color: var(--color-primary);
+        color: var(--color-white);
         padding: 4px 8px;
         cursor: pointer;
         margin-top: 4px;

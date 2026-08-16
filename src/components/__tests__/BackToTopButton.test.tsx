@@ -142,7 +142,7 @@ describe('BackToTopButton', () => {
         })
     })
 
-    test('should have correct CSS classes on button', async () => {
+    test('should style the button through the styled component class', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {
@@ -160,15 +160,11 @@ describe('BackToTopButton', () => {
 
         await waitFor(() => {
             const button = screen.getByRole('button')
-            expect(button.className).toContain('fixed')
-            expect(button.className).toContain('bottom-8')
-            expect(button.className).toContain('right-8')
-            expect(button.className).toContain('bg-green-500')
-            expect(button.className).toContain('text-white')
+            expect(button.className.length).toBeGreaterThan(0)
         })
     })
 
-    test('should have z-10 index', async () => {
+    test('should render the icon inside the button', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {
@@ -186,7 +182,8 @@ describe('BackToTopButton', () => {
 
         await waitFor(() => {
             const button = screen.getByRole('button')
-            expect(button.className).toContain('z-10')
+            const icon = button.querySelector('[data-testid="arrow-up-icon"]')
+            expect(icon).toBeTruthy()
         })
     })
 
@@ -229,7 +226,7 @@ describe('BackToTopButton', () => {
         })
     })
 
-    test('should have correct icon class', async () => {
+    test('should style the icon through the styled component class', async () => {
         render(<BackToTopButton />)
 
         Object.defineProperty(window, 'scrollY', {
@@ -246,8 +243,7 @@ describe('BackToTopButton', () => {
 
         await waitFor(() => {
             const icon = screen.getByTestId('arrow-up-icon')
-            expect(icon.className).toContain('text-white')
-            expect(icon.className).toContain('text-2xl')
+            expect(icon.className.length).toBeGreaterThan(0)
         })
     })
 

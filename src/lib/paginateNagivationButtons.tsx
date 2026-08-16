@@ -1,6 +1,7 @@
 'use client'
 
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
+import styled from 'styled-components'
 
 export default function paginateNavigationButtons<T>(
     list: T[],
@@ -9,19 +10,29 @@ export default function paginateNavigationButtons<T>(
 ): React.JSX.Element {
     if (side === 'right' && list?.length > lengthToShow) {
         return (
-            <div className="absolute right-0 top-8 bg-primary text-white rounded-full px-4 py-2">
+            <NavigationArrow $side="right">
                 <FaArrowRight />
-            </div>
+            </NavigationArrow>
         )
     }
 
     if (side === 'left' && list?.length > lengthToShow) {
         return (
-            <div className="absolute left-0 top-8 bg-primary text-white rounded-full px-4 py-2">
+            <NavigationArrow $side="left">
                 <FaArrowLeft />
-            </div>
+            </NavigationArrow>
         )
     }
 
     return <></>
 }
+
+const NavigationArrow = styled.div<{ $side: 'left' | 'right' }>`
+    position: absolute;
+    top: 32px;
+    ${({ $side }): string => ($side === 'left' ? 'left: 0;' : 'right: 0;')}
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-radius: 9999px;
+    padding: 8px 16px;
+`

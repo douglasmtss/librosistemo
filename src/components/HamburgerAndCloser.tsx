@@ -1,6 +1,6 @@
 'use client'
-import { cn } from '@/lib/tailwindMerge'
 import { FaBars, FaTimes } from 'react-icons/fa'
+import styled from 'styled-components'
 
 interface HamburgerAndCloserProps {
     className?: string
@@ -14,8 +14,23 @@ export default function HamburgerAndCloser({ className, show, setShow }: Hamburg
     }
 
     return (
-        <button className={cn('text-2xl focus:outline-hidden', className || '')} onClick={hanldeClick}>
-            {show ? <FaTimes className="relative z-20" /> : <FaBars />}
-        </button>
+        <ToggleButton className={className} onClick={hanldeClick}>
+            {show ? <CloseIcon /> : <FaBars />}
+        </ToggleButton>
     )
 }
+
+const ToggleButton = styled.button`
+    font-size: 24px;
+    line-height: 32px;
+
+    &:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+    }
+`
+
+const CloseIcon = styled(FaTimes)`
+    position: relative;
+    z-index: 20;
+`

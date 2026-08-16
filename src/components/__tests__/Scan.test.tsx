@@ -69,10 +69,11 @@ describe('Scan', () => {
         )
     })
 
-    test('should render full width scanner container', () => {
+    test('should render scanner area inside the styled container', () => {
         const { container } = render(<Scan />)
-        const wFullDiv = container.querySelector('.w-full')
-        expect(wFullDiv).toBeTruthy()
+        const outerDiv = container.firstChild as HTMLElement
+        const readerDiv = outerDiv.querySelector('#reader')
+        expect(readerDiv).toBeTruthy()
     })
 
     test('should have proper styling classes on main container', () => {

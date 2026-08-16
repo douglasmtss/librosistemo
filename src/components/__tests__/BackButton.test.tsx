@@ -11,9 +11,6 @@ jest.mock('react-icons/io5', (): object => ({
         </span>
     )
 }))
-jest.mock('@/lib/tailwindMerge', () => ({
-    cn: (...classes: string[]): string => classes.filter(Boolean).join(' ')
-}))
 
 describe('BackButton', (): void => {
     const mockBack = jest.fn()
@@ -77,19 +74,21 @@ describe('BackButton', (): void => {
         expect(icon.className).toContain('icon-class')
     })
 
-    test('should have flex items-center classes by default', (): void => {
+    test('should render icon before text inside the container', (): void => {
         render(<BackButton />)
 
         const container = screen.getByText('Voltar').closest('div')
-        expect(container?.className).toContain('flex')
-        expect(container?.className).toContain('items-center')
+        const icon = screen.getByTestId('back-icon')
+
+        expect(container?.firstElementChild).toBe(icon)
+        expect(container?.textContent).toContain('Voltar')
     })
 
-    test('should have cursor-pointer class by default', (): void => {
+    test('should render as a div container', (): void => {
         render(<BackButton />)
 
         const container = screen.getByText('Voltar').closest('div')
-        expect(container?.className).toContain('cursor-pointer')
+        expect(container?.tagName).toBe('DIV')
     })
 
     test('should be clickable and responsive to multiple clicks', (): void => {
@@ -115,12 +114,5 @@ describe('BackButton', (): void => {
         }
 
         expect(mockBack).toHaveBeenCalledTimes(1)
-    })
-
-    test('should have mr-2 class on icon', (): void => {
-        render(<BackButton />)
-
-        const icon = screen.getByTestId('back-icon')
-        expect(icon.className).toContain('mr-2')
     })
 })

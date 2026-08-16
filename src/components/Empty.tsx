@@ -1,12 +1,43 @@
+'use client'
 import { FaRegFolderOpen } from 'react-icons/fa'
+import styled from 'styled-components'
 
 export const Empty = (): React.ReactNode => {
     return (
-        <div className="p-8">
-            <div className="min-w-62.5 min-h-62.5 w-full h-full flex  flex-col justify-center items-center rounded-lg border-4 border-gray-200">
-                <FaRegFolderOpen className="text-gray-300 text-9xl" />
-                <span className="text-gray-400 text-xl">Nenhum dado foi econtrado</span>
-            </div>
-        </div>
+        <EmptyContainer>
+            <EmptyFrame>
+                <FolderIcon />
+                <EmptyMessage>Nenhum dado foi econtrado</EmptyMessage>
+            </EmptyFrame>
+        </EmptyContainer>
     )
 }
+
+const EmptyContainer = styled.div`
+    padding: 32px;
+`
+
+const EmptyFrame = styled.div`
+    min-width: 250px;
+    min-height: 250px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--radius-md);
+    border: 4px solid var(--color-gray-200);
+`
+
+const FolderIcon = styled(FaRegFolderOpen)`
+    color: var(--color-gray-300);
+    font-size: 128px;
+    line-height: 1;
+`
+
+const EmptyMessage = styled.span`
+    color: #9ca3af; /* gray-400 — não existe token equivalente em globals.css */
+    font-size: 20px;
+    line-height: 28px;
+`

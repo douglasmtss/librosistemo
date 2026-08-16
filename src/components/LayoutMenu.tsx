@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { RxExit } from 'react-icons/rx'
 import Link from 'next/link'
 import { useState } from 'react'
+import styled from 'styled-components'
 import { configInfo } from '@/config/info'
 
 const HamburgerAndCloser = dynamic(() => import('@/components/HamburgerAndCloser'), { ssr: false })
@@ -13,66 +14,45 @@ export default function LayoutMenu(): React.ReactNode {
     const [show, setShow] = useState<boolean>(false)
 
     return (
-        <ul className="flex items-center bg-primary w-full px-8 py-4 h-full">
-            <li className="flex text-white items-center">
+        <NavBar>
+            <LogoItem>
                 <Link href={'/'}>
-                    <Image
+                    <Logo
                         src={configInfo.appLogo}
                         width={60}
                         height={60}
                         alt={configInfo.appName + ' logo'}
                         loading="eager"
-                        className="rounded-[100%] border-white border-2"
                     />
                 </Link>
-            </li>
+            </LogoItem>
 
-            <li className="relative text-white flex flex-1 justify-end">
-                <HamburgerAndCloser className="md:opacity-0" show={show} setShow={setShow} />
-                <div
-                    id="menu-slider"
-                    className={
-                        !show
-                            ? 'fixed top-0 right-0 pr-4 z-10 w-64 md:w-[80%] h-full md:h-max bg-primary transform translate-x-full md:translate-x-0 transition-transform duration-300'
-                            : 'fixed top-0 right-0 z-10 w-64 h-full bg-primary transform translate-x-0 transition-transform duration-300'
-                    }
-                >
-                    <ul className="flex flex-col md:flex-row items-start md:gap-4 md:justify-end md:items-end h-16 md:w-full p-4 mt-16 md:mt-0 space-y-4 md:space-y-0">
+            <MenuItem>
+                <ResponsiveHamburger show={show} setShow={setShow} />
+                <MenuSlider id="menu-slider" $show={show}>
+                    <MenuList>
                         <li>
-                            <Link onClick={() => setShow(false)} href={'/'} className="text-white hover:underline">
+                            <NavLink onClick={() => setShow(false)} href={'/'}>
                                 INÍCIO
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link
-                                onClick={() => setShow(false)}
-                                href="/pages/dashboard/books"
-                                className="text-white hover:underline"
-                            >
+                            <NavLink onClick={() => setShow(false)} href="/pages/dashboard/books">
                                 LIVROS
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link
-                                onClick={() => setShow(false)}
-                                href="/pages/dashboard/users"
-                                className="text-white hover:underline"
-                            >
+                            <NavLink onClick={() => setShow(false)} href="/pages/dashboard/users">
                                 USUÁRIOS
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link
-                                onClick={() => setShow(false)}
-                                href="/pages/dashboard/lends"
-                                className="text-white hover:underline"
-                            >
+                            <NavLink onClick={() => setShow(false)} href="/pages/dashboard/lends">
                                 EMPRÉSTIMOS
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <AdminLink
-                                className="text-white uppercase hover:underline"
+                            <StyledAdminLink
                                 onClick={() => setShow(false)}
                                 beforeNavigate={{
                                     label: 'Administração',
@@ -80,18 +60,126 @@ export default function LayoutMenu(): React.ReactNode {
                                 }}
                                 afterNavigate={{
                                     label: (
-                                        <div className="flex">
-                                            <span className="mr-2">Sair</span>{' '}
-                                            <RxExit className="text-2xl" title="Sair" />
-                                        </div>
+                                        <ExitLabel>
+                                            <ExitText>Sair</ExitText> <ExitIcon title="Sair" />
+                                        </ExitLabel>
                                     ),
                                     path: '/'
                                 }}
                             />
                         </li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
+                    </MenuList>
+                </MenuSlider>
+            </MenuItem>
+        </NavBar>
     )
 }
+
+const NavBar = styled.ul`
+    display: flex;
+    align-items: center;
+    background-color: var(--color-primary);
+    width: 100%;
+    padding: 16px 32px;
+    height: 100%;
+`
+
+const LogoItem = styled.li`
+    display: flex;
+    color: var(--color-white);
+    align-items: center;
+`
+
+const Logo = styled(Image)`
+    border-radius: 100%;
+    border: 2px solid var(--color-white);
+`
+
+const MenuItem = styled.li`
+    position: relative;
+    color: var(--color-white);
+    display: flex;
+    flex: 1 1 0%;
+    justify-content: flex-end;
+`
+
+const ResponsiveHamburger = styled(HamburgerAndCloser)`
+    @media (min-width: 768px) {
+        opacity: 0;
+    }
+`
+
+const MenuSlider = styled.div<{ $show: boolean }>`
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    width: 256px;
+    height: 100%;
+    background-color: var(--color-primary);
+    padding-right: ${({ $show }): string => ($show ? '0' : '16px')};
+    transform: ${({ $show }): string => ($show ? 'translateX(0)' : 'translateX(100%)')};
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    @media (min-width: 768px) {
+        width: ${({ $show }): string => ($show ? '256px' : '80%')};
+        height: ${({ $show }): string => ($show ? '100%' : 'max-content')};
+        transform: translateX(0);
+    }
+`
+
+const MenuList = styled.ul`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 64px;
+    padding: 16px;
+    margin-top: 64px;
+
+    > :not(:last-child) {
+        margin-bottom: 16px;
+    }
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        gap: 16px;
+        justify-content: flex-end;
+        align-items: flex-end;
+        width: 100%;
+        margin-top: 0;
+
+        > :not(:last-child) {
+            margin-bottom: 0;
+        }
+    }
+`
+
+const NavLink = styled(Link)`
+    color: var(--color-white);
+
+    &:hover {
+        text-decoration: underline;
+    }
+`
+
+const StyledAdminLink = styled(AdminLink)`
+    color: var(--color-white);
+    text-transform: uppercase;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`
+
+const ExitLabel = styled.div`
+    display: flex;
+`
+
+const ExitText = styled.span`
+    margin-right: 8px;
+`
+
+const ExitIcon = styled(RxExit)`
+    font-size: 24px;
+    line-height: 32px;
+`

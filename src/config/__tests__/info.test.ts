@@ -6,7 +6,7 @@ describe('configInfo', () => {
     })
 
     test('should have correct number of properties', () => {
-        expect(Object.keys(configInfo).length).toBe(4)
+        expect(Object.keys(configInfo).length).toBe(5)
     })
 
     test('should have all required properties', () => {
@@ -29,7 +29,9 @@ describe('configInfo', () => {
     test('should have appDescription property', () => {
         expect(configInfo.appDescription).toBeDefined()
         expect(typeof configInfo.appDescription).toBe('string')
-        expect(configInfo.appDescription).toBe('Uma simples aplicação para gerenciar livros')
+        expect(configInfo.appDescription).toBe(
+            'Sistema open source de gestão de biblioteca — livros, usuários e empréstimos'
+        )
     })
 
     test('should have appLogo property with correct path', () => {
@@ -62,6 +64,6 @@ describe('configInfo', () => {
     })
 
     test('should have correct structure', () => {
-        expect(Object.keys(configInfo)).toEqual(['appName', 'appDescription', 'appLogo', 'appManual'])
+        expect(Object.keys(configInfo)).toEqual(['appName', 'appDescription', 'appLogo', 'appRepository', 'appManual'])
     })
 })

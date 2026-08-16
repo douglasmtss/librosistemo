@@ -34,7 +34,7 @@ describe('paginateNavigationButtons', () => {
 
         expect(mockedRightIcon).toHaveBeenCalledTimes(1)
         expect(mockedLeftIcon).not.toHaveBeenCalled()
-        expect(container.firstChild).toHaveClass('right-0')
+        expect(container.firstChild).not.toBeNull()
         expect(container.querySelector('[data-testid="arrow-right"]')).not.toBeNull()
         expect(consoleErrorSpy).not.toHaveBeenCalled()
     })
@@ -44,7 +44,7 @@ describe('paginateNavigationButtons', () => {
 
         expect(mockedLeftIcon).toHaveBeenCalledTimes(1)
         expect(mockedRightIcon).not.toHaveBeenCalled()
-        expect(container.firstChild).toHaveClass('left-0')
+        expect(container.firstChild).not.toBeNull()
         expect(container.querySelector('[data-testid="arrow-left"]')).not.toBeNull()
         expect(consoleErrorSpy).not.toHaveBeenCalled()
     })

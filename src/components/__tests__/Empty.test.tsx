@@ -24,55 +24,35 @@ describe('Empty', () => {
         expect(screen.getByText('Nenhum dado foi econtrado')).toBeTruthy()
     })
 
-    test('should have correct padding on outer div', () => {
+    test('should render an outer container div', () => {
         const { container } = render(<Empty />)
         const outerDiv = container.firstChild as HTMLElement
-        expect(outerDiv.className).toContain('p-8')
+        expect(outerDiv.tagName).toBe('DIV')
     })
 
-    test('should have correct flex properties on inner div', () => {
+    test('should render an inner frame div inside the container', () => {
         const { container } = render(<Empty />)
         const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
-        expect(innerDiv?.className).toContain('flex')
-        expect(innerDiv?.className).toContain('flex-col')
-        expect(innerDiv?.className).toContain('justify-center')
-        expect(innerDiv?.className).toContain('items-center')
+        expect(innerDiv).toBeTruthy()
     })
 
-    test('should have correct border styling', () => {
-        const { container } = render(<Empty />)
-        const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
-        expect(innerDiv?.className).toContain('rounded-lg')
-        expect(innerDiv?.className).toContain('border-4')
-        expect(innerDiv?.className).toContain('border-gray-200')
-    })
-
-    test('should have correct icon styling', () => {
+    test('should style the icon through the styled component class', () => {
         render(<Empty />)
         const icon = screen.getByTestId('folder-icon')
-        expect(icon.className).toContain('text-gray-300')
-        expect(icon.className).toContain('text-9xl')
+        expect(icon.className.length).toBeGreaterThan(0)
     })
 
-    test('should have correct text styling', () => {
+    test('should render the message in a span element', () => {
         render(<Empty />)
         const text = screen.getByText('Nenhum dado foi econtrado')
-        expect(text.className).toContain('text-gray-400')
-        expect(text.className).toContain('text-xl')
+        expect(text.tagName).toBe('SPAN')
     })
 
-    test('should have full width and height', () => {
+    test('should render the icon before the message', () => {
         const { container } = render(<Empty />)
-        const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
-        expect(innerDiv?.className).toContain('w-full')
-        expect(innerDiv?.className).toContain('h-full')
-    })
-
-    test('should have minimum dimensions', () => {
-        const { container } = render(<Empty />)
-        const innerDiv = (container.firstChild as HTMLElement).querySelector('div')
-        expect(innerDiv?.className).toContain('min-w-62.5')
-        expect(innerDiv?.className).toContain('min-h-62.5')
+        const innerDiv = (container.firstChild as HTMLElement).querySelector('div') as HTMLElement
+        const icon = innerDiv.querySelector('[data-testid="folder-icon"]')
+        expect(innerDiv.firstElementChild).toBe(icon)
     })
 
     test('should render correct DOM structure', () => {

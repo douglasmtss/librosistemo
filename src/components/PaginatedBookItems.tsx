@@ -4,6 +4,7 @@ import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Link from 'next/link'
 import { FaPencilAlt, FaTrash } from 'react-icons/fa'
+import styled from 'styled-components'
 import { useToastify } from '@/hooks/useToastify'
 import { Img } from './Img'
 import { PaginatedContainer } from './styles'
@@ -48,51 +49,126 @@ export const PaginatedBookItems = ({
     return (
         <PaginatedContainer disabled={currentItems.length <= itemsPerPage}>
             {deleting && <DeleteModal onCancel={onCancel} onConfirm={onConfirm} />}
-            <div className="flex flex-col">
+            <ItemsList>
                 {currentItems?.map((book, index) => {
                     return (
-                        <div
-                            key={`${book.title} - ${index}`}
-                            className="flex items-center w-full h-12 border-b-2 p-4 even:bg-slate-100 hover:bg-slate-200"
-                        >
-                            <div className="mr-4">
+                        <ItemRow key={`${book.title} - ${index}`}>
+                            <CoverWrapper>
                                 <Img width={20} src={book.image} alt={book.title} />
-                            </div>
-                            <h2 className="flex-1 text-gray-500 font-semibold">
+                            </CoverWrapper>
+                            <ItemTitle>
                                 {/* {book.title} */}
                                 <TextElipsis text={book?.title} width={'100%'} height={16} />
-                            </h2>
-                            <BookStatus label={book?.status} className="p-0 mr-2 text-sm md:p-2 md:text-md" />
+                            </ItemTitle>
+                            <StatusBadge label={book?.status} />
 
-                            <Link href={`/pages/dashboard/${index}`} className="mr-8 text-primary">
+                            <EditLink href={`/pages/dashboard/${index}`}>
                                 <FaPencilAlt />
-                            </Link>
-                            <button className="text-red-500" onClick={() => setDeleting(`${book?.id}`)}>
+                            </EditLink>
+                            <DeleteButton onClick={() => setDeleting(`${book?.id}`)}>
                                 <FaTrash />
-                            </button>
-                        </div>
+                            </DeleteButton>
+                        </ItemRow>
                     )
                 })}
-            </div>
-            <div className="mx-auto w-full flex justify-center items-center -mb-12 mt-8">
+            </ItemsList>
+            <CountRow>
                 {books?.length ? (
                     <span>
                         {books?.length} {books?.length > 1 ? 'livros encontrados' : 'livro encontrado'}{' '}
                     </span>
                 ) : null}
-            </div>
-            <ReactPaginate
-                activeLinkClassName="bg-primary text-white rounded-full px-2"
+            </CountRow>
+            <StyledPaginate
+                activeLinkClassName="active-page-link"
                 breakLabel="..."
                 nextLabel={paginateNavigationButtons(books, 'right', itemsPerPage)}
-                nextClassName="relative"
+                nextClassName="paginate-next"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
                 previousLabel={paginateNavigationButtons(books, 'left', itemsPerPage)}
-                previousClassName="relative "
+                previousClassName="paginate-previous"
                 renderOnZeroPageCount={null}
             />
         </PaginatedContainer>
     )
 }
+
+const ItemsList = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const ItemRow = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    border-bottom: 2px solid var(--color-gray-200);
+    padding: 16px;
+
+    &:nth-child(even) {
+        background-color: var(--color-gray-100);
+    }
+
+    &:hover {
+        background-color: var(--color-gray-200);
+    }
+`
+
+const CoverWrapper = styled.div`
+    margin-right: 16px;
+`
+
+const ItemTitle = styled.h2`
+    flex: 1 1 0%;
+    color: var(--color-gray-500);
+    font-weight: 600;
+`
+
+const StatusBadge = styled(BookStatus)`
+    padding: 0;
+    margin-right: 8px;
+    font-size: 14px;
+    line-height: 20px;
+
+    @media (min-width: 768px) {
+        padding: 8px;
+    }
+`
+
+const EditLink = styled(Link)`
+    margin-right: 32px;
+    color: var(--color-primary);
+`
+
+const DeleteButton = styled.button`
+    color: var(--color-danger);
+`
+
+const CountRow = styled.div`
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -48px;
+    margin-top: 32px;
+`
+
+const StyledPaginate = styled(ReactPaginate)`
+    li.paginate-next,
+    li.paginate-previous {
+        position: relative;
+    }
+
+    a.active-page-link {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        border-radius: 9999px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+`

@@ -2,10 +2,6 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import HamburgerAndCloser from '../HamburgerAndCloser'
 
-jest.mock('@/lib/tailwindMerge', () => ({
-    cn: (...classes: string[]): string => classes.filter(Boolean).join(' ')
-}))
-
 jest.mock('react-icons/fa', () => ({
     FaBars: ({ className }: { className?: string }): React.JSX.Element => (
         <span data-testid="bars-icon" className={className} />
@@ -58,22 +54,10 @@ describe('HamburgerAndCloser', () => {
         expect(button).toBeTruthy()
     })
 
-    test('should have text-2xl class by default', () => {
-        render(<HamburgerAndCloser show={false} setShow={mockSetShow} />)
-        const button = screen.getByRole('button')
-        expect(button.className).toContain('text-2xl')
-    })
-
     test('should apply custom className', () => {
         render(<HamburgerAndCloser show={false} setShow={mockSetShow} className="custom-class" />)
         const button = screen.getByRole('button')
         expect(button.className).toContain('custom-class')
-    })
-
-    test('should apply focus outline hidden class', () => {
-        render(<HamburgerAndCloser show={false} setShow={mockSetShow} />)
-        const button = screen.getByRole('button')
-        expect(button.className).toContain('focus:outline-hidden')
     })
 
     test('should handle multiple clicks', () => {
@@ -88,17 +72,14 @@ describe('HamburgerAndCloser', () => {
         expect(mockSetShow).toHaveBeenCalledWith(false)
     })
 
-    test('should not have z-20 class on bars icon', () => {
+    test('should not render close icon when show is false', () => {
         render(<HamburgerAndCloser show={false} setShow={mockSetShow} />)
-        const icon = screen.getByTestId('bars-icon')
-        expect(icon.className).not.toContain('z-20')
+        expect(screen.queryByTestId('times-icon')).toBeFalsy()
     })
 
-    test('should have z-20 class on times icon', () => {
+    test('should not render hamburger icon when show is true', () => {
         render(<HamburgerAndCloser show={true} setShow={mockSetShow} />)
-        const icon = screen.getByTestId('times-icon')
-        expect(icon.className).toContain('relative')
-        expect(icon.className).toContain('z-20')
+        expect(screen.queryByTestId('bars-icon')).toBeFalsy()
     })
 
     test('should call setShow with boolean value', () => {
@@ -118,17 +99,12 @@ describe('HamburgerAndCloser', () => {
         expect(setShowMock).toHaveBeenCalled()
     })
 
-    test('should render with className prop when provided', () => {
-        render(<HamburgerAndCloser show={false} setShow={mockSetShow} className="md:hidden" />)
-        const button = screen.getByRole('button')
-        expect(button.className).toContain('md:hidden')
-    })
-
-    test('should merge default and custom classes', () => {
+    test('should keep the component base styling class alongside a custom className', () => {
         render(<HamburgerAndCloser show={false} setShow={mockSetShow} className="custom" />)
         const button = screen.getByRole('button')
-        expect(button.className).toContain('text-2xl')
-        expect(button.className).toContain('custom')
+        const classes = button.className.split(' ').filter(Boolean)
+        expect(classes).toContain('custom')
+        expect(classes.length).toBeGreaterThan(1)
     })
 
     test('should return React.ReactNode', () => {
