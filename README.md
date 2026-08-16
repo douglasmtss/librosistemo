@@ -15,6 +15,12 @@
 
 🇧🇷 [Manual in Portuguese](./docs/MANUAL_PT_BR.md)
 
+### 🏗️ Technical documentation
+
+- [Architecture (C4 model)](./docs/architecture/c4/README.md) · [ADRs](./docs/adr/README.md) · [Specs (SDD)](./docs/specs/README.md)
+- [Current state](./docs/CURRENT_STATE.md) · [Improvement plan](./docs/IMPROVEMENT_PLAN.md)
+- AI coding agents: instructions in [`AGENTS.md`](./AGENTS.md) (Claude Code, Codex CLI, Copilot CLI); specialist agents in [`.claude/agents/`](./.claude/agents/)
+
 
 
 This application uses Google sheets as a database.
