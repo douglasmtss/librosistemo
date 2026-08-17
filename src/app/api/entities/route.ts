@@ -1,5 +1,6 @@
 import { isEntity } from '@/enums/entities'
 import { entityRepository, EntityData } from '@/services/db/repositories'
+import { validateEntityPayload } from '@/services/db/validation'
 import { NextRequest, NextResponse } from 'next/server'
 
 const badRequest = (message: string): NextResponse => NextResponse.json({ error: message }, { status: 400 })
@@ -8,6 +9,10 @@ const isRecordNotFound = (error: unknown): boolean =>
     typeof error === 'object' && error !== null && (error as { code?: string }).code === 'P2025'
 
 const handleError = (error: unknown): NextResponse => {
+    if (error instanceof SyntaxError) {
+        return badRequest('JSON inválido')
+    }
+
     if (isRecordNotFound(error)) {
         return NextResponse.json({ error: 'Registro não encontrado' }, { status: 404 })
     }
@@ -55,6 +60,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     try {
         const body = (await req.json()) as EntityData
+
+        if (!validateEntityPayload(entity, body)) {
+            return badRequest('Payload inválido')
+        }
+
         const created = await entityRepository.create(entity, body)
 
         return NextResponse.json(created, { status: 201 })
@@ -78,6 +88,11 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
     try {
         const body = (await req.json()) as EntityData
+
+        if (!validateEntityPayload(entity, body, true)) {
+            return badRequest('Payload inválido')
+        }
+
         const updated = await entityRepository.update(entity, id, body)
 
         return NextResponse.json(updated, { status: 200 })

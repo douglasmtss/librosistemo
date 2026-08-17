@@ -108,6 +108,13 @@ describe('/api/entities', (): void => {
             expect(response.status).toBe(400)
             expect(repository.create).not.toHaveBeenCalled()
         })
+
+        test('retorna 400 para payload inválido', async (): Promise<void> => {
+            const response = await POST(buildRequest('?entity=books', { method: 'POST', body: { title: '' } }))
+
+            expect(response.status).toBe(400)
+            expect(repository.create).not.toHaveBeenCalled()
+        })
     })
 
     describe('PUT', (): void => {
@@ -134,6 +141,13 @@ describe('/api/entities', (): void => {
             const response = await PUT(buildRequest('?entity=books&id=x', { method: 'PUT', body: {} }))
 
             expect(response.status).toBe(404)
+        })
+
+        test('retorna 400 para payload de atualização inválido', async (): Promise<void> => {
+            const response = await PUT(buildRequest('?entity=books&id=x', { method: 'PUT', body: [] }))
+
+            expect(response.status).toBe(400)
+            expect(repository.update).not.toHaveBeenCalled()
         })
     })
 
