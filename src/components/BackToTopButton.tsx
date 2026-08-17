@@ -7,9 +7,10 @@ export const BackToTopButton = (): React.ReactNode => {
     const [showBaxToTopButton, setShowBackToTopButton] = useState(false)
 
     useEffect(() => {
-        document.addEventListener('scroll', () => setShowBackToTopButton(window.scrollY > 100))
+        const handleScroll = (): void => setShowBackToTopButton(window.scrollY > 100)
+        document.addEventListener('scroll', handleScroll)
 
-        return (): void => document.removeEventListener('scroll', () => setShowBackToTopButton(window.scrollY > 100))
+        return (): void => document.removeEventListener('scroll', handleScroll)
     }, [])
 
     return (

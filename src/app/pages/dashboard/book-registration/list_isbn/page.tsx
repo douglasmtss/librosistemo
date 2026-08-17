@@ -196,15 +196,6 @@ function SearchPageImpl(): React.ReactNode {
         }
     }
 
-    const getCodesWithErrrosUrl = useCallback(() => {
-        const blob = new Blob([codesWithErrors.join('\n')], { type: 'text/plain' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-
-        return url
-    }, [codesWithErrors])
-
     useEffect(() => {
         if (remainingTime) {
             const interval = setInterval(() => {
@@ -310,7 +301,7 @@ function SearchPageImpl(): React.ReactNode {
                         </p>
                         <p>
                             <ErrorsLink
-                                href={getCodesWithErrrosUrl()}
+                                href={`data:text/plain;charset=utf-8,${encodeURIComponent(codesWithErrors.join('\n'))}`}
                                 download={`${codesWithErrors?.length}_codigos_com_erros-${new Date().getTime()}.txt`}
                             >
                                 Consulte os códigos com erros.

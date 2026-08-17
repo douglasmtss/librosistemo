@@ -31,23 +31,19 @@ export const TextElipsis = ({ text, width, height, color }: TextElipsisProps): R
 
         const textRefCurrent = textRef.current
         if (textRefCurrent) {
-            textRefCurrent?.addEventListener('mouseover', () => {
+            const handleMouseOver = (): void => {
                 textRefCurrent.style.webkitLineClamp = '10'
-            })
-
-            textRefCurrent?.addEventListener('mouseleave', () => {
+            }
+            const handleMouseLeave = (): void => {
                 textRefCurrent.style.webkitLineClamp = String(numberOfLines)
-            })
-        }
+            }
 
-        return (): void => {
-            if (textRefCurrent) {
-                textRefCurrent.removeEventListener('mouseover', () => {
-                    textRefCurrent.style.webkitLineClamp = String(numberOfLines)
-                })
-                textRefCurrent?.removeEventListener('mouseleave', () => {
-                    textRefCurrent.style.webkitLineClamp = String(numberOfLines)
-                })
+            textRefCurrent.addEventListener('mouseover', handleMouseOver)
+            textRefCurrent.addEventListener('mouseleave', handleMouseLeave)
+
+            return (): void => {
+                textRefCurrent.removeEventListener('mouseover', handleMouseOver)
+                textRefCurrent.removeEventListener('mouseleave', handleMouseLeave)
             }
         }
     }, [text, width, height])
