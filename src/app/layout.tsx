@@ -6,10 +6,17 @@ import { configInfo } from '@/config/info'
 import StyledComponentsRegistry from '@/lib/registry'
 import LayoutChrome from '@/components/LayoutChrome'
 import { ReactNode } from 'react'
+import type { Viewport } from 'next'
 
 export const metadata = {
     title: configInfo.appName,
     description: configInfo.appDescription
+}
+
+export const viewport: Viewport = {
+    themeColor: '#2563eb',
+    width: 'device-width',
+    initialScale: 1
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }): Promise<ReactNode> {

@@ -1,5 +1,6 @@
 import robots from '../robots'
 import sitemap from '../sitemap'
+import manifest from '../manifest'
 
 describe('SEO routes', (): void => {
     beforeEach((): void => {
@@ -24,5 +25,13 @@ describe('SEO routes', (): void => {
 
         expect(result).toHaveLength(1)
         expect(result[0].url).toBe('https://librosistemo.example')
+    })
+
+    test('manifesto usa ícones existentes e modo instalável', (): void => {
+        const result = manifest()
+
+        expect(result.display).toBe('standalone')
+        expect(result.start_url).toBe('/')
+        expect(result.icons?.[0].src).toBe('/images/android-chrome-192x192.png')
     })
 })
