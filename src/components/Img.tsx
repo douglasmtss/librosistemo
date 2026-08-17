@@ -26,7 +26,16 @@ export const Img = ({
 
     return (
         <>
-            <img ref={imgRef} src={src} width={width} height={height} alt={alt} className={className} />
+            <img
+                ref={imgRef}
+                src={src || '/images/empty-book.png'}
+                width={width}
+                height={height}
+                alt={alt}
+                className={className}
+                loading="lazy"
+                decoding="async"
+            />
         </>
     )
 }
