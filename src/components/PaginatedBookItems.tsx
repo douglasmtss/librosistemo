@@ -50,9 +50,9 @@ export const PaginatedBookItems = ({
         <PaginatedContainer disabled={currentItems.length <= itemsPerPage}>
             {deleting && <DeleteModal onCancel={onCancel} onConfirm={onConfirm} />}
             <ItemsList>
-                {currentItems?.map((book, index) => {
+                {currentItems?.map(book => {
                     return (
-                        <ItemRow key={`${book.title} - ${index}`}>
+                        <ItemRow key={book.id ?? book.title}>
                             <CoverWrapper>
                                 <Img width={20} src={book.image} alt={book.title} />
                             </CoverWrapper>
@@ -62,7 +62,7 @@ export const PaginatedBookItems = ({
                             </ItemTitle>
                             <StatusBadge label={book?.status} />
 
-                            <EditLink href={`/pages/dashboard/${index}`}>
+                            <EditLink href={`/pages/dashboard/${book.id}`}>
                                 <FaPencilAlt />
                             </EditLink>
                             <DeleteButton onClick={() => setDeleting(`${book?.id}`)}>

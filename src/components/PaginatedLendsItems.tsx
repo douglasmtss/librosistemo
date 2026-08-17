@@ -49,14 +49,14 @@ export const PaginatedLendsItems = ({
         <PaginatedContainer disabled={currentItems.length <= itemsPerPage}>
             {deleting && <DeleteModal onCancel={onCancel} onConfirm={onConfirm} />}
             <ItemsList>
-                {currentItems?.map((lend, index) => {
+                {currentItems?.map(lend => {
                     return (
-                        <ItemRow key={`${lend.first_name} - ${index}`}>
+                        <ItemRow key={lend.id ?? `${lend.first_name}-${lend.created}`}>
                             <ItemName>
                                 <TextElipsis width={'100%'} height={16} text={lend.first_name + ' ' + lend.last_name} />
                             </ItemName>
 
-                            <ViewLink href={`/pages/dashboard/lends/${index}`}>
+                            <ViewLink href={`/pages/dashboard/lends/${lend.id}`}>
                                 <PreviewIcon />
                             </ViewLink>
                             <DeleteButton onClick={() => setDeleting(`${lend?.id}`)}>

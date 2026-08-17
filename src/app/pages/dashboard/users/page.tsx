@@ -25,7 +25,7 @@ export default function Users(): React.ReactNode {
         const value = e.target.value
 
         if (value) {
-            setFilteredUsers(users.filter(user => user.first_name.toLowerCase().match(value.toLowerCase())))
+            setFilteredUsers(users.filter(user => user.first_name.toLowerCase().includes(value.toLowerCase())))
         } else {
             setFilteredUsers(users)
         }

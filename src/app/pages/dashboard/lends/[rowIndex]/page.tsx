@@ -1,31 +1,35 @@
 'use client'
+import React from 'react'
 import { BackButton } from '@/components/BackButton'
 import { api } from '@/services/api'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 interface LendViewProps {
-    params: {
+    params: Promise<{
         rowIndex: string
-    }
+    }>
 }
 export default function LendView(props: LendViewProps): React.ReactNode {
-    const { params } = props
+    const { rowIndex } = React.use(props.params)
 
     const [books, setBooks] = useState<Book[]>([])
     const [lends, setLends] = useState<Lend[]>([])
-    const lend = lends.find((_, i) => +params.rowIndex === i) as Lend
+    const lend = lends.find(item => item.id === rowIndex) as Lend
 
     const handleDelete = async (id: string): Promise<void> => {
-        await api.sheet.lends.delete(id).then(response => {
+        await api.sheet.lends.delete(id).then(async response => {
             if (response.status === 200) {
-                const book = books.find(b => b.id === lend.book_id)
-                const updatedBook = {
-                    ...book,
-                    status: 'available'
-                } as Book
-                api.sheet.books.put(`${book?.id}`, updatedBook)
-                setLends(lends.filter(lend => lend?.id === id))
+                const remainingLends = await api.sheet.lends.get()
+                const hasActiveLend = remainingLends.some(item => item.book_id === lend.book_id)
+
+                if (!hasActiveLend) {
+                    const book = books.find(b => b.id === lend.book_id)
+                    const updatedBook = { ...book, status: 'available' } as Book
+                    await api.sheet.books.put(lend.book_id, updatedBook)
+                }
+
+                setLends(lends.filter(item => item?.id !== id))
             }
         })
     }

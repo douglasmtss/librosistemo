@@ -47,14 +47,14 @@ export const PaginatedUserItems = ({
         <PaginatedContainer disabled={currentItems.length <= itemsPerPage}>
             {deleting && <DeleteModal onCancel={onCancel} onConfirm={onConfirm} />}
             <ItemsList>
-                {currentItems?.map((user, index) => {
+                {currentItems?.map(user => {
                     return (
-                        <ItemRow key={`${user.phone} - ${index}`}>
+                        <ItemRow key={user.id ?? user.phone}>
                             <ItemName>
                                 {user.first_name} {user.last_name}
                             </ItemName>
 
-                            <EditLink href={`/pages/dashboard/users/${index}`}>
+                            <EditLink href={`/pages/dashboard/users/${user.id}`}>
                                 <FaPencilAlt />
                             </EditLink>
                             <DeleteButton onClick={() => setDeleting(`${user?.id}`)}>

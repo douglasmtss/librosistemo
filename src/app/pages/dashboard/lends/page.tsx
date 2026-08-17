@@ -13,7 +13,7 @@ export default function Lends(): React.ReactNode {
     const { books, lends, setLends, filteredLends, setFilteredLends, loadingLends } = useEntities(['books', 'lends'])
 
     const handleDelete = async (id: string): Promise<void> => {
-        await api.sheet.lends.delete(id).then(() => {
+        await api.sheet.lends.delete(id).then(async () => {
             if (!lends || !setLends || !books || !setFilteredLends) return
 
             const filtered = lends.filter(lend => lend?.id !== id)
@@ -23,14 +23,14 @@ export default function Lends(): React.ReactNode {
             const lend = lends.find(lend => lend.id === id)
             if (!lend) return
 
-            const bookId = lend.book_id
-            const book = books.find(b => b.id === bookId)
-            const updatedBook = {
-                ...book,
-                status: 'available'
-            } as Book
+            const remainingLends = await api.sheet.lends.get()
+            const hasActiveLend = remainingLends.some(item => item.book_id === lend.book_id)
 
-            api.sheet.books.put(bookId, updatedBook)
+            if (!hasActiveLend) {
+                const book = books.find(b => b.id === lend.book_id)
+                const updatedBook = { ...book, status: 'available' } as Book
+                await api.sheet.books.put(lend.book_id, updatedBook)
+            }
         })
     }
 
@@ -40,7 +40,7 @@ export default function Lends(): React.ReactNode {
         const value = e.target.value
 
         if (value) {
-            setFilteredLends(lends.filter(user => user.first_name.toLowerCase().match(value.toLowerCase())))
+            setFilteredLends(lends.filter(lend => lend.first_name.toLowerCase().includes(value.toLowerCase())))
         } else {
             setFilteredLends(lends)
         }

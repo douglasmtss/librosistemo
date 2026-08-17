@@ -33,7 +33,9 @@ export default function Books(): React.ReactNode {
         const value = e.target.value
 
         if (value) {
-            setFilteredBooks(books.filter(book => String(book[filter.value]).toLowerCase().match(value.toLowerCase())))
+            setFilteredBooks(
+                books.filter(book => String(book[filter.value]).toLowerCase().includes(value.toLowerCase()))
+            )
         } else {
             setFilteredBooks(books)
         }

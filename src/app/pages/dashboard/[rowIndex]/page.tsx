@@ -17,7 +17,7 @@ export default function EditBook({ params }: EditBookProps): React.ReactNode {
     const { rowIndex } = React.use(params)
 
     const [books, setBooks] = useState<Book[]>([])
-    const book = books.find((_, i) => +rowIndex === i) as Book
+    const book = books.find(item => item.id === rowIndex) as Book
 
     useEffect(() => {
         api.sheet.books.get().then(data => {

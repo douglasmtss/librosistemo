@@ -11,12 +11,13 @@ export default function List(): React.ReactNode {
     const [codes, setCodes] = useState<string[]>([])
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-        if (e?.target?.value && e?.target?.value?.includes('\n')) {
-            const codes = e.target.value.split('\n')
-            setCodes(codes)
+        const codes = e.target.value
+            .split(/\r?\n/)
+            .map(code => code.trim())
+            .filter(Boolean)
 
-            setInputValue(e.target.value)
-        }
+        setCodes(codes)
+        setInputValue(e.target.value)
     }
 
     const handleSearch = (): void => {
