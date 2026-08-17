@@ -14,21 +14,21 @@
 - [x] **S3** Env vars sem `NEXT_PUBLIC_` — credenciais Google saíram do runtime (só devDeps do script de importação). *(2026-08-16, dfe3395)*
 - [x] **S4** Hash bcrypt, HTTP 401 real, `type="password"`, logs de auth removidos. *(2026-08-16, dfe3395)*
 - [x] **B9** Resolvido pela migração para SQLite/Prisma: sem variável de módulo, `await` nas escritas, status corretos. *(2026-08-16, dfe3395 — spec 002/ADR 0007)*
-- [ ] **B2** Corrigir links de edição (usar `id` UUID na URL em vez de índice do slice) — hoje edita o registro errado a partir da página 2.
-- [ ] **B3** Corrigir filtro invertido na exclusão de empréstimo.
-- [ ] **B6** Só marcar livro `available` quando não restarem empréstimos ativos dele.
+- [x] **B2** Corrigir links de edição (usar `id` UUID na URL em vez de índice do slice). *(2026-08-16, 5d70073)*
+- [x] **B3** Corrigir filtro invertido na exclusão de empréstimo. *(2026-08-16, 5d70073)*
+- [x] **B6** Só marcar livro `available` quando não restarem empréstimos ativos dele. *(2026-08-16, 5d70073)*
 - [x] Testes comportamentais reais para as rotas de API (auth, entities, sessão, repositórios). *(2026-08-16, dfe3395)*
 
 ## Fase 1 — Compatibilidade Next 16 e correções funcionais restantes
 
 **Agentes**: `migration-specialist`, `frontend-specialist`. **Esforço: 2–3 dias.**
 
-- [ ] **B1** `params` como `Promise` + `React.use(params)` nas 3 rotas dinâmicas restantes.
+- [x] **B1** `params` como `Promise` + `React.use(params)` nas 3 rotas dinâmicas restantes. *(2026-08-16, 5d70073)*
 - [ ] Remover os `'use server'` indevidos dos services (não são Server Actions).
-- [ ] **B4** Busca com comparação por `includes` (não regex) + debounce.
-- [ ] **B5** Cadastro por lista aceita ISBN único sem `\n`.
-- [ ] **B7/B8/B10** Vazamentos de listener, `useEffect([props])`, blob URL sem revoke.
-- [ ] **B11** Tratamento de erro honesto: remover coerções `as AxiosResponse` de `undefined`; erro do Sheets vira erro na UI (toast), não lista vazia; adicionar `error.tsx` global.
+- [x] **B4** Busca com comparação por `includes` (não regex). *(2026-08-16, 5d70073)*
+- [x] **B5** Cadastro por lista aceita ISBN único sem `\n`. *(2026-08-16, 5d70073)*
+- [x] **B7/B8/B10** Vazamentos de listener e blob URL corrigidos. *(2026-08-16, b417a76)*
+- [x] **B11** Tratamento de erro honesto: serviços propagam falhas para a UI. *(2026-08-16, 1867b32)*
 - [ ] Validação de entrada: schema por entidade (Zod — registrar ADR) nas rotas e nos formulários; `onSubmit` real nos forms; validar ISBN.
 
 ## Fase 2 — Higiene de dependências e CI/CD
@@ -39,8 +39,8 @@
 - [x] GitHub Actions (`.github/workflows/ci.yml`): job `yarn ci` (lint + typecheck + testc + build) + job E2E Playwright; scripts `typecheck`, `ci` e `devloop` criados (ADR 0009). *(2026-08-16, 4f51f50)*
 - [x] E2E com Playwright (`e2e/`, config com banco descartável, perfis mobile/desktop). *(2026-08-16, 4f51f50)*
 - [x] Docker/compose para rodar local (alvos prod e dev com hot reload). *(2026-08-16, 4f51f50)*
-- [ ] Habilitar `coverageThreshold` no Jest (começar nos números atuais e subir por fase).
-- [ ] Dependabot/Renovate; template de PR; LICENSE.
+- [x] Habilitar `coverageThreshold` no Jest (começar nos números atuais e subir por fase). *(2026-08-16)*
+- [x] Dependabot; template de PR; LICENSE. *(2026-08-16)*
 - [ ] Avaliar substituto mantido para `html5-qrcode` (ex.: `barcode-detector`/ZXing) — registrar ADR.
 - [x] Documentar `BASE_URL` no `env.template`. *(2026-08-16, dfe3395)*
 
