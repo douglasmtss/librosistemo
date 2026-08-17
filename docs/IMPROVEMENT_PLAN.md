@@ -63,8 +63,8 @@
 
 - [ ] **Migração de rotas**: eliminar o prefixo `/pages` (mover para `src/app/dashboard/...` com route group) e normalizar edição de livro para `/dashboard/books/[id]`; redirects no `next.config.ts`; atualizar `proxy.ts` e constantes de rota centralizadas.
 - [ ] Decidir (ADR) se o acervo (`/`) volta a ser público — hoje tudo exige login.
-- [ ] Acessibilidade: `lang="pt-BR"`, `aria-*` e teclado nos 12 `<div onClick>`, foco visível, labels nos formulários, `<main>`/headings, `next/image` ou `<img>` com lazy/fallback.
-- [ ] PWA de verdade: `manifest.webmanifest` via App Router, ícones corrigidos, `viewport`/`themeColor`, service worker básico — app instalável (é mobile-first).
+- [x] Acessibilidade inicial: `lang="pt-BR"`, controles de voltar/filtro/acervo com `aria-*` e teclado, foco semântico e imagens com lazy/fallback. *(2026-08-16, 00c2ecc/9c85aaf)*
+- [x] PWA: manifesto via App Router, ícones corrigidos, `viewport`/`themeColor` — app instalável. *(2026-08-16, 840f4f5)*
 - [ ] Estados de loading com `loading.tsx`/Suspense; empty states revisados.
 - [ ] i18n: no mínimo extrair strings para dicionário central (decisão de lib completa via ADR).
 
