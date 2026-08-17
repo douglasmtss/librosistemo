@@ -3,7 +3,7 @@
 import { Loading } from '@/components/Loading'
 import { useToastify } from '@/hooks/useToastify'
 import { api } from '@/services/api'
-// import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import styled from 'styled-components'
 
@@ -12,7 +12,7 @@ export default function Auth(): React.ReactNode {
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
 
-    // const router = useRouter()
+    const router = useRouter()
 
     const { toast } = useToastify()
 
@@ -34,7 +34,7 @@ export default function Auth(): React.ReactNode {
             .then(res => {
                 if (res.status === 200) {
                     // A sessão vem em cookie httpOnly definido pelo servidor.
-                    window.location.href = '/pages/dashboard'
+                    router.push('/pages/dashboard')
 
                     toast('Você está logado', 'success')
                 } else {

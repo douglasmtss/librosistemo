@@ -1,107 +1,115 @@
 # Estado Atual do Sistema — Librosistemo
 
-> Fotografia completa do sistema em **2026-08-16** (branch `main`, working tree limpo).
+> Fotografia completa do sistema em **2026-08-16**, após a conclusão da [spec 002](./specs/002-migracao-sqlite-sem-tailwind-devloop/spec.md) (migração Sheets → SQLite, remoção do Tailwind, devloop/CI).
 > Complementa os diagramas em [`architecture/c4/`](./architecture/c4/README.md). O plano de correção priorizado está em [`IMPROVEMENT_PLAN.md`](./IMPROVEMENT_PLAN.md).
 
 ## 1. Visão geral
 
-Aplicação web de gestão de biblioteca pequena (acervo, leitores, empréstimos), mobile-first, com um único usuário admin. Stack: **Next.js 16.1.1 (App Router) + React 19.2.3 + TypeScript 5.9 (strict)**, **Google Sheets como banco de dados** (lib `google-spreadsheet` 4.1.5 + JWT service account), Tailwind 4 + styled-components 6 coexistindo, Jest 30 + Testing Library. Node fixado em `24.12.0`, gerenciador yarn.
+Sistema **open source e genérico** de gestão de biblioteca pequena (acervo, leitores, empréstimos), mobile-first, com um único usuário admin. Stack: **Next.js 16.3 (App Router) + React 19.2 + TypeScript 5.9 (strict)**, **SQLite via Prisma 7** (adapter better-sqlite3, ADR 0007), **styled-components 6 como única solução de estilo** (ADR 0008), Jest 30 + Testing Library, Playwright para E2E. Node `>=24` (`.nvmrc`), gerenciador yarn.
 
-- 143 arquivos em `src/` (64 são testes, ~11.400 linhas de teste).
-- Cobertura atual (badges commitadas): statements/lines **66,85%**, functions **88,78%**, branches **94,93%** — sem threshold enforçado.
-- Sem CI/CD, sem Docker, sem `.nvmrc`, sem LICENSE. Gate de qualidade é manual (`yarn test:build`).
+- Cobertura atual (badges commitadas): statements/lines **75,57%**, functions **87,25%**, branches **94,13%** — `coverageThreshold` ainda comentado no `jest.config.ts`.
+- **CI no GitHub Actions** (`.github/workflows/ci.yml`): `yarn ci` (lint + typecheck + testes com cobertura + build) + job E2E Playwright em todo push/PR para `main` (ADR 0009).
+- **Docker**: `Dockerfile` multi-stage (alvos `dev` e `prod`) + `compose.yaml` com banco em volume nomeado.
+- Sem LICENSE commitada (pendência da Fase 2 — o produto se anuncia open source).
 
 ## 2. Arquitetura em execução
 
-- **Quase tudo é client-side**: dos 19 `page.tsx`/`layout.tsx`, só 2 são Server Components (`src/app/layout.tsx` e `src/app/pages/dashboard/page.tsx`). Não há `fetch` server-side, `revalidate`, streaming, `loading.tsx`, `error.tsx` nem `not-found.tsx`.
-- **Rotas** carregam o prefixo literal `/pages` (`src/app/pages/dashboard/...`). Edição de livro fica em `/pages/dashboard/[rowIndex]` (raiz do dashboard), enquanto users/lends têm `[rowIndex]` sob seus subcaminhos — inconsistente.
-- **Middleware** `src/proxy.ts` (convenção `proxy.ts` do Next 16): exige o cookie `app-logged` para tudo exceto `api/auth`, `login` e assets. Consequência: **não existe página pública** — até a home `/` exige login.
-- **API**: `/api/auth` (login) e `/api/spreadsheet` (CRUD genérico via `?sheet=books|users|lends&id=`).
-- **Integração ISBN**: apenas BrasilAPI é usada (chamada do navegador). `services.google` (Google Books) e `src/lib/validateIsbnFromGoogleApiItems.ts` são **código morto** — o README anuncia a Google API indevidamente.
-- **`'use server'`** aparece dentro de 5 funções de serviço (`google-spreadsheet.ts`, `spreadsheetToDTO.ts`), transformando-as em Server Actions indevidamente — inclusive uma que retorna objeto não serializável (`GoogleSpreadsheet`).
+Fluxo de dados: **Página (client component) → `src/services/api.ts` (axios, fábrica de CRUD genérica `api.sheet.*`) → `/api/entities` (`src/app/api/entities/route.ts`) → `src/services/db/repositories.ts` (coerção de tipos na borda) → Prisma (`src/services/db/prisma.ts`, client gerado em `src/generated/prisma`) → SQLite**.
 
-## 3. Modelo de dados
+- **Landing page pública** em `/` (`src/app/page.tsx` + `src/components/LandingPage.tsx`): Server Component com metadata completa (Open Graph, Twitter card, canonical) e JSON-LD `SoftwareApplication`. O app administrativo vive atrás de login em `/pages/dashboard/...`.
+- **SEO**: só a landing é indexável — `src/app/robots.ts` bloqueia `/pages/`, `/login` e `/api/`; `src/app/sitemap.ts` lista só a home; URL pública vem de `SITE_URL` (`src/config/site.ts`). Identidade do produto centralizada em `src/config/info.ts`.
+- **Middleware** `src/proxy.ts`: libera `/` (e `robots.txt`/`sitemap.xml`/assets via matcher); todo o resto exige o cookie de sessão `app-session` com **assinatura HMAC-SHA256 válida e não expirada** (`src/services/session.ts`, Web Crypto — roda no Edge). Sem sessão válida → redirect para `/login`.
+- **Autenticação** (`src/app/api/auth/route.ts`): compara senha com **bcrypt** contra a tabela `admins`; sucesso emite cookie httpOnly (`sameSite: lax`, `secure` em produção, TTL 8h); falha responde **401 real**. Logout via `DELETE /api/auth`. Admin inicial criado pelo seed (`prisma/seed.ts`) a partir de `ADMIN_USERNAME`/`ADMIN_PASSWORD`.
+- **API de dados** (`/api/entities?entity=books|users|lends&id=...`): allowlist de entidades (`src/enums/entities.ts` — valor fora dela → 400), sem estado de módulo, `await` em todas as escritas, status HTTP reais (201 no create, 404 via código Prisma `P2025`, 500 com log).
+- **Rotas de página** ainda carregam o prefixo literal `/pages` (`src/app/pages/dashboard/...`) — migração prevista na Fase 4. Edição de livro em `/pages/dashboard/[rowIndex]` continua inconsistente com users/lends.
+- **Integração ISBN**: apenas BrasilAPI, chamada do navegador (`services.brasilapi` em `src/services/api.ts`). O código morto da Google Books API foi removido de `api.ts` na refatoração (os tipos `google-api-book.d.ts` ainda existem sem uso).
+- Quase toda a UI continua client-side (páginas `'use client'`, dados buscados no mount via `useEntities`); sem `loading.tsx`/`error.tsx`/`not-found.tsx`.
 
-| Entidade | Campos | Observações |
+## 3. Modelo de dados (`prisma/schema.prisma`)
+
+| Modelo | Campos | Observações |
 |---|---|---|
-| `Book` | id?, rowIndex?, isbn, title, subtitle, author, description, image (base64!), amount, category, status?, place? | `isbn`/`amount` tipados `number` mas chegam como `string` do Sheets — conversões espalhadas |
-| `User` (leitor) | id?, rowIndex?, first_name, last_name, phone | Não é conta de acesso |
-| `Lend` | id?, user_id, first_name, last_name, book_id, book_title, created | **Denormalizado** (nome/título copiados); sem data de devolução — devolver = excluir a linha |
+| `Book` | id (uuid), isbn, title, subtitle, author, description, image (base64!), amount (Int), category, status, place | Defaults no schema; `amount` agora é `Int` de verdade — a coerção string→número acontece uma vez na borda (`repositories.ts`) |
+| `User` (leitor) | id, first_name, last_name, phone | Não é conta de acesso |
+| `Lend` | id, user_id, first_name, last_name, book_id, book_title, created | **Ainda denormalizado** (nome/título copiados, sem FKs); sem data de devolução — devolver = excluir a linha (Fase 5) |
+| `Admin` | id, username (único), passwordHash | Senha só como hash bcrypt |
 
-- Identidade por coluna `id` (UUID), resolvida a `rowNumber` por varredura linear a cada operação.
-- `Row = Record<string, string>` — não há mapeamento tipado real, só casts (`as unknown as Book[]`), 44 ocorrências de `as unknown as` no projeto.
-- Capas de livro são **base64 gravado na célula da planilha**, inflando todos os payloads de listagem.
-- `google-api-book.d.ts` tem tipos duplicados (`ImageLinks` etc. declarados 2× com divergência).
+- Identidade por `id` UUID (chave primária real — fim da varredura linear por `rowNumber`).
+- `src/services/db/repositories.ts` faz a coerção de tipos por entidade na fronteira JSON solto → schema tipado; páginas continuam consumindo a superfície `api.sheet.*` inalterada.
+- Capas de livro seguem como **base64 na coluna `image`**, inflando payloads de listagem (Fase 5: mover para filesystem/storage).
 
-## 4. Segurança — vulnerabilidades ativas
+## 4. Segurança
 
-| # | Severidade | Vulnerabilidade | Local |
-|---|---|---|---|
-| S1 | **Crítica** | `GET /api/spreadsheet?sheet=auth` retorna `{username, password}` do admin em texto puro (parâmetro `sheet` não validado; `get` expõe a aba `auth`) | `api/spreadsheet/route.ts:13-17`, `spreadsheetToDTO.ts:57` |
-| S2 | **Crítica** | Sessão forjável: cookie `app-logged=yes` criado no cliente (`document.cookie`), sem HttpOnly/Secure/SameSite/expiração; middleware checa só presença; sem logout real | `login/page.tsx:36`, `proxy.ts:5-9`, `LayoutMenu.tsx:81-89` |
-| S3 | Alta | Credenciais da service account com prefixo `NEXT_PUBLIC_` — hoje só código server as importa (cadeia verificada), mas um import acidental em client component publicaria a chave privada | `env.template`, `jwtServiceAccountAuth.ts:4-6` |
-| S4 | Alta | Senha em texto puro na planilha; comparação não constante; falha de login responde HTTP 200; campo de senha `type="text"`; `console.log` na rota | `api/auth/route.ts`, `login/page.tsx:76` |
-| S5 | Média | Nenhuma validação de payload/query em nenhuma rota; sem CSRF, sem rate limit no login; sem headers de segurança no `next.config.ts` | rotas de API |
+As quatro vulnerabilidades críticas/altas do levantamento anterior foram **resolvidas em 2026-08-16** (spec 001 + spec 002, commit dfe3395):
 
-Positivo: `.gitignore` cobre `.env`/`*.pem` e nenhum segredo está commitado (verificado). `BASE_URL` usado em `api.ts:6` não está documentado no `env.template`.
+| # | Situação | Resolução |
+|---|---|---|
+| S1 | ~~`?sheet=auth` expunha credenciais~~ | **Resolvido** — allowlist de entidades em `/api/entities`; a tabela `admins` não é alcançável pela API |
+| S2 | ~~Cookie `app-logged` forjável criado no cliente~~ | **Resolvido** — cookie httpOnly assinado (HMAC-SHA256) com expiração, validado pelo proxy; logout real |
+| S3 | ~~Credenciais Google com `NEXT_PUBLIC_`~~ | **Resolvido** — credenciais Google saíram do runtime (só o script one-shot `db:import-sheets` as usa) |
+| S4 | ~~Senha em texto puro, login 200 em falha~~ | **Resolvido** — hash bcrypt, 401 real, `type="password"`, logs de auth removidos |
+
+Pendências ativas:
+
+- **S5 (média)**: nenhuma validação de schema de payload nas rotas (`body` é coagido campo a campo, mas sem rejeição de payload inválido — Zod planejado na Fase 1); sem CSRF token, sem rate limit no login, sem headers de segurança no `next.config.ts`.
+- `SESSION_SECRET` tem fallback de desenvolvimento (`src/services/session.ts`) — em produção sem a env o sistema loga erro mas continua assinando com o segredo público do fonte.
+- `/api/entities` não exige sessão por si só — a proteção vem do matcher do `proxy.ts` (defesa em camada única).
 
 ## 5. Bugs funcionais conhecidos
 
-| # | Bug | Local |
-|---|---|---|
-| B1 | `params` acessado sincronamente em 3 de 4 rotas dinâmicas (no Next 16 `params` é Promise) — só `dashboard/[rowIndex]` usa `React.use(params)` | `book-registration/[isbn]`, `lends/[rowIndex]`, `users/[rowIndex]` |
-| B2 | **Edita o registro errado**: links de edição usam o índice do slice da página (`0..9`), e a página de edição resolve por índice na lista completa — a partir da página 2 ou com filtro, abre outro registro | `PaginatedBookItems.tsx:67`, `PaginatedUserItems.tsx:59`, `PaginatedLendsItems.tsx:61` |
-| B3 | Filtro invertido ao excluir empréstimo: `filter(lend => lend?.id === id)` mantém só o excluído | `lends/[rowIndex]/page.tsx:27` |
-| B4 | Busca usa o input do usuário como **regex** — digitar `(`, `[`, `*` lança `SyntaxError` | `books/page.tsx:35`, `users/page.tsx:27`, `lends/page.tsx:42` |
-| B5 | Cadastro por lista de ISBN exige `\n` no input — um ISBN único sem Enter nunca habilita o botão | `book-registration/list/page.tsx:11-16` |
-| B6 | Excluir 1 empréstimo marca o livro `available` mesmo com outros empréstimos ativos do mesmo título | `lends/page.tsx:27-32`, `lends/[rowIndex]/page.tsx:22-26` |
-| B7 | Listeners nunca removidos (função anônima diferente no `removeEventListener`) | `BackToTopButton.tsx:9-11`, `TextElipsis.tsx:34-51` |
-| B8 | `useEffect` com `[props]` reseta o formulário de edição a cada render | `BookEditForm.tsx:52-57` |
-| B9 | POST/PUT/DELETE de `/api/spreadsheet` dependem de GET prévio na mesma instância (variável de módulo) e não aguardam a escrita (respondem 200 antes de gravar; falha vira unhandled rejection) | `api/spreadsheet/route.ts:6,26,39,51` |
-| B10 | Blob URL criada a cada render sem `revokeObjectURL` | `list_isbn/page.tsx:198-205` |
-| B11 | Erros de rede viram `undefined` coagido (`as AxiosResponse`) — acessar `response.status` lança `TypeError`; erro do Sheets vira "lista vazia" na UI | `api.ts` (12 métodos), `spreadsheetToDTO.ts:122-153` |
+| # | Situação | Bug | Local |
+|---|---|---|---|
+| B1 | Pendente | `params` acessado sincronamente em 3 rotas dinâmicas (no Next 16 é Promise) | `book-registration/[isbn]`, `lends/[rowIndex]`, `users/[rowIndex]` |
+| B2 | Pendente | **Edita o registro errado**: links de edição usam índice do slice da página — a partir da página 2 ou com filtro, abre outro registro | `PaginatedBookItems`, `PaginatedUserItems`, `PaginatedLendsItems` |
+| B3 | Pendente | Filtro invertido ao excluir empréstimo (`filter(lend => lend?.id === id)` mantém só o excluído) | `lends/[rowIndex]/page.tsx` |
+| B4 | Pendente | Busca usa input do usuário como **regex** — `(`, `[`, `*` lançam `SyntaxError` | `books/page.tsx`, `users/page.tsx`, `lends/page.tsx` |
+| B5 | Pendente | Cadastro por lista exige `\n` no input — ISBN único sem Enter não habilita o botão | `book-registration/list/page.tsx` |
+| B6 | Pendente | Excluir 1 empréstimo marca o livro `available` mesmo com outros empréstimos ativos | `lends/page.tsx`, `lends/[rowIndex]/page.tsx` |
+| B7 | Pendente | Listeners nunca removidos (função anônima no `removeEventListener`) | `BackToTopButton.tsx`, `TextElipsis.tsx` |
+| B8 | Pendente | `useEffect` com `[props]` reseta o formulário de edição a cada render | `BookEditForm.tsx` |
+| B9 | **Resolvido** (2026-08-16) | ~~Escritas dependiam de GET prévio (variável de módulo) e não eram aguardadas~~ — eliminado pela migração para Prisma (`/api/entities` sem estado de módulo, `await` em tudo) | — |
+| B10 | Pendente | Blob URL criada a cada render sem `revokeObjectURL` | `list_isbn/page.tsx` |
+| B11 | Pendente | Erros de rede viram `undefined` coagido (`as AxiosResponse`) no client — acessar `response.status` lança `TypeError`; erro de API vira "lista vazia" na UI | `src/services/api.ts` |
 
 ## 6. Qualidade de código
 
-- **Duplicação massiva**: o formulário de livro existe em **4 cópias** (`BookCreateForm`, `BookCreateFormFromList` — 266 linhas cada, 7 linhas de diferença real —, `book-registration/manual/page.tsx`, `BookEditForm`). O trio `Paginated*Items` é estruturalmente idêntico. Os 3 blocos de `api.ts` (~50 linhas cada) diferem só pela entidade. `useEntities` retorna 24 valores e triplica os getters.
-- **Código morto**: `UserCreateForm.tsx` (98 linhas, só referenciado pelo próprio teste), `isEmpty.ts`, `validateIsbnFromGoogleApiItems.ts`, `calcImageSize.ts`, `services.google`, `SpreadsheetResponse.getRowById`.
-- **Estilo duplicado**: CSS da paginação existe 2× (`components/styles.ts:6-28` e `globals.css:47-68`); cores hardcoded fora do tema (`#0b8ec2`, variante divergente `#0aa8c2`, `#333`). styled-components vive em 6 arquivos (login inteiro em CSS-in-JS). `react-select` traz Emotion — **terceiro** sistema de estilo no bundle.
-- 7 supressões de `react-hooks/exhaustive-deps` em produção; typos em identificadores (`origial`, `hanldeClick`, `paginateNagivationButtons.tsx`, `getCodesWithErrrosUrl`) e na UI (`"Nenhum dado foi econtrado"`, `"Data do empéstimo"`, título "Formulário de Edição" nos formulários de criação).
-- Formulários sem `onSubmit` real (submit por `onClick` fora do form), sem campos obrigatórios, sem validação de ISBN.
+- **Duplicação remanescente**: o formulário de livro ainda existe em 4 cópias (`BookCreateForm`, `BookCreateFormFromList`, `book-registration/manual/page.tsx`, `BookEditForm`); o trio `Paginated*Items` segue estruturalmente idêntico; `useEntities` (`src/hooks/useEntities.ts`) ainda retorna **24 valores**. Consolidação é a Fase 3. Ponto positivo novo: `api.ts` virou fábrica genérica (`createEntityCrud`) — a triplicação do CRUD client morreu.
+- **Estilo**: styled-components é a única solução (Tailwind removido — ADR 0008); tokens de design (cores, raios) são CSS variables em `src/app/globals.css`; estilos de formulário compartilhados em `src/components/formStyles.ts`. `react-select` ainda traz Emotion como segundo sistema de estilo no bundle.
+- **Código morto restante**: `UserCreateForm.tsx` (só referenciado pelo próprio teste), `isEmpty.ts`, `calcImageSize.ts`, tipos `google-api-book.d.ts`. Removidos na refatoração: `services.google`, `validateIsbnFromGoogleApiItems.ts`, `tailwindMerge.ts`, `spreadsheetToDTO.ts`, `jwtServiceAccountAuth.ts`.
+- Typos de identificadores e UI persistem (`paginateNagivationButtons.tsx`, `"Nenhum dado foi econtrado"` etc.); supressões de `exhaustive-deps` persistem; formulários seguem sem `onSubmit` real nem validação de ISBN.
 
 ## 7. Testes
 
-- 64 arquivos, ~848 casos. Padrões estabelecidos de mock (`next/navigation`, `@/services/api`, Scan/Camera, libs Google).
-- **Lacuna grave**: os testes das rotas de API (`api/__tests__/auth.test.ts`, `spreadsheet.test.ts`) **leem o arquivo-fonte como string** e fazem `toContain('401')` — zero cobertura comportamental (por isso S1/B9 passam). Seis de treze testes de `login.test.tsx` são vacuosos (o nome promete cookie/redirect, a asserção só checa `not.toBeDisabled()`).
-- `jest.config.ts`: jsdom global (sem projeto `node` para rotas), `coverageThreshold` comentado, sem `setupFilesAfterEach` central.
+- **Jest**: 65 arquivos, **796 casos**, todos verdes na CI. Rotas de API e services de servidor usam docblock `@jest-environment node` e mockam `@/services/db/repositories` — os antigos testes "arquivo-como-string" foram substituídos por testes comportamentais reais (auth com bcrypt, sessão, allowlist, status HTTP, coerção dos repositórios).
+- **E2E (Playwright)**: `e2e/auth.spec.ts` — 4 cenários (redirect sem sessão, login inválido, login válido, cookie adulterado) × 2 perfis (Pixel 7 e Desktop Chrome) = **8 execuções**. Roda contra build de produção com banco descartável `e2e.db` (`playwright.config.ts`).
+- Badges de cobertura commitadas em `./badges` (regeneradas por `yarn testcb`).
+- Dívidas: `coverageThreshold` comentado; parte dos testes de `login.test.tsx` segue com asserções fracas (Fase 3).
 
 ## 8. Dependências — riscos
 
-| Item | Problema |
+| Item | Situação |
 |---|---|
-| `clsx` | **Dependência fantasma**: importada em `lib/tailwindMerge.ts:1`, não declarada no `package.json` (resolve por hoisting de `react-toastify`) |
-| `tailwind-merge` 2.6 | v2 é para Tailwind **v3**; com Tailwind 4 pode fazer merges incorretos silenciosos |
-| `@types/uuid` 9 | Obsoleto/conflitante — uuid 13 embarca os próprios tipos |
-| `@types/node` ^20 | Incompatível com `engines.node: 24.12.0` |
-| `html5-qrcode` 2.3.8 | Sem manutenção desde ~2023; único fornecedor do scanner |
-| `engines.node: 24.12.0` | Pin exato de patch, sem `.nvmrc` |
+| `html5-qrcode` 2.3.8 | **Pendente** — sem manutenção desde ~2023; único fornecedor do scanner (avaliar substituto na Fase 2, via ADR) |
 | `jest-coverage-badges` | Sem releases há anos |
-| `google-auth-library` 9 | v10 disponível (major pendente, mas v9 é o par testado do google-spreadsheet 4) |
+| `react-select` | Traz Emotion (sistema de estilo paralelo) — avaliar remoção na Fase 3 |
+| `google-spreadsheet` / `google-auth-library` | Agora **devDependencies**, usadas só por `scripts/import-from-sheets.ts` |
+| ~~Tailwind, `tailwind-merge`, `clsx` fantasma, `@types/uuid`, `@types/node` desatualizado~~ | **Resolvidos** em 2026-08-16 — removidos/atualizados (ADR 0008, spec 002) |
 
 ## 9. Performance
 
-- Planilha inteira (4 abas) recarregada do Google **a cada request** de API, inclusive a cada tentativa de login; sem qualquer cache.
-- `updateRow`/`deleteRow` fazem 2× `getRows()` por operação; cadastro em lote (`list_isbn`) posta livro a livro com pausa de 60 s a cada 59 itens (~8 min para 500 livros).
-- Paginação e busca 100% client-side, sem debounce; capas base64 inflam o JSON; `AllBooks` varre `lends` por livro a cada render (O(n·m)).
+- A classe inteira de problemas do Sheets morreu: sem recarga de planilha por request, escritas transacionais locais, login sem round-trip ao Google.
+- Restam: paginação e busca 100% client-side sem debounce; capas base64 inflando o JSON de listagem; cadastro em lote de ISBN pausa 60 s a cada lote (`ISBN_LOOKUP_DELAY_MS` — rate limit da BrasilAPI); `AllBooks` varre `lends` por livro a cada render.
 
 ## 10. Acessibilidade, i18n e PWA
 
-- **Zero `aria-*` em todo o `src/`**; 12 `<div onClick>` sem role/teclado (dropdown de filtro, cards, BackButton); `<html lang="en">` com conteúdo 100% PT; `focus:outline-hidden` remove indicador de foco; `<img>` cru sem lazy/fallback de erro.
-- Sem i18n — textos PT hardcoded em 16+ arquivos, com fragmentos EN misturados (`"Save"`, `"Succcess"`).
-- PWA quebrada: `site.webmanifest` não é reconhecido pelo App Router (nome errado, sem `<link rel="manifest">`, ícones apontando para caminhos inexistentes); sem service worker — o app mobile-first **não é instalável**. Assets de template do Next ainda em `public/`.
+- `<html lang="pt-BR">` corrigido (`src/app/layout.tsx`); a landing nova usa `aria-hidden` em ícones decorativos e links com `rel="noopener noreferrer"`.
+- No app autenticado seguem as dívidas da Fase 4: `<div onClick>` sem role/teclado, formulários sem labels adequados, `<img>` cru sem lazy/fallback.
+- Sem i18n — textos PT hardcoded (convenção assumida em `AGENTS.md`).
+- PWA segue pendente: `src/app/site.webmanifest` não segue a convenção `manifest.webmanifest` do App Router; sem service worker — app não instalável (Fase 4).
 
 ## 11. CI/CD e processo
 
-- Sem `.github/workflows`, Dependabot, hooks de git, type-check script (`tsc --noEmit`) ou template de PR. `yarn lint` sem `--max-warnings 0`.
-- Badges de cobertura dependem de disciplina manual (`yarn testcb` + commit).
-- Branch remota `nextjs-14.2.3-reactjs-18` registra o estado pré-upgrade.
+- **GitHub Actions** ativo: jobs `quality` (`yarn ci`) e `e2e` (build + Playwright chromium, relatório publicado como artifact em falha) em push/PR para `main`.
+- `yarn devloop` dá o loop local integrado (dev server + `tsc --watch` + `jest --watch`).
+- Pendentes: `coverageThreshold`, Dependabot/Renovate, template de PR, LICENSE (Fase 2).
+- Branch remota `nextjs-14.2.3-reactjs-18` registra o estado pré-upgrade; a planilha Google antiga permanece como backup histórico dos dados até a validação final da importação.

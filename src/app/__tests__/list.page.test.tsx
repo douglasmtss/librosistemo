@@ -5,6 +5,14 @@ import fs from 'fs'
 import path from 'path'
 import List from '../pages/dashboard/book-registration/list/page'
 
+jest.mock('next/navigation', () => ({
+    useRouter: (): { push: jest.Mock; back: jest.Mock; refresh: jest.Mock } => ({
+        push: jest.fn(),
+        back: jest.fn(),
+        refresh: jest.fn()
+    })
+}))
+
 jest.mock('@/components/BackButton', () => ({
     BackButton: (): React.JSX.Element => <div data-testid="back-button">Back Button</div>
 }))

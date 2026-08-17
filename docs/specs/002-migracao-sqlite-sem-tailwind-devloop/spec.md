@@ -1,6 +1,6 @@
 # Spec 002 — Migração para SQLite (Prisma), remoção do Tailwind e devloop
 
-- **Status**: Em implementação
+- **Status**: Concluída (2026-08-16)
 - **Data**: 2026-08-16
 - **Autor**: Claude Code (a pedido de Douglas Silva)
 - **ADRs relacionados**: [0007](../../adr/0007-sqlite-prisma-como-banco-de-dados.md), [0008](../../adr/0008-remocao-tailwind-styled-components-unico.md), [0009](../../adr/0009-devloop-e-ci-github-actions.md)
@@ -24,6 +24,14 @@
 - A superfície `api.sheet.*` consumida pelas páginas/hook `useEntities` **não muda** — só a implementação interna de `src/services/api.ts`.
 - Documentação: C4, `CURRENT_STATE.md`, `IMPROVEMENT_PLAN.md`, `AGENTS.md`, README e `env.template` atualizados.
 
+Itens incorporados durante a execução (nota de revisão, 2026-08-16):
+
+- **Landing page pública + SEO**: `/` deixa de exigir login e vira página de divulgação (`src/components/LandingPage.tsx`) com metadata Open Graph/Twitter, JSON-LD `SoftwareApplication`, `robots.ts` e `sitemap.ts` (só a landing é indexável); URL pública via `SITE_URL` (`src/config/site.ts`).
+- **Genericização do produto**: o Librosistemo deixa de ser o sistema da biblioteca CCEAK e passa a se apresentar como produto open source genérico — identidade centralizada em `src/config/info.ts`.
+- **E2E com Playwright**: `e2e/` + `playwright.config.ts` (build de produção, banco descartável `e2e.db`, perfis mobile e desktop), com job próprio na CI.
+- **Docker/compose**: `Dockerfile` multi-stage (alvos `dev` e `prod`) + `compose.yaml` com banco SQLite em volume nomeado e `yarn db:setup` na subida.
+- **Agentes novos**: `uiux-specialist` e `seo-specialist` em `.claude/agents/`.
+
 ## Não-escopo
 
 - Reestruturação de rotas (`/pages/dashboard` → `/dashboard`) — Fase 4.
@@ -43,6 +51,8 @@
 - [x] CA7 — `yarn devloop` sobe dev server + typecheck + testes em watch; `yarn ci` (lint+typecheck+testc+build) verde localmente e no GitHub Actions.
 - [x] CA8 — Suíte Jest inteira verde; testes das rotas de API testam comportamento com Prisma mockado (fim dos testes "arquivo-como-string").
 - [x] CA9 — `yarn build` verde com todas as dependências atualizadas.
+- [x] CA10 — Landing pública em `/` com metadata completa e JSON-LD; app autenticado e `/login` não indexáveis (`robots.txt` os bloqueia; sitemap lista só a landing).
+- [x] CA11 — `docker compose up --build` sobe o app em http://localhost:3000 com banco SQLite persistente em volume nomeado (migrate + seed automáticos na subida).
 
 ## Impacto no usuário
 

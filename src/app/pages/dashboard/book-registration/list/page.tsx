@@ -3,8 +3,10 @@ import { BackButton } from '@/components/BackButton'
 import Link from 'next/link'
 import { useState } from 'react'
 import styled from 'styled-components'
+import { useRouter } from 'next/navigation'
 
 export default function List(): React.ReactNode {
+    const router = useRouter()
     const [inputValue, setInputValue] = useState('')
     const [codes, setCodes] = useState<string[]>([])
 
@@ -18,7 +20,7 @@ export default function List(): React.ReactNode {
     }
 
     const handleSearch = (): void => {
-        window.location.href = `/pages/dashboard/book-registration/list_isbn?list_isbn=${JSON.stringify(codes)}`
+        router.push(`/pages/dashboard/book-registration/list_isbn?list_isbn=${JSON.stringify(codes)}`)
     }
 
     return (

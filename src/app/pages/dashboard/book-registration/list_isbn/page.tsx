@@ -190,7 +190,7 @@ function SearchPageImpl(): React.ReactNode {
                 setTimeout(() => {
                     setBooksInformations([])
                     setSended(true)
-                    window.location.href = '/pages/dashboard/books'
+                    router.push('/pages/dashboard/books')
                 }, 2000)
             }
         }

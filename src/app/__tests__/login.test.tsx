@@ -1,15 +1,24 @@
 import React, { HTMLAttributes } from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import fs from 'fs'
 import path from 'path'
 
 // Mock dependencies first
-jest.mock('@/components/Loading', () => {
-    return function MockLoading(): React.JSX.Element {
+const mockRouterPush = jest.fn()
+jest.mock('next/navigation', () => ({
+    useRouter: (): { push: jest.Mock; back: jest.Mock; refresh: jest.Mock } => ({
+        push: mockRouterPush,
+        back: jest.fn(),
+        refresh: jest.fn()
+    })
+}))
+
+jest.mock('@/components/Loading', () => ({
+    Loading: function MockLoading(): React.JSX.Element {
         return <div data-testid="loading">Loading...</div>
     }
-})
+}))
 
 jest.mock(
     '@/hooks/useToastify',
@@ -180,7 +189,7 @@ describe('Auth Page', () => {
         expect(button).not.toBeDisabled()
     })
 
-    test('should set cookie and redirect on successful login', async () => {
+    test('should redirect on successful login', async () => {
         mockApiPost.mockResolvedValue({ status: 200 })
 
         const component = <Auth />
@@ -196,6 +205,10 @@ describe('Auth Page', () => {
 
         // Verify button is enabled before clicking
         expect(button).not.toBeDisabled()
+
+        fireEvent.click(button)
+
+        await waitFor(() => expect(mockRouterPush).toHaveBeenCalledWith('/pages/dashboard'))
     })
 
     test('should handle invalid credentials', () => {

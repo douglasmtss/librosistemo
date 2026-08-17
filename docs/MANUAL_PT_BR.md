@@ -2,10 +2,14 @@
 
 > Aplicação: librosistemo
 >
-> versão: 1.0.0
+> Atualizado em: 2026-08-16
 
 
 <ol>
+    <li>
+        <a href="#primeiro-acesso">Primeiro acesso (instalação e login)</a>
+    </li>
+    <br />
     <li>
         <a href="#livros">Cadastrando, editando e removendo livros</a>
         <ul>
@@ -51,6 +55,19 @@
         </ul>
     </li>
 </ol>
+
+<br />
+<h2 id="primeiro-acesso">Primeiro acesso</h2>
+
+> Instalação e login
+
+O Librosistemo usa um **banco de dados local (SQLite)** criado automaticamente na instalação — não é preciso criar planilha, conta Google nem credenciais externas. Para instalar, siga o passo a passo do [README](../README.md) (`cp env.template .env` → `yarn install` → `yarn db:setup` → `yarn dev`, ou via Docker com `docker compose up --build`).
+
+O usuário e a senha do primeiro acesso são os valores de **`ADMIN_USERNAME` e `ADMIN_PASSWORD` definidos no arquivo `.env`** antes de rodar `yarn db:setup` (é o seed que cria esse admin). Troque a senha padrão antes de usar em produção.
+
+Para entrar no sistema, acesse a página inicial e clique em "`Entrar no sistema`" (ou vá direto para `/login`), informe usuário e senha e clique em "`Entrar`". A partir daí, os fluxos abaixo continuam os mesmos.
+
+> Quem tem dados na planilha Google do modelo antigo pode importá-los uma única vez com `yarn db:import-sheets` (ver README).
 
 <br />
 <h2 id="livros">Livros</h2>
