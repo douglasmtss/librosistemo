@@ -20,15 +20,24 @@ function AllBooks({ books, lends }: AllBooksProps): React.ReactNode {
 
             <BackToTopButton />
 
-            {books?.map((book, index) => {
+            {books?.map(book => {
                 const bookAmountAndAvailable = getBookAmountAndAvailable(String(book?.id), books, lends)
 
                 return (
                     <BookCard
-                        key={index}
+                        key={book.id ?? book.title}
                         onClick={() => {
                             setOpenModal(book)
                         }}
+                        onKeyDown={event => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault()
+                                setOpenModal(book)
+                            }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Abrir detalhes de ${book.title}`}
                     >
                         <CoverImage src={book?.image} alt={book.title} width={136} height={196} />
                         <BookInfo>

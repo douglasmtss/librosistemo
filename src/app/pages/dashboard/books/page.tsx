@@ -79,6 +79,13 @@ export default function Books(): React.ReactNode {
         }
     }
 
+    const handleFilterKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            handleFilterBook(event as unknown as React.MouseEvent<HTMLDivElement>)
+        }
+    }
+
     return (
         <PageContainer>
             <Header>
@@ -88,13 +95,28 @@ export default function Books(): React.ReactNode {
             <Content>
                 <SearchRow>
                     <FilterSelector ref={filterRef}>
-                        <FilterToggle onClick={() => setShowFilter(!showFilter)}>
+                        <FilterToggle
+                            onClick={() => setShowFilter(!showFilter)}
+                            role="button"
+                            tabIndex={0}
+                            aria-expanded={showFilter}
+                            aria-haspopup="listbox"
+                            onKeyDown={event => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault()
+                                    setShowFilter(value => !value)
+                                }
+                            }}
+                        >
                             <span>{filter.label}</span>
                         </FilterToggle>
                         {showFilter ? (
                             <FilterDropdown>
                                 <FilterOption
                                     onClick={handleFilterBook}
+                                    onKeyDown={handleFilterKeyDown}
+                                    role="option"
+                                    tabIndex={0}
                                     data-filter="title"
                                     data-label="Título"
                                     $hidden={filter.value === 'title'}
@@ -103,6 +125,9 @@ export default function Books(): React.ReactNode {
                                 </FilterOption>
                                 <FilterOption
                                     onClick={handleFilterBook}
+                                    onKeyDown={handleFilterKeyDown}
+                                    role="option"
+                                    tabIndex={0}
                                     data-filter="author"
                                     data-label="Autor"
                                     $hidden={filter.value === 'author'}
@@ -111,6 +136,9 @@ export default function Books(): React.ReactNode {
                                 </FilterOption>
                                 <FilterOption
                                     onClick={handleFilterBook}
+                                    onKeyDown={handleFilterKeyDown}
+                                    role="option"
+                                    tabIndex={0}
                                     data-filter="category"
                                     data-label="Categoria"
                                     $hidden={filter.value === 'category'}
@@ -119,6 +147,9 @@ export default function Books(): React.ReactNode {
                                 </FilterOption>
                                 <FilterOption
                                     onClick={handleFilterBook}
+                                    onKeyDown={handleFilterKeyDown}
+                                    role="option"
+                                    tabIndex={0}
                                     data-filter="isbn"
                                     data-label="ISBN"
                                     $hidden={filter.value === 'isbn'}

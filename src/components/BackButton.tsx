@@ -10,8 +10,22 @@ interface BackButtonProps {
 export const BackButton = ({ classNameContainer, classNameIcon }: BackButtonProps): React.ReactNode => {
     const router = useRouter()
 
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            router.back()
+        }
+    }
+
     return (
-        <BackButtonContainer className={classNameContainer} onClick={() => router.back()}>
+        <BackButtonContainer
+            className={classNameContainer}
+            onClick={() => router.back()}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
+            aria-label="Voltar"
+        >
             <BackIcon className={classNameIcon} />
             Voltar
         </BackButtonContainer>
