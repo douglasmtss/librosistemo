@@ -35,70 +35,31 @@ const createEntityCrud = <T>(entity: Entity): EntityCrud<T> => {
     const url = `${entities_url}?entity=${entity}`
 
     return {
-        get: async (): Promise<T[]> => {
-            const response = await ax
-                .get<T[]>(url)
-                .then(res => res.data)
-                .catch(error => {
-                    console.error(`[api] - Erro ao buscar ${entity}:`, error)
-                })
-
-            return response as unknown as Promise<T[]>
-        },
-        post: async (data: T): Promise<AxiosResponse> => {
-            const response = await ax.post(url, JSON.stringify(data), jsonHeaders).catch(error => {
-                console.error(`[api] - Erro ao criar ${entity}:`, error)
-            })
-
-            return response as AxiosResponse
-        },
-        put: async (id: string, data: T): Promise<AxiosResponse> => {
-            const response = await ax.put(`${url}&id=${id}`, JSON.stringify(data), jsonHeaders).catch(error => {
-                console.error(`[api] - Erro ao atualizar ${entity} ${id}:`, error)
-            })
-
-            return response as AxiosResponse
-        },
-        delete: async (id: string): Promise<AxiosResponse> => {
-            const response = await ax.delete(`${url}&id=${id}`).catch(error => {
-                console.error(`[api] - Erro ao excluir ${entity} ${id}:`, error)
-            })
-
-            return response as AxiosResponse
-        }
+        get: async (): Promise<T[]> => (await ax.get<T[]>(url)).data,
+        post: (data: T): Promise<AxiosResponse> => ax.post(url, JSON.stringify(data), jsonHeaders),
+        put: (id: string, data: T): Promise<AxiosResponse> =>
+            ax.put(`${url}&id=${id}`, JSON.stringify(data), jsonHeaders),
+        delete: (id: string): Promise<AxiosResponse> => ax.delete(`${url}&id=${id}`)
     }
 }
 
 export const api = {
     auth: {
         post: async (auth: { username: string; password: string }): Promise<AxiosResponse> => {
-            const response = await ax
-                .post<AxiosResponse>('/api/auth', JSON.stringify(auth), {
-                    ...jsonHeaders,
-                    // 401 é resposta esperada (credenciais erradas), não erro de rede
-                    validateStatus: status => status < 500
-                })
-                .then(res => {
-                    if (res?.data?.status === 200) {
-                        return res
-                    } else {
-                        res.status = 401
-
-                        return res
-                    }
-                })
-                .catch(error => {
-                    console.error('[api] - Erro no login:', error)
-                })
-
-            return response as AxiosResponse
-        },
-        logout: async (): Promise<AxiosResponse> => {
-            const response = await ax.delete('/api/auth').catch(error => {
-                console.error('[api] - Erro no logout:', error)
+            const response = await ax.post<AxiosResponse>('/api/auth', JSON.stringify(auth), {
+                ...jsonHeaders,
+                // 401 é resposta esperada (credenciais erradas), não erro de rede
+                validateStatus: status => status < 500
             })
 
-            return response as AxiosResponse
+            if (response?.data?.status !== 200) {
+                response.status = 401
+            }
+
+            return response
+        },
+        logout: async (): Promise<AxiosResponse> => {
+            return ax.delete('/api/auth')
         }
     },
     sheet: {

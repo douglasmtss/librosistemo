@@ -118,13 +118,10 @@ describe('services/api', (): void => {
             expect(response.status).toBe(401)
         })
 
-        test('loga erro e retorna undefined em falha de rede', async (): Promise<void> => {
+        test('propaga falha de rede', async (): Promise<void> => {
             axiosInstance.post.mockRejectedValue(new Error('offline'))
 
-            const response = await api.auth.post({ username: 'a', password: 'b' })
-
-            expect(response).toBeUndefined()
-            expect(consoleErrorSpy).toHaveBeenCalled()
+            await expect(api.auth.post({ username: 'a', password: 'b' })).rejects.toThrow('offline')
         })
     })
 
@@ -151,13 +148,10 @@ describe('services/api', (): void => {
             expect(result).toEqual([record])
         })
 
-        test('get loga erro e retorna undefined em falha', async (): Promise<void> => {
+        test('propaga erro do GET', async (): Promise<void> => {
             axiosInstance.get.mockRejectedValue(new Error('fail'))
 
-            const result = await api.sheet[entity].get()
-
-            expect(result).toBeUndefined()
-            expect(consoleErrorSpy).toHaveBeenCalled()
+            await expect(api.sheet[entity].get()).rejects.toThrow('fail')
         })
 
         test('post envia o registro como JSON', async (): Promise<void> => {
@@ -189,15 +183,14 @@ describe('services/api', (): void => {
             expect(axiosInstance.delete).toHaveBeenCalledWith(`${url}&id=42`)
         })
 
-        test('operações de escrita logam erro e retornam undefined em falha', async (): Promise<void> => {
+        test('propaga erro nas operações de escrita', async (): Promise<void> => {
             axiosInstance.post.mockRejectedValue(new Error('fail'))
             axiosInstance.put.mockRejectedValue(new Error('fail'))
             axiosInstance.delete.mockRejectedValue(new Error('fail'))
 
-            await expect(api.sheet[entity].post(record as never)).resolves.toBeUndefined()
-            await expect(api.sheet[entity].put('42', record as never)).resolves.toBeUndefined()
-            await expect(api.sheet[entity].delete('42')).resolves.toBeUndefined()
-            expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
+            await expect(api.sheet[entity].post(record as never)).rejects.toThrow('fail')
+            await expect(api.sheet[entity].put('42', record as never)).rejects.toThrow('fail')
+            await expect(api.sheet[entity].delete('42')).rejects.toThrow('fail')
         })
     })
 })
